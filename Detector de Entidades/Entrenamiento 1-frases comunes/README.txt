@@ -7,7 +7,7 @@ Entidades:
 FECHA: 11 de Enero, 11/01, martes pasado, ayer, el otro dia... (dia especifico)
 HORA: a las 11, 11:00, a la tarde, 11 AM  (hora especifica)
 TIEMPO: un rato, 20 minutos, 1 hora (lapso de tiempo)
-MEDIDA: 11 g, 12 km , doce metros, ... (cantidad + unidad)
+MEDIDA: 11 g, 12 km , doce metros, varios discos, pocos kilometros... (cantidad + unidad)
 PERSONA: Marta, Carlitos, Primo, chico, hijos, 
 DINERO: 20 pesos, guita...; en casos como 'me prestas 5000?' no es necesario identificar la entidad. 
 ORG: Apple, McDonals. Se debe comportar como organizacion el la frase.  
