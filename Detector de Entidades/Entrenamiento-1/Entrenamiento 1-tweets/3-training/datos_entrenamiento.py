@@ -30,5 +30,5 @@ def train_test(f, ratio):
 #Entrenamiento:
 #python -m spacy train config.cfg --output ./output --paths.train train.spacy --paths.dev test.spacy
 
-train_test(open('tweets.conll', encoding="utf-8"), 0.8)
+train_test(open('../2-datasets etiquetados/tweets.conll', encoding="utf-8"), 0.8)
  
