@@ -3,7 +3,7 @@ import os
 
 # define path to custom-trained model
 model_path = os.path.join(os.getcwd(), "output", "model-best")
-              
+
 # load the custom-trained model
 nlp = spacy.load(model_path)
 

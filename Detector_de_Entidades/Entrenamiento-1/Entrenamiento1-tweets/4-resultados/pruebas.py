@@ -1,7 +1,8 @@
 import spacy
+import os
 
 # define path to custom-trained model
-model_path = "C:/Users/Valentina/Desktop/Proyecto_Final/Proyecto-Final/Detector_de_Entidades/Entrenamiento-1/Entrenamiento1-frases_comunes/4-resultados/output/model-best"
+model_path = os.path.join(os.getcwd(), "output", "model-best")
 
 # load the custom-trained model
 nlp = spacy.load(model_path)
