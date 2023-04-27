@@ -16,3 +16,7 @@ doc = nlp(text)
 
 # iterate over named entities and print them
 print(doc.cats, "-", text)
+
+def format_msj():
+    #TODO
+    pass

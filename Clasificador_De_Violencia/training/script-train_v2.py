@@ -5,6 +5,13 @@ from spacy.util import minibatch, compounding
 from spacy.pipeline.textcat_multilabel import DEFAULT_MULTI_TEXTCAT_MODEL
 from spacy.training import Example
 
+"""
+Este archivo contiene un script para el entrenamiento similar al entrenamiento usado en
+spacy v2, pero parcialmente adaptado para su funcionamiento en v3
+
+"""
+
+
 TRAIN_DATA = []
 
 # Load the SpaCy model for text classification
@@ -16,7 +23,7 @@ textcat.add_label("Violento")
 textcat.add_label("No Violento")
 
 # Load the JSON data
-with open('datos-min.json') as json_file:
+with open('datos-min.json', encoding="utf-8") as json_file:
     json_data = json.load(json_file)
 
 # Convert the JSON data into a format that can be used to train a text categorizer
@@ -28,6 +35,9 @@ for data in json_data:
     else:
         label = {"cats": {"Violento": 0, "No Violento": 1}}
     TRAIN_DATA.append((text, label))
+
+with open('datos.json', 'w') as f:
+    f.write(TRAIN_DATA)
 
 # Train the text categorizer
 nlp.begin_training()
