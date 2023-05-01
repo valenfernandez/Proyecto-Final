@@ -3,6 +3,19 @@ import random
 
 
 def labelstudio_to_list(file):
+    """
+    Convertir el archivo json de labelstudio a una lista de diccionarios
+    con el formato usado por spaCy.
+
+    Parameters
+    ----------
+    :param: file (str)  Nombre del archivo json.
+    
+    Returns
+    -------
+    :return: lineas (list) Lista de diccionarios con el formato usado por spaCy.
+
+    """
     lineas = []
     with open(file, encoding='utf-8') as json_file:
         json_data = json.load(json_file)
@@ -18,22 +31,26 @@ def labelstudio_to_list(file):
     return lineas
 
 def train_test(lines, ratio): 
+    """ 
+    Dividir el conjunto de datos en entrenamiento y prueba. 
+    y guardarlos en archivos json para el entrenamiento.
 
-    #TODO> CHEQUEAR QUE EL FORMATO DEL JSON SEA CORRECTO (ese formato es : {}{}{} )
-    #  Y PUEDA SER CONVERTIDO A .SPACY Y LUEGO SE PUEDA ENTRENAR o Si tenemos que 
-    # cambiar el write de los json para que esten en formato: [{},{}]
+    Parameters
+    ----------
+    :param: lines (list) Lista de diccionarios con el formato usado por spaCy.
+    :param: ratio (float) Proporción de datos para entrenamiento.
 
+    """
     train_num = int(len(lines)*ratio)
     random.shuffle(lines)
     train = lines[:train_num]
     test = lines[train_num:]
     with open('train.json', 'w', encoding="utf-8") as file:
-        for item in train:
-            file.write(json.dumps(item, ensure_ascii=False) + "\n")  
-    
+        json.dump(train, file, ensure_ascii=False)
+
     with open('test.json', 'w', encoding="utf-8") as file:
-        for item in test:
-            file.write(json.dumps(item, ensure_ascii=False) + "\n")  
+        json.dump(test, file, ensure_ascii=False)
+
     
 
 file = 'datos-min.json'
