@@ -1,0 +1,58 @@
+{
+  "lang":"es",
+  "name":"pipeline",
+  "version":"0.0.0",
+  "spacy_version":">=3.5.1,<3.6.0",
+  "description":"",
+  "author":"",
+  "email":"",
+  "url":"",
+  "license":"",
+  "spacy_git_version":"Unknown",
+  "vectors":{
+    "width":0,
+    "vectors":0,
+    "keys":0,
+    "name":null,
+    "mode":"default"
+  },
+  "labels":{
+    "textcat":[
+      "Violento",
+      "No Violento"
+    ]
+  },
+  "pipeline":[
+    "textcat"
+  ],
+  "components":[
+    "textcat"
+  ],
+  "disabled":[
+
+  ],
+  "performance":{
+    "cats_score":0.903521281,
+    "cats_score_desc":"macro F",
+    "cats_micro_p":0.9067245119,
+    "cats_micro_r":0.9067245119,
+    "cats_micro_f":0.9067245119,
+    "cats_macro_p":0.8989034835,
+    "cats_macro_r":0.9115159079,
+    "cats_macro_f":0.903521281,
+    "cats_macro_auc":0.9637465827,
+    "cats_f_per_type":{
+      "Violento":{
+        "p":0.8434343434,
+        "r":0.9329608939,
+        "f":0.8859416446
+      },
+      "No Violento":{
+        "p":0.9543726236,
+        "r":0.890070922,
+        "f":0.9211009174
+      }
+    },
+    "textcat_loss":0.4747986164
+  }
+}

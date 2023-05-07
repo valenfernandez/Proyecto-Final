@@ -2,20 +2,22 @@ import spacy
 import os
 
 # define path to custom-trained model
-model_path = os.path.join(os.getcwd(), "sentiment_model")
+#model_path = os.path.join(os.getcwd(), "sentiment_model")
+model_path = os.path.join(os.getcwd(), "output_with_sm", "model-best")
 
 # load the custom-trained model
 nlp = spacy.load(model_path)
 
 # sample text input
 with open('pruebas.txt', 'r') as file:
-    text = file.read().replace('\n', '')
+    textList = file.read().split('\n')
 
 # process the text with spaCy
-doc = nlp(text)
+for text in textList:
+    doc = nlp(text)
 
-# iterate over named entities and print them
-print(doc.cats, "-", text)
+    # iterate over named entities and print them
+    print(doc.cats, "-", text)
 
 def format_msj():
     #TODO
