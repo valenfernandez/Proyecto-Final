@@ -1,3 +1,5 @@
+# Adapted from convert_corpora.py script from Morgan McGuire
+# https://gist.github.com/morganmcg1/a43842b847e2ff7dc78d2c3e5990bb96
 from spacy.tokens import DocBin
 import spacy
 import json
