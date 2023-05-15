@@ -21,29 +21,26 @@ def convert_record(nlp, record, categories):
         doc.cats[categories[label]] = 1
     return doc
 
-def convert_files(lang: str="es"):
-    categories = ["Violento", "No Violento"]
-    nlp = spacy.blank(lang)
-    with open('datos-min.json', 'r') as f:
-        input_data = json.load(f)      
 
-    # select 70% of input data for training set
-    train_size = int(len(input_data) * 0.7)
-    train_data = input_data[:train_size]
-    test_data = input_data[train_size:]
+categories = ["Violento", "No Violento"]
+nlp = spacy.blank("es")
+with open('datos-min.json', 'r') as f:
+    input_data = json.load(f)      
 
-    records_train = read_json_items(train_data)
-    records_test = read_json_items(test_data)
-    docs_train = [convert_record(nlp, record, categories) for record in records_train]
-    docs_test = [convert_record(nlp, record, categories) for record in records_test]
-    
-    out_data_train = DocBin(docs=docs_train).to_bytes()
-    with open('train.spacy', 'wb') as f:
-        f.write(out_data_train)
-    out_data_test = DocBin(docs=docs_test).to_bytes()
-    with open('test.spacy', 'wb') as f:
-        f.write(out_data_test)        
-    print(f'{f} converted')
+# select 70% of input data for training set
+train_size = int(len(input_data) * 0.7)
+train_data = input_data[:train_size]
+test_data = input_data[train_size:]
 
-# Convert Files
-convert_files()
+records_train = read_json_items(train_data)
+records_test = read_json_items(test_data)
+docs_train = [convert_record(nlp, record, categories) for record in records_train]
+docs_test = [convert_record(nlp, record, categories) for record in records_test]
+
+out_data_train = DocBin(docs=docs_train).to_bytes()
+with open('train.spacy', 'wb') as f:
+    f.write(out_data_train)
+out_data_test = DocBin(docs=docs_test).to_bytes()
+with open('test.spacy', 'wb') as f:
+    f.write(out_data_test)        
+print(f'{f} converted')
