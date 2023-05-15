@@ -2,7 +2,6 @@ import spacy
 import os
 
 # define path to custom-trained model
-#model_path = os.path.join(os.getcwd(), "sentiment_model")
 model_path = os.path.join(os.getcwd(), "output_with_sm", "model-best")
 
 # load the custom-trained model
@@ -18,7 +17,3 @@ for text in textList:
 
     # iterate over named entities and print them
     print(doc.cats, "-", text)
-
-def format_msj():
-    #TODO
-    pass
