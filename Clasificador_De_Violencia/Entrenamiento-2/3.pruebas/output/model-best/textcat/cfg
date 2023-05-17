@@ -1,0 +1,8 @@
+{
+  "labels":[
+    "Violento",
+    "No Violento"
+  ],
+  "threshold":0.0,
+  "positive_label":null
+}
