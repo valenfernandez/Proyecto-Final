@@ -51,7 +51,7 @@ def prueba_txt(file):
     """
     # define path to custom-trained model
     #model_path = os.path.join(os.getcwd(), "sentiment_model")
-    model_path = os.path.join(os.getcwd(), "output_with_sm", "model-best")
+    model_path = os.path.join(os.getcwd(), "output", "model-best")
 
     # load the custom-trained model
     nlp = spacy.load(model_path)
@@ -76,7 +76,7 @@ def prueba_wpp(file):
     
     """
     # define path to custom-trained model
-    model_path = os.path.join(os.getcwd(), "output_with_sm", "model-best")
+    model_path = os.path.join(os.getcwd(), "output", "model-best")
     nlp = spacy.load(model_path)
     user_texts, all_texts = format_msj_wpp(file)
     for name, texts in user_texts.items():

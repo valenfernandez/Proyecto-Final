@@ -51,7 +51,7 @@ def prueba_txt(file):
     """
     # define path to custom-trained model
     #model_path = os.path.join(os.getcwd(), "sentiment_model")
-    model_path = os.path.join(os.getcwd(), "output_with_sm", "model-best")
+    model_path = os.path.join(os.getcwd(), "output", "model-best")
 
     # load the custom-trained model
     nlp = spacy.load(model_path)
@@ -64,6 +64,10 @@ def prueba_txt(file):
     for text in textList:
         doc = nlp(text)
         print(doc.cats, "-", text)
+        if (doc.cats['Violento'] > doc.cats['No Violento']):
+            print(" V")
+        else:
+            print(" NV")
 
 
 def prueba_wpp(file):
@@ -76,7 +80,7 @@ def prueba_wpp(file):
     
     """
     # define path to custom-trained model
-    model_path = os.path.join(os.getcwd(), "output_with_sm", "model-best")
+    model_path = os.path.join(os.getcwd(), "output", "model-best")
     nlp = spacy.load(model_path)
     user_texts, all_texts = format_msj_wpp(file)
     for name, texts in user_texts.items():
@@ -84,7 +88,11 @@ def prueba_wpp(file):
         for text in texts:
             doc = nlp(text)
             print(doc.cats, "-", text)
+            if (doc.cats['Violento'] > doc.cats['No Violento']):
+                print("Violento")
+            else:
+                print("No Violento")
 
-prueba_txt('pruebas.txt')
+#prueba_txt('pruebas.txt')
 
-#prueba_wpp('conversacion.txt')
+prueba_wpp('conversacion.txt')
