@@ -1,0 +1,10 @@
+4/5/2022, 20:33 - Los mensajes y las llamadas están cifrados de extremo a extremo. Nadie fuera de este chat, ni siquiera WhatsApp, puede leerlos ni escucharlos. Toca para obtener más información.
+4/5/2022, 20:33 - Valentina: Hola!! che si querés después armó una carpeta de drive para la presentación
+4/5/2022, 20:33 - Valentina: de taller
+4/5/2022, 20:33 - Valentina: y ahí lo vamos armando
+4/5/2022, 21:25 - Pablo Buendia: Cómo va Vale, dale me parece bien 👌
+4/5/2022, 22:00 - Valentina: 😄 buenísimo
+4/5/2022, 22:08 - Valentina: termine haciendo una carpeta dentro de nuestra carpeta de taller comun
+7/5/2023, 19:30 - Pablo Buendia: Yo estuve clasificando este finde, recien hice un push al repo
+7/5/2023, 19:31 - Pablo Buendia: Encontre un script que hicieron en google para parsear el json a un .spacy y me anduvo bien, lo readapte para que cree los test.spacy y el train.spacy
+7/5/2023, 19:31 - Pablo Buendia: Lo probe con una config que tenemos y lo proceso como siempre
