@@ -1,0 +1,12 @@
+{
+  "labels":[
+    "Sexual",
+    "F\u00edsica",
+    "Econ\u00f3mica",
+    "Psicol\u00f3gica",
+    "Simb\u00f3lica",
+    "Indefinido"
+  ],
+  "threshold":0.0,
+  "positive_label":null
+}
