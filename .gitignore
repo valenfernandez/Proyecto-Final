@@ -5,6 +5,7 @@ Detector_de_Entidades/Entrenamiento-3/Entrenamiento3-200 frases + ChatGTP +tweet
 Detector_de_Entidades/Entrenamiento-3/Entrenamiento3-200 frases + ChatGTP + noticias/3-training con transformers/output
 Clasificador_De_Violencia_Multi_Categoria/Entrenamiento 1/5.Pruebas con transformers/output
 Clasificador_De_Violencia_Multi_Categoria/Entrenamiento 2/5.Pruebas con transformers/output
+Clasificador_De_Violencia_Multi_Categoria/Entrenamiento 3/5. Pruebas con transformers/output
 Clasificador_De_Violencia/Entrenamiento 3 con transformers/3.pruebas/output
 Clasificador_De_Violencia/Entrenamiento 2 con transformers/3.pruebas/output
 *.parquet
