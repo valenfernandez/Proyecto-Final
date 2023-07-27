@@ -1,0 +1,44 @@
+train:
+  cmd: python -m spacy run train
+  script:
+    - python -m spacy train configs/config.cfg --output training/ --paths.train corpus/train.spacy
+      --paths.dev corpus/dev.spacy --nlp.lang en --gpu-id -1
+  deps:
+    - path: configs/config.cfg
+      md5: 2e3f11020ca27e1e10155ea9eb2798f2
+    - path: corpus/train.spacy
+      md5: da0150b0c41e50b1a89e8eb7678cebaf
+    - path: corpus/dev.spacy
+      md5: de85fa1ef495767f08b3d8a0c2ca43f5
+  outs:
+    - path: training/model-best
+      md5: 1435b4e959f7d140bc8a0ebc02ae04a1
+  spacy_version: 3.5.3
+  spacy_git_version: '512241e12'
+evaluate:
+  cmd: python -m spacy run evaluate
+  script:
+    - python -m spacy evaluate training/model-best corpus/dev.spacy --output training/metrics.json
+  deps:
+    - path: corpus/dev.spacy
+      md5: de85fa1ef495767f08b3d8a0c2ca43f5
+    - path: training/model-best
+      md5: 1435b4e959f7d140bc8a0ebc02ae04a1
+  outs:
+    - path: training/metrics.json
+      md5: 2c05df98256554446b41185d8aa3ac2d
+  spacy_version: 3.5.3
+  spacy_git_version: '512241e12'
+package:
+  cmd: python -m spacy run package
+  script:
+    - python -m spacy package training/model-best packages --name textcat_multilabel_demo
+      --version 0.0.0 --force
+  deps:
+    - path: training/model-best
+      md5: 1435b4e959f7d140bc8a0ebc02ae04a1
+  outs:
+    - path: packages/en_textcat_multilabel_demo-0.0.0/dist/en_textcat_multilabel_demo-0.0.0.tar.gz
+      md5: 16b125770a5426b9f7ad0cb70f08dbd3
+  spacy_version: 3.5.3
+  spacy_git_version: '512241e12'
