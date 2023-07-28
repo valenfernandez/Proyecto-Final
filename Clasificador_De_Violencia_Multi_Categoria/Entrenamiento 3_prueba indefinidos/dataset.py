@@ -100,15 +100,15 @@ files_s = [{'file': "simbolica.txt",
             {'file': "sexual.txt",
             'sentiment': "Sexual"},
             {'file': "fisica.txt",
-            'sentiment': "Física"},
-            {'file': "indefinido.txt",
-            'sentiment': "Indefinido"}
+            'sentiment': "Física"}
+           # ,{'file': "indefinido.txt",
+            #'sentiment': "Indefinido"}
 ]
 
 processed_data = process_phrases(files_s, 'dataset.json')
 
-categories = ["Sexual", "Física", "Económica", "Psicológica", "Simbólica", "Indefinido"]
-# categories = ["Sexual", "Física", "Económica", "Psicológica", "Simbólica"]
+# categories = ["Sexual", "Física", "Económica", "Psicológica", "Simbólica", "Indefinido"]
+categories = ["Sexual", "Física", "Económica", "Psicológica", "Simbólica"]
 nlp = spacy.blank("es")
 with open('dataset.json', 'r', encoding = 'utf-8') as f:
     input_data = json.load(f)      
