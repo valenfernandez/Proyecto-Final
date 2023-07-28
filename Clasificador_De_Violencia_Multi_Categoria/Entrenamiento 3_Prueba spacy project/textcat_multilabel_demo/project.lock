@@ -5,14 +5,14 @@ train:
       --paths.dev corpus/dev.spacy --nlp.lang en --gpu-id -1
   deps:
     - path: configs/config.cfg
-      md5: 2e3f11020ca27e1e10155ea9eb2798f2
+      md5: a6cb330f69511b59bd23af9b24aeb98d
     - path: corpus/train.spacy
       md5: 25722eb493b954dfdbd8d8f22d55ef84
     - path: corpus/dev.spacy
       md5: 94d8567348398afbb4561fda29813940
   outs:
     - path: training/model-best
-      md5: 2c653ad174d37e7a4939195a4202416a
+      md5: 8cea6926ebd354acd74c1bdabdcedab8
   spacy_version: 3.5.3
   spacy_git_version: '512241e12'
 evaluate:
@@ -23,10 +23,10 @@ evaluate:
     - path: corpus/dev.spacy
       md5: 94d8567348398afbb4561fda29813940
     - path: training/model-best
-      md5: 2c653ad174d37e7a4939195a4202416a
+      md5: 8cea6926ebd354acd74c1bdabdcedab8
   outs:
     - path: training/metrics.json
-      md5: 31a72580281d49c2aaf100bf5bea0cdc
+      md5: 6f8b2f93322759fa06b3d1d857ebdaa9
   spacy_version: 3.5.3
   spacy_git_version: '512241e12'
 package:
