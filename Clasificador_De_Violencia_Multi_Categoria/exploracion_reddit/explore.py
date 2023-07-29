@@ -107,8 +107,9 @@ def listar_violentos(file):
 
 
 xt_nopunct = str.maketrans("", "", ".,;:¿?¡!()-_#*[]")
+xt_acentos = str.maketrans("áéíóú", "aeiou")
 
-
+dict = load_dictionary("0_palabras_todas.txt") # https://github.com/JorgeDuenasLerin/diccionario-espanol-txt 
 
 
 pf = ParquetFile('RC_2012-01.parquet') 
@@ -116,10 +117,13 @@ df = pa.Table.to_pandas(pf.read(columns=['subreddit', 'body']))
 with open("textos.txt", encoding="utf-8") as textos_español:
     for index, row in df.iterrows():
         texto = row.loc["body"]
-        if is_lang(texto, load_dictionary("diccionario-español.txt")) > 0.6: #no se cual seria el umbral optimo
+        if is_lang(texto, dict) > 0.6: #no se cual seria el umbral optimo
             textos_español.write(texto + "\n")
+            print(texto)
 
+"""
 violentos = listar_violentos("textos.txt")
 with open('textos_violentos.txt', 'w') as f:
     for frase in violentos:
         f.write("%s\n" % frase)
+"""
