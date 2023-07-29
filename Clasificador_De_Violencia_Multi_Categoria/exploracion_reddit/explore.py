@@ -113,11 +113,19 @@ dict = load_dictionary("0_palabras_todas.txt") # https://github.com/JorgeDuenasL
 
 
 pf = ParquetFile('RC_2012-01.parquet') 
-df = pa.Table.to_pandas(pf.read(columns=['subreddit', 'body'])) 
-with open("textos.txt", encoding="utf-8") as textos_español:
+print("archivo abierto")
+
+first_ten_rows = next(pf.iter_batches(batch_size = 10000)) 
+df = pa.Table.from_batches([first_ten_rows]).to_pandas() 
+
+# df = pa.Table.to_pandas(pf.read(columns=['body'])) 
+print("archivo convertido a dataframe")
+
+print("TEXTOS EN ESPAÑOL: ")
+with open("textos.txt",'w' , encoding="utf-8") as textos_español:
     for index, row in df.iterrows():
         texto = row.loc["body"]
-        if is_lang(texto, dict) > 0.6: #no se cual seria el umbral optimo
+        if is_lang(texto, dict) > 0.8: #no se cual seria el umbral optimo
             textos_español.write(texto + "\n")
             print(texto)
 
