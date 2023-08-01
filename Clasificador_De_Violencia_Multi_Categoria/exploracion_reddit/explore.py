@@ -1,6 +1,7 @@
 import pandas as pd
 from pyarrow.parquet import ParquetFile
 import pyarrow as pa 
+import numpy as np
 import spacy
 import os
 
@@ -91,16 +92,19 @@ def listar_violentos(file):
 
     """
     frases_violentas = []
-    model_path = os.path.join(os.getcwd(), "modelo_binario", "model-best")
+    model_path = os.path.join(os.getcwd(), "modelo_binario", "model-best-transformers")
     nlp = spacy.load(model_path)
 
-    with open(file, 'r') as file:
+    with open(file, 'r', encoding="utf-8") as file:
         textList = file.read().split('\n')
     for text in textList:
         doc = nlp(text)
         for key, value in doc.cats.items():
             if key == "violento" and value > 0.5:
-                frases_violentas.append(text)
+                print(doc.text)
+                frases_violentas.append(doc.text)
+    
+    return frases_violentas
                
 
 
@@ -108,30 +112,32 @@ def listar_violentos(file):
 
 xt_nopunct = str.maketrans("", "", ".,;:¿?¡!()-_#*[]")
 xt_acentos = str.maketrans("áéíóú", "aeiou")
-
+"""
 dict = load_dictionary("0_palabras_todas.txt") # https://github.com/JorgeDuenasLerin/diccionario-espanol-txt 
 
 
 pf = ParquetFile('RC_2012-01.parquet') 
 print("archivo abierto")
 
-first_ten_rows = next(pf.iter_batches(batch_size = 10000)) 
-df = pa.Table.from_batches([first_ten_rows]).to_pandas() 
+#first_ten_rows = next(pf.iter_batches(batch_size = 10000)) 
+#df = pa.Table.from_batches([first_ten_rows]).to_pandas() 
+
+with open("textos.txt",'w' , encoding="utf-8") as textos_español:
+    for batch in pf.iter_batches(batch_size=10000):
+        df = batch.to_pandas()
+        for index, row in df.iterrows():
+            texto = row.loc["body"]
+            if is_lang(texto, dict) > 0.8: #no se cual seria el umbral optimo
+                textos_español.write(texto + "\n")
+                print(texto)
 
 # df = pa.Table.to_pandas(pf.read(columns=['body'])) 
-print("archivo convertido a dataframe")
-
-print("TEXTOS EN ESPAÑOL: ")
-with open("textos.txt",'w' , encoding="utf-8") as textos_español:
-    for index, row in df.iterrows():
-        texto = row.loc["body"]
-        if is_lang(texto, dict) > 0.8: #no se cual seria el umbral optimo
-            textos_español.write(texto + "\n")
-            print(texto)
 
 """
+
+
 violentos = listar_violentos("textos.txt")
-with open('textos_violentos.txt', 'w') as f:
+with open('textos_violentos.txt', 'w', encoding="utf-8") as f:
     for frase in violentos:
         f.write("%s\n" % frase)
-"""
+        print(frase)
