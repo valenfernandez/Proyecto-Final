@@ -103,8 +103,8 @@ def listar_violentos(file, output_file):
         docs = nlp.pipe(textList)
         for doc in docs:
             for key, value in doc.cats.items():
-                if key == "violento" and value > 0.5:
-                    f_output.write("%s\n" % doc.text)
+                if key == "Violento" and value > 0.5:
+                    f_output.write(doc.text + "\n")
     return 1
                
 
@@ -145,6 +145,12 @@ for filename in file_list:
 # violentos = listar_violentos("RC_2012-01.txt", "RC_2012-01_violentos.txt")
 #if (violentos): 
 #    print("Violentos detectados")
+
+
+folder_path = "texto_extraido"
+input_file_path = os.path.join(folder_path, "RC_2013-01-es.txt")
+output_file_path = "violentos/" + "RC_2013-01-violentos" + ".txt"
+listar_violentos(input_file_path, output_file_path)
 """
 
 folder_path = "texto_extraido"
