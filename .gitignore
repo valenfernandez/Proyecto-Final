@@ -9,3 +9,4 @@ Clasificador_De_Violencia_Multi_Categoria/Entrenamiento 3/5. Pruebas con transfo
 Clasificador_De_Violencia/Entrenamiento 3 con transformers/3.pruebas/output
 Clasificador_De_Violencia/Entrenamiento 2 con transformers/3.pruebas/output
 *.parquet
+Clasificador_De_Violencia_Multi_Categoria\exploracion_reddit\modelo_binario
