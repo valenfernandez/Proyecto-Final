@@ -1,6 +1,57 @@
 {% extends "analisis/base.html" %}
 {% block content %}
 
-resultado
+<div class="row">
+    <!-- Menu -->
+    <div class="col-sm">
+        <div class="sidebar">
+            <div class="sidebar-brand"> Menu </div>
+            <a class="active" href="{% url 'analisis-principal' %}">Aplicaciones</a>
+            <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Resultados</a>
+            <a href="{% url 'analisis-config' %}">Configuracion</a>
+        </div>
+    </div>
+    <div class = "col-md-10">
+    <main role="main" class="container">
+            </br>
+            </br>
+            <h2> {{aplicacion.nombre}}: {{analisis.carpeta.nombre}} </h2>
+            </br>
+            <div class = " col-11 text-end">
+                <a href="#" class="btn btn-primary btn-md">Descargar</a> 
+            </div>
+
+            <h5> Informe </h5>
+            </br>
+            </br>
+            <div class="col-6">
+                <div class="card " style="width:75rem;">
+                    <div class="card-body">
+                        <p class="card-text">
+                            Informe
+                        </p>
+                    </div>
+                </div> 
+                </br>     
+            </div>
+
+            <h5> Resultados completos </h5>
+            </br>
+            </br>
+            <div class="col-6">
+                <div class="card " style="width:75rem;">
+                    <div class="card-body">
+                        <p class="card-text">
+                            resultados
+                        </p>
+                    </div>
+                </div> 
+                </br>     
+            </div>
+
+    </main>
+    </div>
+</div>
 
 {% endblock content %}

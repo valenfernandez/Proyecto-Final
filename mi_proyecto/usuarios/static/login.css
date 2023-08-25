@@ -1,0 +1,85 @@
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Space Grotesk', Arial, sans-serif;
+}
+
+/* Background*/
+body {
+    background: linear-gradient(rgba(199, 249, 204, 1), rgba(34, 87, 122, 1));
+}
+
+/* Center the login container */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Style for the logo section */
+.logo-section {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+.logo-section img {
+    max-width: 100px;
+    height: auto;
+}
+
+.login-section {
+    flex: 1;
+    padding: 20px;
+    max-width: 400px; /* Set a reasonable maximum width */
+    /* background-color: white;*/
+    border-radius: 15px;
+    /*box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);*/
+}
+
+.login-section h2 {
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 26px;
+    color: #171A21;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #C7F9CC;
+    border-radius: 4px;
+    outline: none;
+}
+
+.forgot-password {
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 26px;
+    text-decoration-line: underline;
+    color: #171A21;
+}
+
+.login-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 36px;
+    gap: 8px;
+    background: #171A21;
+    border-radius: 15px;
+}
+
+.login-button-text {
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 31px;
+    color: #C7F9CC;
+}

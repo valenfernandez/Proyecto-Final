@@ -1,6 +1,45 @@
 {% extends "analisis/base.html" %}
 {% block content %}
 
-app
+<div class="row">
+    <!-- Menu -->
+    <div class="col-sm">
+        <div class="sidebar">
+            <div class="sidebar-brand"> Menu </div>
+            <a class="active" href="{% url 'analisis-principal' %}">Aplicaciones</a>
+            <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Resultados</a>
+            <a href="{% url 'analisis-config' %}">Configuracion</a>
+        </div>
+    </div>
+    <div class = "col-md-10">
+    <main role="main" class="container">
+            </br>
+            </br>
+            <h2>{{aplicacion.nombre}}</h2>
+            </br>
+            <p>{{aplicacion.descripcion}}</p>
+            </br>
+            </br>
+            <div class="col-6">
+                <div class="card " style="width:75rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Nuevo Analisis</h5>
+                        <p class="card-text">
+
+                            formulario....
+
+                        </p>
+                        
+                    </div>
+                </div> 
+                </br>     
+            </div>
+            <div class = " col-11 text-end">
+                <a href="#" class="btn btn-primary btn-md">Procesar</a> 
+            </div>
+    </main>
+    </div>
+</div>
 
 {% endblock content %}

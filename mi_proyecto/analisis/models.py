@@ -12,12 +12,17 @@ class Carpeta(models.Model):
 
 
 class Aplicacion(models.Model):
+    class Meta:
+        verbose_name_plural = "Aplicaciones"
     nombre = models.CharField(max_length=256)
     descripcion = models.CharField(max_length = 5000)
+    
 
 
 
 class Analisis(models.Model):
+    class Meta:
+        verbose_name_plural = "Analisis"
     fecha = models.DateTimeField(null=False)
     informe = models.FileField() #upload_to media?
     carpeta =  models.ForeignKey(Carpeta, on_delete=models.DO_NOTHING) 

@@ -1,6 +1,64 @@
 {% extends "analisis/base.html" %}
+{% load static %}
 {% block content %}
 
-carpeta
+<div class="row">
+    <!-- Menu -->
+    <div class="col-sm">
+        <div class="sidebar">
+            <div class="sidebar-brand"> Menu </div>
+            <a href="{% url 'analisis-principal' %}">Aplicaciones</a>
+            <a class="active" href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Resultados</a>
+            <a href="{% url 'analisis-config' %}">Configuracion</a>
+        </div>
+    </div>
+    <div class = "col-md-10">
+        <main role="main" class="container">
+            </br>
+            </br>
+            <h2>{{carpeta.nombre}}</h2>
+            </br>
+            
+
+            <!--Nueva carpeta-->
+            <div class="file-manager-actions container-p-x py-2">
+                <hr class="m-0" />
+                <div>
+                    <button type="button" class="btn btn-primary mr-2">Subir</button>
+                </div>
+                <hr class="m-0" />
+                <!-- div>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-default icon-btn md-btn-flat active"> <input type="radio" name="file-manager-view" value="file-manager-col-view" checked="" /> <span class="ion ion-md-apps"></span> </label>
+                        <label class="btn btn-default icon-btn md-btn-flat"> <input type="radio" name="file-manager-view" value="file-manager-row-view" /> <span class="ion ion-md-menu"></span> </label>
+                    </div>
+                </div -->
+            </div>
+
+            <!--Carpetas-->
+            </br>
+            </br>
+            <div class="container">
+                <div class="row">
+                    {% for archivo in archivos %}
+                        <div class="col-6">
+                            <div class="card bg-transparent border-0" style="width:10rem;">
+                                <div class="text-center" >
+                                        <div class="text-center" >
+                                            <img src="{% static 'images/archivo.png'%}">
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="card-title nombre">{{archivo.nombre}}</div>
+                                        </div>
+                                </div>
+                            </div>  
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
 
 {% endblock content %}

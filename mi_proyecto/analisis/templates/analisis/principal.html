@@ -1,6 +1,62 @@
+
 {% extends "analisis/base.html" %}
+{% load static %}
 {% block content %}
 
-principal
+<div class="row">
+    <!-- Menu -->
+    <div class="col-sm">
+        <div class="sidebar">
+            <div class="sidebar-brand"> Menu </div>
+            <a class="active" href="">Aplicaciones</a>
+            <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Resultados</a>
+            <a href="{% url 'analisis-config' %}">Configuracion</a>
+        </div>
+    </div>
+    <div class = "col-md-10">
+    <main role="main" class="container">
+            </br>
+            </br>
+            <h2>Aplicaciones de Analisis</h2>
+            </br>
+            <p> Seleccione una aplicación a utilizar de la lista de aplicaciones disponibles: </p>
+            </br>
+            </br>
+            <div class="container">
+                <div class="row">
+                    <!--CAMBIAR POR UN FOR DE LAS APPS EXISTENTES!!! habria que cambiar el modelo para incluir la imagen capaz-->
+                    <div class="col-6">
+                        <div class="card " style="width:25rem;">
+                            <div class="text-center" >
+                                <img src="{% static 'images/entidades.jpg' %}" width="200" height="250">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Deteccion de Entidades</h5>
+                                <p class="card-text">Aplicacion de deteccion de entidades</p>
+                                <a href="{% url 'analisis-aplicacion' 2 %}" class="btn btn-outline-primary btn-sm">Iniciar</a>
+                            </div>
+                        </div>    
+                    </div>
+                    <div class="col-6">
+                        <div class="card" style="width:25rem;">
+                            <!--img class=" card-img-top" src="/images/video technology.jpg" alt=""-->
+
+                            <div class="text-center" >
+                                <img src="{% static 'images/clasificar.png' %}" width="200" height="250">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Clasificación de texto</h5>
+                                <p class="card-text">Aplicacion de deteccion y clasificación de violencia de genero</p>
+                                <a href="{% url 'analisis-aplicacion' 1 %}"  class="btn btn-outline-primary btn-sm">Iniciar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </main>
+    </div>
+</div>
+
 
 {% endblock content %}

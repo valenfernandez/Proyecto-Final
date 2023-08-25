@@ -1,6 +1,44 @@
 {% extends "analisis/base.html" %}
 {% block content %}
 
-config
+<div class="row">
+    <!-- Menu -->
+    <div class="col-sm">
+        <div class="sidebar">
+            <div class="sidebar-brand"> Menu </div>
+            <a href="{% url 'analisis-principal' %}">Aplicaciones</a>
+            <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Resultados</a>
+            <a class="active" href="">Configuracion</a>
+        </div>
+    </div>
+    <div class = "col-md-10">
+        <main role="main" class="container">
+                </br>
+                </br>
+                <h2>Configuracion</h2>
+                </br>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pref-tab" data-bs-toggle="tab" data-bs-target="#pref" type="button" role="tab" aria-controls="pref" aria-selected="true">Preferencias</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link" id="seguridad-tab" data-bs-toggle="tab" data-bs-target="#seguridad" type="button" role="tab" aria-controls="seguridad" aria-selected="true">Seguridad</button>
+                    </li>
+                    
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <!-- Preferencias-->
+                    <div class="tab-pane fade show active" id="pref" role="tabpanel" aria-labelledby="pref-tab">
+                        <br>
+                    </div>
+                    <!-- Seguridad-->
+                    <div class="tab-pane fade show active" id="seguridad" role="tabpanel" aria-labelledby="seguridad-tab">
+                        <br>
+                    </div>
+        </main>
+    </div>
+</div>
+
 
 {% endblock content %}

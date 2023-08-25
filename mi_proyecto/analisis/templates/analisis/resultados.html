@@ -1,6 +1,50 @@
 {% extends "analisis/base.html" %}
+{% load static %}
 {% block content %}
 
-resultado
+<div class="row">
+    <!-- Menu -->
+    <div class="col-sm">
+        <div class="sidebar">
+            <div class="sidebar-brand"> Menu </div>
+            <a href="{% url 'analisis-principal' %}">Aplicaciones</a>
+            <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
+            <a class="active" href="">Mis Resultados</a>
+            <a href="{% url 'analisis-config' %}">Configuracion</a>
+        </div>
+    </div>
+    <div class = "col-md-10">
+        <main role="main" class="container">
+            </br>
+            </br>
+            <h2>Mis Resultados</h2>
+            </br>
+
+            <!--Resultados-->
+            </br>
+            </br>
+            <div class="container">
+                <div class="row">
+                    {% for analisis in analisis %}
+                        <div class="col-6">
+                            <div class="card bg-transparent border-0" style="width:10rem;">
+                                <div class="text-center" >
+                                    <a href="{% url 'analisis-resultado' analisis.id %}">
+                                        <div class="text-center" >
+                                            <img src="{% static 'images/archivo.png'%}">
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="card-title nombre">{{analisis.carpeta.nombre}}_{{analisis.fecha}}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>  
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
 
 {% endblock content %}

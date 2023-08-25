@@ -12,8 +12,14 @@
 
         <!-- CSS -->
         <!-- VER COMO REFERENCIAR ESTO!! -->
-        <link rel="stylesheet" type="text/css" href=" {% static 'main.css' %} "> 
-        
+        <link rel="stylesheet" type="text/css" href=" {% static 'analisis.css' %} "> 
+
+        <!-- Fuentes -->
+        <link href="https://fonts.googleapis.com/css?family=Space+Grotesk&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Manrope&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
+
         <!--iconos-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -26,21 +32,27 @@
     <body>
         <!-- NavBar start -->
         <header class="site-header">
-          <nav class="navbar navbar-expand-md navbar-dark bg-purple fixed-top">
+          <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-grad">
             <div class="container-fluid">
               <a class="navbar-brand mr-4" href="{% url 'analisis-home' %}">NombreNLP</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
               
                 <span class="navbar-toggler-icon"></span>
               </button>
+              <div class="collapse navbar-collapse" id="navbarToggle">
+                <!-- Navbar Right Side -->
+                <ul class="nav navbar-nav">
+                  <li>
+                    {% if user.is_authenticated%}
+                      <a class="nav-item nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
+                    {% endif %}
+                  </li>
+                </ul>
+              </div>
             </div>
           </nav>
         </header>
-        <!-- NavBar end -->
-        <main role="main" class="container">
-          {% block content %}{% endblock %}
-        </main>
-        
+        {% block content %}{% endblock %}
         <!-- Optional JavaScript; choose one of the two! -->
 
         <!-- Option 1: Bootstrap Bundle with Popper -->
