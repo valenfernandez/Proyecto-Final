@@ -29,12 +29,14 @@
                     <div class="col-6">
                         <div class="card " style="width:25rem;">
                             <div class="text-center" >
-                                <img src="{% static 'images/entidades.jpg' %}" width="200" height="250">
+                                <img src="{% static 'images/entidades.png' %}" width="200" height="250">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Deteccion de Entidades</h5>
                                 <p class="card-text">Aplicacion de deteccion de entidades</p>
-                                <a href="{% url 'analisis-aplicacion' 2 %}" class="btn btn-outline-primary btn-sm">Iniciar</a>
+                                <div class="text-center"> 
+                                    <a href="{% url 'analisis-aplicacion' 2 %}" class="btn btn-outline-primary btn-md">Iniciar</a>
+                                </div>
                             </div>
                         </div>    
                     </div>
@@ -48,7 +50,9 @@
                             <div class="card-body">
                                 <h5 class="card-title">Clasificación de texto</h5>
                                 <p class="card-text">Aplicacion de deteccion y clasificación de violencia de genero</p>
-                                <a href="{% url 'analisis-aplicacion' 1 %}"  class="btn btn-outline-primary btn-sm">Iniciar</a>
+                                <div class="text-center"> 
+                                    <a href="{% url 'analisis-aplicacion' 1 %}"  class="btn btn-outline-primary btn-md">Iniciar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
