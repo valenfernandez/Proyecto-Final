@@ -25,18 +25,17 @@
                 <div class="card " style="width:75rem;">
                     <div class="card-body">
                         <h5 class="card-title">Nuevo Analisis</h5>
-                        <p class="card-text">
 
-                            formulario....
-
-                        </p>
-                        
+                        <form action="" method=POST enctype="multipart/form-data">
+                          {% csrf_token %}
+                          {{ form_analisis.as_p }}
+                        <br/>                        
                     </div>
                 </div> 
                 </br>     
             </div>
             <div class = " col-11 text-end">
-                <a href="#" class="btn btn-primary btn-md">Procesar</a> 
+                <input type="submit" value="Procesar" class="btn btn-primary btn-md">
             </div>
     </main>
     </div>
