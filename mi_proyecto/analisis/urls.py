@@ -10,4 +10,5 @@ urlpatterns = [
     path("aplicacion/<id_app>", views.aplicacion, name="analisis-aplicacion"),
     path("resultados", views.resultados, name="analisis-resultados"),
     path("resultado/<id_analisis>", views.resultado, name="analisis-resultado"),
+    path("nueva_carpeta", views.nueva_carpeta, name="analisis-nueva_carpeta"),
 ]

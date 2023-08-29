@@ -11,13 +11,9 @@ from .models import Analisis, Carpeta, Colores, Preferencias, Modelo
 class CarpetaForm(ModelForm):
     class Meta:
         model = Carpeta
-        fields = ('nombre',)
-        labels = {
-			'nombre': 'nombre',	
-		}
-        widgets = {
-            'nombre': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre'}),
-		}
+        fields = ['nombre']
+    nombre = forms.CharField(label='Nombre', 
+                            widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre'}))
 
 
 class AnalisisForm(ModelForm): 
