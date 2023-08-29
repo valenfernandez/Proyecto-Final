@@ -1,4 +1,6 @@
 {% extends "analisis/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
 {% block content %}
 
 <div class="row">
@@ -31,10 +33,66 @@
                     <!-- Preferencias-->
                     <div class="tab-pane fade show active" id="pref" role="tabpanel" aria-labelledby="pref-tab">
                         <br>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <form action="" method=POST enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        {{ form_preferencias.as_p }}
+                                    <br/> 
+
+                                    <div>
+                                        <p>Clasico:</p>
+                                        <img src="{% static 'images/clasico.png' %}">
+                                        <br/>
+                                    </div>
+                                    <br/>
+
+                                    <div>
+                                        <p>Azul a rosa:</p>
+                                        <img src="{% static 'images/AR.png' %}">
+                                        <br/>
+                                    </div>
+                                    <br/>
+
+                                    <div>
+                                        <p>Azul a amarillo:</p>
+                                        <img src="{% static 'images/AM.png' %}">
+                                        <br/>
+                                    </div>
+
+                                    <br/>
+                                    <br/>
+                                    <input type="submit" value="Aceptar" class="btn btn-primary btn-md">                      
+                                </div>
+                                <div class="col">
+                                    <div>
+                                        </br>
+                                        </br>
+                                        </br>
+                                        {% if color_actual == "CLASICO"%}
+                                            <img src="{% static 'images/clasico_muestra.png' %}">
+                                        {% elif color_actual == "AR"%}
+                                            <img src="{% static 'images/azul_rosa_muestra.png' %}">
+                                        {% elif color_actual == "AM" %}
+                                            <img src="{% static 'images/azul_amarillo_muestra.png' %}">
+                                        {% endif %}
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- Seguridad-->
-                    <div class="tab-pane fade show active" id="seguridad" role="tabpanel" aria-labelledby="seguridad-tab">
+                    <div class="tab-pane fade" id="seguridad" role="tabpanel" aria-labelledby="seguridad-tab">
                         <br>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                
+                                </div>
+                            </div>
+                        </div>
                     </div>
         </main>
     </div>

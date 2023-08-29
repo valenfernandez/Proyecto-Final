@@ -31,6 +31,8 @@ class AnalisisForm(ModelForm):
                 queryset=modelos,
                 widget=forms.Select(attrs={'class': 'form-control'}, choices = modelos), 
 				label='Modelo')
+        self.fields['carpeta'].help_text = '<br/> Se analizaran todos los achivos pertenecientes a la carpeta seleccionada.'
+
 
     class Meta:
         model = Analisis
@@ -43,8 +45,10 @@ class AnalisisForm(ModelForm):
     )
 
 
+
 class PreferenciasForm(ModelForm):
     class Meta:
         model = Preferencias
         fields = ['color']
-    colores= forms.CharField(label='Color', widget=forms.Select(choices=Colores.choices))
+    color = forms.CharField(label='Esquema de colores', 
+                            widget=forms.Select(attrs={'class': 'form-control'},choices=Colores.choices))

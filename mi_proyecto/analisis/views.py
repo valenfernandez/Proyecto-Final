@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo
-from .forms import AnalisisForm
+from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias
+from .forms import AnalisisForm, PreferenciasForm
 
 # Create your views here.
 
@@ -19,7 +19,26 @@ def principal(request):
 
 @login_required
 def config(request):
-    return render(request, "analisis/config.html") 
+    user = request.user
+
+    try:
+        preferencias = Preferencias.objects.get(usuario = user)
+    except Preferencias.DoesNotExist:
+        preferencias = Preferencias(usuario = user, color = 'CLASICO')
+    form_preferencias = PreferenciasForm(request.POST or None, request.FILES or None, instance=preferencias)
+     
+    context = {
+        "usuario": user,
+        "color_actual" : preferencias.color,
+        "form_preferencias" : form_preferencias,
+    }
+
+    if form_preferencias.is_valid():
+        form_preferencias.save()
+        response = redirect('/config')
+        return response
+
+    return render(request, "analisis/config.html", context=context) 
 
 @login_required
 def carpetas(request):
