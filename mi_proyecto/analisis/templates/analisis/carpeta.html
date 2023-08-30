@@ -21,19 +21,21 @@
             </br>
             
 
-            <!--Nueva carpeta-->
+            <!--Subir archivos-->
             <div class="file-manager-actions container-p-x py-2">
                 <hr class="m-0" />
                 <div>
-                    <button type="button" class="btn btn-primary mr-2">Subir</button>
+                    </br>
+                    <h5> Agregar archivos: </h5>
+                    </br>  
+                    <form action="" method=POST enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{form_file.as_p }}
+                    <br/> 
+                    <input type="submit" value="Subir" class="btn btn-primary btn-md">
                 </div>
+            </br> 
                 <hr class="m-0" />
-                <!-- div>
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-default icon-btn md-btn-flat active"> <input type="radio" name="file-manager-view" value="file-manager-col-view" checked="" /> <span class="ion ion-md-apps"></span> </label>
-                        <label class="btn btn-default icon-btn md-btn-flat"> <input type="radio" name="file-manager-view" value="file-manager-row-view" /> <span class="ion ion-md-menu"></span> </label>
-                    </div>
-                </div -->
             </div>
 
             <!--Carpetas-->

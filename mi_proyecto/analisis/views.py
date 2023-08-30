@@ -4,7 +4,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias
-from .forms import AnalisisForm, PreferenciasForm, CarpetaForm
+from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm
 
 # Create your views here.
 
@@ -43,6 +43,7 @@ def config(request):
 @login_required
 def carpetas(request):
     usuario_actual = request.user
+    form_file = FileForm(request.POST or None, request.FILES or None)
     context = {
         "carpetas": Carpeta.objects.filter(usuario = usuario_actual),
     }
@@ -51,10 +52,19 @@ def carpetas(request):
 @login_required
 def carpeta(request, id_carpeta):
     carpeta = Carpeta.objects.get(id = id_carpeta)
+    form_file = FileForm(request.POST or None, request.FILES or None)
     context = {
         "carpeta": carpeta,
-        "archivos": Archivo.objects.filter(carpeta = carpeta)
+        "archivos": Archivo.objects.filter(carpeta = carpeta),
+        "form_file" : form_file,
     }
+    if form_file.is_valid():
+        for f in request.FILES.getlist('file'):
+            nombre = f.name
+            archivo = Archivo(nombre =nombre, arch = f, carpeta = carpeta, fecha_creacion = datetime.now())
+            archivo.save()
+        response = redirect('/carpeta/'+str(carpeta.id))
+        return response
     return render(request, "analisis/carpeta.html", context=context) 
 
 @login_required

@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import DateField, ModelForm
+from django.forms import DateField, ModelForm, ClearableFileInput
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError  
 from django.core.validators import validate_email 
@@ -7,6 +7,9 @@ from django.contrib.auth.models import User
 
 from .models import Analisis, Carpeta, Colores, Preferencias, Modelo
 
+
+class FileForm(forms.Form):
+    file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
 class CarpetaForm(ModelForm):
     class Meta:
