@@ -43,7 +43,6 @@ def config(request):
 @login_required
 def carpetas(request):
     usuario_actual = request.user
-    form_file = FileForm(request.POST or None, request.FILES or None)
     context = {
         "carpetas": Carpeta.objects.filter(usuario = usuario_actual),
     }
@@ -119,3 +118,16 @@ def nueva_carpeta(request):
         response = redirect('/carpetas')
         return response
     return render(request, "analisis/nueva_carpeta.html", context = context) 
+
+
+@login_required
+def borrar_archivo(request, id_archivo):
+    archivo = Archivo.objects.get(id = id_archivo)
+    carpeta = archivo.carpeta
+    archivo.delete()
+    response = redirect('/carpeta/'+str(carpeta.id))
+    return response
+"""
+nota: agregar al html:
+<a ... onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
+"""

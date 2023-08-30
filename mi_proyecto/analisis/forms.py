@@ -4,12 +4,27 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError  
 from django.core.validators import validate_email 
 from django.contrib.auth.models import User
-
+import magic
 from .models import Analisis, Carpeta, Colores, Preferencias, Modelo
+from mi_proyecto import settings
 
 
 class FileForm(forms.Form):
     file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
+    def clean_file(self):
+        file = self.cleaned_data['file']
+        try:
+            if file:
+                file_type = file.content_type.split('/')[0]
+                print(file_type)
+                if len(file.name.split('.')) == 1:
+                    raise forms.ValidationError(_('File type is not supported'))
+                if file_type not in settings.TASK_UPLOAD_FILE_TYPES:
+                    raise forms.ValidationError(_('File type is not supported'))
+        except:
+            pass
+        return file
 
 class CarpetaForm(ModelForm):
     class Meta:

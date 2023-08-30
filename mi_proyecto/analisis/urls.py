@@ -11,4 +11,5 @@ urlpatterns = [
     path("resultados", views.resultados, name="analisis-resultados"),
     path("resultado/<id_analisis>", views.resultado, name="analisis-resultado"),
     path("nueva_carpeta", views.nueva_carpeta, name="analisis-nueva_carpeta"),
+    path("borrar_archivo/<id_archivo>", views.borrar_archivo, name="analisis-borrar_archivo"),
 ]

@@ -46,6 +46,13 @@
                     {% for archivo in archivos %}
                         <div class="col-6">
                             <div class="card bg-transparent border-0" style="width:10rem;">
+
+                                <div class = "text-end">
+                                    <a href="{% url 'analisis-borrar_archivo' archivo.id %}" onclick="return confirm('Estas seguro de que quieres eliminar este archivo?')">
+                                        <img src="{% static 'images/trash.png'%}" width="20" >
+                                    </a>
+                                </div>
+                                
                                 <div class="text-center" >
                                         <div class="text-center" >
                                             <img src="{% static 'images/archivo.png'%}">
