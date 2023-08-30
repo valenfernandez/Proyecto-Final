@@ -12,3 +12,5 @@ Clasificador_De_Violencia_Multi_Categoria/exploracion_reddit/modelo_binario
 *.parquet
 mi_proyecto/analisis/migrations
 mi_proyecto/mi_proyecto/__pycache__
+mi_proyecto/analisis/__pycache__
+
