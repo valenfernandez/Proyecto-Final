@@ -10,21 +10,18 @@ from mi_proyecto import settings
 
 
 class FileForm(forms.Form):
-    file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
-
+    file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
+                           help_text='</br> <br/> Seleccionar archivos .txt .docx .xlsx')
+    
     def clean_file(self):
         file = self.cleaned_data['file']
-        try:
-            if file:
-                file_type = file.content_type.split('/')[0]
-                print(file_type)
-                if len(file.name.split('.')) == 1:
-                    raise forms.ValidationError(_('File type is not supported'))
-                if file_type not in settings.TASK_UPLOAD_FILE_TYPES:
-                    raise forms.ValidationError(_('File type is not supported'))
-        except:
-            pass
+        if file:
+            print(file.name.split('.'))
+            #if file.name.split('.')[1] not in settings.TASK_UPLOAD_FILE_TYPES:
+            if file.name.split('.')[1] not in ["txt", "docx" , "xlsx"]: 
+                raise forms.ValidationError('File type is not supported')
         return file
+
 
 class CarpetaForm(ModelForm):
     class Meta:
@@ -32,7 +29,6 @@ class CarpetaForm(ModelForm):
         fields = ['nombre']
     nombre = forms.CharField(label='Nombre', 
                             widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre'}))
-
 
 class AnalisisForm(ModelForm): 
 
@@ -65,4 +61,5 @@ class PreferenciasForm(ModelForm):
         model = Preferencias
         fields = ['color']
     color = forms.CharField(label='Esquema de colores', 
-                            widget=forms.Select(attrs={'class': 'form-control'},choices=Colores.choices))
+                            widget=forms.Select(attrs={'class': 'form-control'},
+                                                choices=Colores.choices))
