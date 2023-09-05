@@ -93,9 +93,14 @@ def resultados(request):
     }
     return render(request, "analisis/resultados.html",context=context) 
 
+
+
+
+
 @login_required
 def resultado(request, id_analisis):
-    #en algun momento antes de entrar aca se crearia el objeto analisis
+
+    #aca se tiene que hacer el proceso de analisis y la creacion de los objetos resultado?
     
     analisis = Analisis.objects.get(id = id_analisis)
     resultados = Resultado.objects.filter(analisis = analisis)
@@ -105,6 +110,9 @@ def resultado(request, id_analisis):
         'resultados' : resultados,
     }
     return render(request, "analisis/resultado.html", context= context) 
+
+
+
 
 @login_required
 def nueva_carpeta(request):
@@ -127,7 +135,5 @@ def borrar_archivo(request, id_archivo):
     archivo.delete()
     response = redirect('/carpeta/'+str(carpeta.id))
     return response
-"""
-nota: agregar al html:
-<a ... onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
-"""
+
+

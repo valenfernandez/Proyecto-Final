@@ -1,0 +1,8 @@
+Django>=4
+django-debug-toolbar==3.2.2
+crispy-bootstrap5
+django-crispy-forms
+python-magic==0.4.24; platform_system == "Linux"
+python-magic-bin==0.4.14; platform_system == "Windows"
+python-magic
+celery

@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MEDIA_ROOT = (BASE_DIR)
+
+MEDIA_URL = '/media/'
 
 # Application definition
 
@@ -141,3 +144,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'analisis-principal'
 
 LOGIN_URL = 'login'
+
+TASK_UPLOAD_FILE_TYPES = ['application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel', 'text/plain']
+
+
