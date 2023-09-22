@@ -36,7 +36,6 @@ class Modelo(models.Model):
     nombre = models.CharField(max_length=256)
     descripcion = models.CharField(max_length = 5000)
     aplicacion = models.ForeignKey(Aplicacion, on_delete = models.DO_NOTHING)
-    # y el modelo_entrenado
     def __str__(self):
         return (
             f"{self.nombre}"
@@ -47,7 +46,7 @@ class Analisis(models.Model):
     class Meta:
         verbose_name_plural = "Analisis"
     fecha = models.DateTimeField(null=False, default=datetime.now)
-    informe = models.FileField() #upload_to media?
+    informe = models.TextField() #htlm
     carpeta =  models.ForeignKey(Carpeta, on_delete=models.DO_NOTHING, blank=True) 
     modelo = models.ForeignKey(Modelo, on_delete=models.DO_NOTHING, blank=True)
 
@@ -55,8 +54,6 @@ class Analisis(models.Model):
         return (
             f"{self.fecha} - {self.carpeta}"
         )
-
-
 
 class Archivo(models.Model):
     nombre = models.CharField(max_length=256)
@@ -70,10 +67,11 @@ class Archivo(models.Model):
 
 class Resultado(models.Model): #esto lo estamos conciderando como una linea del resultado
     texto = models.CharField(max_length = 5000)
-    detectado = models.FileField() #esto seria un json muy corto o un string (varia segun la aplicación que lo generó)
+    detectado = models.TextField() #esto seria un json muy corto o un string (varia segun la aplicación que lo generó)
     archivo_origen = models.ForeignKey(Archivo, on_delete=models.DO_NOTHING) 
     numero_linea = models.IntegerField() 
     analisis = models.ForeignKey(Analisis, on_delete = models.CASCADE)
+    html = models.TextField(default=" ")
     def __str__(self):
         return (
             f"{self.analisis} - {self.numero_linea}"

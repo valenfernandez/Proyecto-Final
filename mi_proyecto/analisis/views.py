@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias
 from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm
+from .nlp import procesar_analisis
 
 # Create your views here.
 
@@ -81,6 +82,9 @@ def aplicacion(request, id_app):
 
     if form_analisis.is_valid():
         form_analisis.save()
+
+        procesar_analisis(analisis, request.user)
+        
         response = redirect('/resultado/'+str(analisis.id))
         return response
     return render(request, "analisis/aplicacion.html", context=context) 
@@ -92,9 +96,6 @@ def resultados(request):
         'analisis' : Analisis.objects.filter(carpeta__in = carpetas)
     }
     return render(request, "analisis/resultados.html",context=context) 
-
-
-
 
 
 @login_required
@@ -137,3 +138,8 @@ def borrar_archivo(request, id_archivo):
     return response
 
 
+@login_required
+def borrar_resultado(request, id_analisis):
+    #TODO
+    analisis = Analisis.objects.get(id = id_analisis)
+    return 1

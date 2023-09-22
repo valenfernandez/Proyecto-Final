@@ -29,7 +29,7 @@
                 <div class="card " style="width:75rem;">
                     <div class="card-body">
                         <p class="card-text">
-                            Informe
+                            {{analisis.informe|safe}}
                         </p>
                     </div>
                 </div> 
@@ -38,12 +38,45 @@
 
             <h5> Resultados completos </h5>
             </br>
+            **agregar resaltado de entidades especificas. 
             </br>
             <div class="col-6">
                 <div class="card " style="width:75rem;">
                     <div class="card-body">
                         <p class="card-text">
-                            resultados
+                            {% if analisis.modelo.nombre == 'entidades' %}
+                                {% for resultado in resultados %}
+                                    <div class="col-6">
+                                        <div>
+                                            {{resultado.html|safe}}
+                                        </div>  
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-6">
+                                    <table class="table">
+                                        <thead>
+                                          <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Texto</th>
+                                            <th scope="col">Detectado</th>
+                                            <th scope="col">Archivo</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for index, resultado in enumerate(resultados) %}
+                                                <tr>
+                                                    <th scope="row">{{index}}</th>
+                                                    <td>{{resultado.texo}}</td>
+                                                    <td>{{resultado.detectado}}</td>
+                                                    <td>{{resultado.archivo_origen}}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+
                         </p>
                     </div>
                 </div> 
