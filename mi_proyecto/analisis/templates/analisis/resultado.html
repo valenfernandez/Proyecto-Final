@@ -38,7 +38,7 @@
 
             <h5> Resultados completos </h5>
             </br>
-            **agregar resaltado de entidades especificas. 
+            
             </br>
             <div class="col-6">
                 <div class="card " style="width:75rem;">
@@ -53,7 +53,6 @@
                                     </div>
                                 {% endfor %}
                             {% else %}
-                                <div class="col-6">
                                     <table class="table">
                                         <thead>
                                           <tr>
@@ -64,17 +63,37 @@
                                           </tr>
                                         </thead>
                                         <tbody>
-                                            {% for index, resultado in enumerate(resultados) %}
+                                            {% for resultado in resultados %}
                                                 <tr>
-                                                    <th scope="row">{{index}}</th>
-                                                    <td>{{resultado.texo}}</td>
-                                                    <td>{{resultado.detectado}}</td>
+                                                    <th scope="row">{{resultado.index}}</th>
+                                                    <td >{{resultado.texto}}</td>
+
+                                                    {% if resultado.detectado == "No Violento" %}
+                                                        <td > 
+                                                            <span class="badge category-3 "> {{resultado.detectado}} </span>
+                                                        </td>
+                                                    {% elif resultado.detectado == "Sexual" %}
+                                                        <td > 
+                                                            <span class="badge category-2 "> {{resultado.detectado}} </span>
+                                                        </td>
+                                                    {% elif resultado.detectado == "Físico" %}
+                                                        <td > 
+                                                            <span class="badge category-1 "> {{resultado.detectado}} </span>
+                                                        </td>
+                                                    {% elif resultado.detectado == "Psicológica" %}
+                                                        <td > 
+                                                            <span class="badge category-4 "> {{resultado.detectado}} </span>
+                                                        </td>
+                                                    {% else %}
+                                                        <td > 
+                                                            <span class="badge category-5 "> {{resultado.detectado}} </span>
+                                                        </td>
+                                                    {% endif %}
                                                     <td>{{resultado.archivo_origen}}</td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
                                     </table>
-                                </div>
                             {% endif %}
 
                         </p>

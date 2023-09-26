@@ -25,7 +25,7 @@ def procesar_analisis(analisis, user):
     if modelo.nombre == 'entidades': #cargo ese solo modelo y lo aplico
         procesar_entidades(analisis, carpeta, user)
     elif modelo.nombre == 'clasificador': # aplico primero el modelo binario y despues el modelo multicategoria.  
-        procesar_clasificador(analisis, carpeta)
+        procesar_clasificador(analisis, carpeta, user)
     else:
         raise Exception("El modelo no existe") #podria cambiar esto, intentar cargar el modelo y si no existe tirar un error. Y pasar a hacer un procesamiento 'generico' que no dependa de un modelo en particular.
 
@@ -208,10 +208,15 @@ def format_msj_wpp(file): #como se plantea la solucion se podria perder el nombr
 
 def procesar_clasificador(analisis, carpeta, user):
 
-    # 1: Cargar el modelo de spacy binario
+    #TODO: La funcion no da los numero de linea y deja todos los no violentos que encuentra primero y los demas despues. No quedan las cosas en orden.
+
+    # 1: Cargar el modelo de spacy binario y el multicategoría
     
-    model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador_binario" )
+    model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-binario" )
     nlp = spacy.load(model_path)
+
+    model_path_multi = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-multi" )
+    nlp_multi = spacy.load(model_path_multi)
 
     # 2: Extraer textos de los archivos en la carpeta
 
@@ -220,43 +225,45 @@ def procesar_clasificador(analisis, carpeta, user):
         file = archivo.arch
         with file.open("r") as f: 
             lines = f.read().splitlines()
+
         # TODO : chequear si el archivo es de wpp o no.
-        # TODO : el output de todo este proceso estaria desordenado, deberia obtener el numero de linea en algun lado para poder ordenarlos despues?
 
-        docs = list(nlp.pipe(lines))
+        docs_binarios = list(nlp.pipe(lines))
+        violentos_text = []
+        violentos_index = {}
 
-        violentos = []
-        for doc in docs:
+        for index, doc in enumerate(docs_binarios):
+            print(doc.cats)
             if doc.cats['Violento']> 0.8:
-                violentos.append(doc.text)
+                if doc.text not in violentos_index:
+                    violentos_index[doc.text] = [index + 1]
+                else:
+                    violentos_index[doc.text].append(index + 1)
+                violentos_text.append(doc.text)
             else: 
                 texto = doc.text
                 detectado = 'No Violento'
                 html = ""
                 archivo_origen = archivo
-                numero_linea = 0 #TODO
+                numero_linea = index + 1
                 Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
+                
         
-        #carga el modelo multicategoria
 
-        model_path_multi = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador_binario" )
-        nlp = spacy.load(model_path_multi)
-
-        #procesamiento multicategoria
-        docs_multi = list(nlp.pipe(lines))
+        docs_multi = list(nlp_multi.pipe(violentos_text))
 
         # 3: Armar el objeto resultado de cada uno:
         for doc in docs_multi:
             texto = doc.text
             detectado = max(doc.cats, key=doc.cats.get)
-            html = "" #Como no hay displacy predeterminado capaz es mejor directamente armar la tabla en el template.
+            html = "" #Como no hay displacy predeterminado es mejor directamente armar la tabla en el template.
             archivo_origen = archivo
-            numero_linea = 0 #TODO
+            numero_linea = violentos_index[doc.text].pop(0)
 
             Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
 
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
-    analisis.informe = armar_informe_clasificador(analisis)
+    # analisis.informe = armar_informe_clasificador(analisis)
     analisis.save() 
     return 1
     

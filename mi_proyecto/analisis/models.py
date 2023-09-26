@@ -47,7 +47,7 @@ class Analisis(models.Model):
         verbose_name_plural = "Analisis"
     fecha = models.DateTimeField(null=False, default=datetime.now)
     informe = models.TextField() #htlm
-    carpeta =  models.ForeignKey(Carpeta, on_delete=models.DO_NOTHING, blank=True) 
+    carpeta =  models.ForeignKey(Carpeta, on_delete=models.CASCADE, blank=True)  # si se borra la carpeta se borra el analisis. Esto no deberia pasar pero da un error al borrar archivos si no esta esto. 
     modelo = models.ForeignKey(Modelo, on_delete=models.DO_NOTHING, blank=True)
 
     def __str__(self):
@@ -58,8 +58,8 @@ class Analisis(models.Model):
 class Archivo(models.Model):
     nombre = models.CharField(max_length=256)
     fecha_creacion =  models.DateTimeField(blank=True, default=datetime.now) 
-    arch = models.FileField()
-    carpeta = models.ForeignKey(Carpeta, on_delete=models.CASCADE)  #ver si esto esta bien.
+    arch = models.FileField() #upload_to='archivos/'
+    carpeta = models.ForeignKey(Carpeta, on_delete=models.CASCADE)
     def __str__(self):
         return (
             f"{self.nombre}"
@@ -68,7 +68,7 @@ class Archivo(models.Model):
 class Resultado(models.Model): #esto lo estamos conciderando como una linea del resultado
     texto = models.CharField(max_length = 5000)
     detectado = models.TextField() #esto seria un json muy corto o un string (varia segun la aplicación que lo generó)
-    archivo_origen = models.ForeignKey(Archivo, on_delete=models.DO_NOTHING) 
+    archivo_origen = models.ForeignKey(Archivo, on_delete=models.CASCADE)  #SI SE BORRA EL ARCHIVO DE ORIGEN SE BORRA EL RESULTADO! (esto es para evitar errores de integridad)
     numero_linea = models.IntegerField() 
     analisis = models.ForeignKey(Analisis, on_delete = models.CASCADE)
     html = models.TextField(default=" ")

@@ -51,7 +51,13 @@ def carpetas(request):
 
 @login_required
 def carpeta(request, id_carpeta):
+
+    usuario_actual = request.user
     carpeta = Carpeta.objects.get(id = id_carpeta)
+
+    if carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para ver esta carpeta")
+
     form_file = FileForm(request.POST or None, request.FILES or None)
     context = {
         "carpeta": carpeta,
@@ -93,7 +99,7 @@ def aplicacion(request, id_app):
 def resultados(request):
     carpetas = Carpeta.objects.filter(usuario = request.user)
     context = {
-        'analisis' : Analisis.objects.filter(carpeta__in = carpetas)
+        'analisis' : Analisis.objects.filter(carpeta__in = carpetas).order_by("-id")
     }
     return render(request, "analisis/resultados.html",context=context) 
 
@@ -101,9 +107,13 @@ def resultados(request):
 @login_required
 def resultado(request, id_analisis):
 
-    #aca se tiene que hacer el proceso de analisis y la creacion de los objetos resultado?
-    
+    usuario_actual = request.user
     analisis = Analisis.objects.get(id = id_analisis)
+
+    if analisis.carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para ver este resultado")
+    
+
     resultados = Resultado.objects.filter(analisis = analisis)
     context = {
         'analisis' : analisis,
@@ -133,6 +143,9 @@ def nueva_carpeta(request):
 def borrar_archivo(request, id_archivo):
     archivo = Archivo.objects.get(id = id_archivo)
     carpeta = archivo.carpeta
+    usuario_actual = request.user
+    if carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para borrar este archivo")
     archivo.delete()
     response = redirect('/carpeta/'+str(carpeta.id))
     return response
@@ -142,4 +155,24 @@ def borrar_archivo(request, id_archivo):
 def borrar_resultado(request, id_analisis):
     #TODO
     analisis = Analisis.objects.get(id = id_analisis)
+    usuario_actual = request.user
+    if analisis.carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para borrar este resultado")
     return 1
+
+
+"""
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
+from django.contrib import messages
+
+class CarpetaDeleteView(DeleteView):
+    model = Carpeta
+    success_url = reverse_lazy('carpeta-list')
+
+    def post(self, request, *args, **kwargs):
+        obj = self.get_object()
+        messages.warning(request, f"Deleting {obj.nombre} will also delete all associated files. Please download the results before deleting if possible.")
+        return super().post(request, *args, **kwargs)
+    
+"""
