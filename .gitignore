@@ -9,8 +9,10 @@ Clasificador_De_Violencia_Multi_Categoria/Entrenamiento 3/5. Pruebas con transfo
 Clasificador_De_Violencia/Entrenamiento 3 con transformers/3.pruebas/output
 Clasificador_De_Violencia/Entrenamiento 2 con transformers/3.pruebas/output
 Clasificador_De_Violencia_Multi_Categoria/exploracion_reddit/modelo_binario
-*.parquet
 mi_proyecto/analisis/migrations
-mi_proyecto/mi_proyecto/__pycache__
+mi_proyecto\mi_proyecto\__pycache__
 mi_proyecto/analisis/__pycache__
-
+mi_proyecto\analisis\__pycache__\
+mi_proyecto\staticfiles\modelos
+mi_proyecto\analisis\static\modelos\
+*.parquet
