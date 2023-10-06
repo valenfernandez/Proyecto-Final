@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias, Grafico, Grafico_Imagen, Tabla
 from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm
 from .nlp import procesar_analisis
+from celery.result import AsyncResult
+import json
 
 # Create your views here.
 
@@ -196,6 +198,14 @@ def borrar_resultado(request, id_analisis):
         return HttpResponse("No tiene permiso para borrar este resultado")
     return 1
 
+
+def get_progress(request, task_id):
+    result = AsyncResult(task_id)
+    response_data = {
+        'state': result.state,
+        'details': result.info,
+    }
+    return HttpResponse(json.dumps(response_data), content_type='application/json')
 
 """
 from django.views.generic.edit import DeleteView

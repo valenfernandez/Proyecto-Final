@@ -10,8 +10,8 @@ from mi_proyecto import settings
 
 
 class FileForm(forms.Form):
-    file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
-                           help_text='</br> <br/> Seleccionar archivos .txt .docx .xlsx')
+    file = forms.FileField(widget=forms.ClearableFileInput(attrs={'allow_multiple_selected': True}),
+                           help_text='</br> <br/> Seleccionar archivos .txt .docx .xlsx', required=False)
     
     def clean_file(self):
         file = self.cleaned_data['file']

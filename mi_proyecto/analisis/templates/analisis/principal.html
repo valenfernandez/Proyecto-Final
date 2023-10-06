@@ -2,7 +2,6 @@
 {% extends "analisis/base.html" %}
 {% load static %}
 {% block content %}
-
 <div class="row">
     <!-- Menu -->
     <div class="col-sm">
@@ -23,7 +22,25 @@
             <p> Seleccione una aplicación a utilizar de la lista de aplicaciones disponibles: </p>
             </br>
             </br>
-            <div class="container">
+            <div class="container">              
+                <div id="progress-wrapper">
+                    <button id="progress-bar-trigger">Run</button>
+                    <div id="progress-bar" style="background-color: blue; width: 0%;">&nbsp;</div>
+                    <div id="progress-bar-message">Waiting for progress to start...</div>
+                </div>
+                <script>
+                    function updateProgress (progressUrl) {
+                        fetch(progressUrl).then(function(response) {
+                            response.json().then(function(data) {
+                                // update the appropriate UI components
+                                setProgress(data.state, data.details);
+                                setTimeout(updateProgress, 500, progressUrl);
+                            });
+                        });
+                    }
+                    var progressUrl = '{% url "task_status" task_id %}';  // django template usage
+                    updateProgress(progressUrl);
+                </script>                  
                 <div class="row">
                     <!--CAMBIAR POR UN FOR DE LAS APPS EXISTENTES!!! habria que cambiar el modelo para incluir la imagen capaz-->
                     <div class="col-6">

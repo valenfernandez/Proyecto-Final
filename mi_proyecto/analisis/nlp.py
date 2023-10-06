@@ -33,7 +33,7 @@ def procesar_analisis(analisis, user):
     elif modelo.nombre == 'clasificador': # aplico primero el modelo binario y despues el modelo multicategoria.  
         procesar_clasificador(analisis, carpeta, user)
     else:
-        raise Exception("El modelo no existe") #podria cambiar esto, intentar cargar el modelo y si no existe tirar un error. Y pasar a hacer un procesamiento 'generico' que no dependa de un modelo en particular.
+        raise Exception("El modelo no existe ", modelo) #podria cambiar esto, intentar cargar el modelo y si no existe tirar un error. Y pasar a hacer un procesamiento 'generico' que no dependa de un modelo en particular.
 
 
 def procesar_entidades(analisis, carpeta, user):

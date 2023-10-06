@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path as url
 from . import views
 
 urlpatterns = [
@@ -12,4 +12,5 @@ urlpatterns = [
     path("resultado/<id_analisis>", views.resultado, name="analisis-resultado"),
     path("nueva_carpeta", views.nueva_carpeta, name="analisis-nueva_carpeta"),
     path("borrar_archivo/<id_archivo>", views.borrar_archivo, name="analisis-borrar_archivo"),
+    url(r'^(?P<task_id>[\w-]+)/$', views.get_progress, name='task_status'),
 ]
