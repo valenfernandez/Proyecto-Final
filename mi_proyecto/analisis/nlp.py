@@ -1,10 +1,16 @@
-from .models import Analisis, Aplicacion, Resultado, Modelo, Carpeta, Archivo, Preferencias
+from .models import Analisis, Aplicacion, Resultado, Modelo, Carpeta, Archivo, Preferencias, Grafico, Grafico_Imagen, Tabla
 import json
 import spacy
 from spacy import displacy
 import os
 import pandas as pd
 import altair as alt
+from altair_saver import save
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from django.core.files import File 
+import io
+
 
 
 def procesar_analisis(analisis, user):
@@ -31,6 +37,29 @@ def procesar_analisis(analisis, user):
 
 
 def procesar_entidades(analisis, carpeta, user):
+    """ 
+    TODO: Lectura del archivo en utf-8. Supeuestamente debería ser el default pero no lo esta leyendo asi como es un filefield se tiene que leer con file.open("r") capaz es un problema en el modelo o en el formulario cuando se guarda el archivo.
+
+
+
+
+    Esta función se encarga de procesar los archivos de una carpeta con el modelo de detección de entidades.
+    Para cada archivo, se extraen los textos y se detectan las entidades.
+    Luego, se arma el objeto resultado y se lo guarda en la base de datos.
+    Finalmente, se arma el informe con los resultados y se lo guarda en el analisis.
+
+    Parameters
+    ----------
+    :param: analisis (Analisis) El analisis que recibe tiene: informe vacio, fecha actual, carpeta y modelo elegidos.
+    :param: carpeta (Carpeta) La carpeta que recibe tiene: nombre, usuario y archivos.
+    :param: user (User) El usuario que realiza el analisis.
+
+    Return
+    ------
+    :return: 1 (int) Si el analisis se realizo correctamente devuelve 1.
+
+
+    """
     
     # 1: Cargar el modelo de spacy
     model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "entidades" )
@@ -70,12 +99,12 @@ def procesar_entidades(analisis, carpeta, user):
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
         file = archivo.arch
-        with file.open("r") as f: #TODO chequear 
+        with file.open("r") as f: 
             lines = f.read().splitlines()
         docs = list(nlp.pipe(lines))
 
         # 3: Armar el objeto resultado de cada uno:
-        for doc in docs:
+        for index, doc in enumerate(docs):
 
             entidades = []
             for ent in doc.ents:
@@ -83,22 +112,22 @@ def procesar_entidades(analisis, carpeta, user):
                     "text": ent.text,
                     "label": ent.label_
                 }
-            entidades.append(entidad)
+                entidades.append(entidad)
             entidades_json = json.dumps(entidades, ensure_ascii=False)
 
             texto = doc.text
             detectado = entidades_json
             html = displacy.render(doc, style="ent", options=options)
             archivo_origen = archivo
-            numero_linea = 0 # sería la posicion en el vector capaz
+            numero_linea = index + 1
             Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
 
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
-    analisis.informe = armar_informe_entidades(analisis)
-    analisis.save() 
+    armar_informe_entidades(analisis, preferencia)
+
     return 1
 
-def armar_informe_entidades(analisis): 
+def armar_informe_entidades(analisis, preferencia): 
     """
     Esta funcion crea el archivo html que contiene el informe de los resultados de un analisis creado por un modelo de deteccion de entidades.
 
@@ -106,26 +135,28 @@ def armar_informe_entidades(analisis):
     ----------
     :param: analisis (Analisis) Es un analisis realizado previamente que ya tiene resultados asociados, de los cuales se quiere crear un informe.
 
+    :param: preferencia (Preferencias) Es un objeto que contiene las preferencias del usuario que realizo el analisis.
+
     Return
     ------
-    informe (str) Es un string que contiene el html del informe.
+    :return: 1 (int) Si los elementos del informe se crearon correctamente devuelve 1.
 
     """
-    #seria generar un html con el resumen, los graficos y estadisticas.
-    #se podria usar altair 
 
-    html_template = """
-            <h4>Informe de Entidades</h4>
-            <script type="text/javascript">
-                var chart = {{ chart|safe }};
-                vegaEmbed('#vis1', chart).then(result => console.log(result)).catch(console.warn);
-            </script>
-        """
+    os.makedirs(f'analisis/static/graficos/{analisis.id}', exist_ok=True)
+
     resultados = Resultado.objects.filter(analisis = analisis)
     
     domain =["DINERO", "FECHA", "HORA", "LUGAR", "MEDIDA", "MISC", "ORG", "PERSONA", "TIEMPO"]
-    range_AM= ["#00065D","#2706AD","#5C40D0","#889AFD", "#CCC5B2","#F3D850","#FFD500","#9A7300", "#DFA000"]
-    range_AR= ["#00065D", "#2257EC","#008DDE","#7A8BE6","#D2C3C3","#FF9696","#F94D67","#E9255A","#99001C"]
+    range_ = []
+
+    if preferencia.color == "AM":
+        range_= ["#00065D","#2706AD","#5C40D0","#889AFD", "#CCC5B2","#F3D850","#FFD500","#9A7300", "#DFA000"]
+    elif preferencia.color == "AR":
+        range_= ["#00065D", "#2257EC","#008DDE","#7A8BE6","#D2C3C3","#FF9696","#F94D67","#E9255A","#99001C"]
+    else:
+        range_ = []
+
     
     data = []
     for resultado in resultados:
@@ -140,27 +171,125 @@ def armar_informe_entidades(analisis):
             })
     df = pd.DataFrame(data)
 
-    #total_entidades = df.shape[0]
-    #entidades_counts = df['label'].value_counts() # esto devuelve un objeto de pandas que tiene como indice los tipos de #entidades y como valor la cantidad de veces que aparece cada uno. numero de resultados de cada tipo de entidad.
-    #ent_text_counts = df['text'].value_counts() #entidades que se repitan: tendrian el count en mas de 1
+    total_entidades = df.shape[0]
 
-    domain =['PER','LOC','MISC','ORG']
-    range_= ['#00065D','#99001C','#F94D67','#D2C3C3'] #mi range va a cambiar segun el 
+    entidades_counts = df['label'].value_counts().reset_index()#pd indice tipos de entidades y valor num de apariciones
+    entidades_counts.columns = ['Etiqueta', 'Apariciones']
+    tabla_entidades_count = Tabla(nombre = "Distribucion de entidades", tabla = entidades_counts.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
+    tabla_entidades_count.save()
 
-    # Create an Altair chart
-    chart = alt.Chart(df, title="Distribucion de entidades").mark_bar().encode(
+
+
+    ent_text_counts = df['text'].value_counts() #entidades que se repitan: tendrian el count en mas de 1
+    repeating_entities = ent_text_counts[ent_text_counts > 1] #entidades que se repiten
+    num_rep = repeating_entities.shape[0] #numero de entidades que se repiten
+    if num_rep > 0:
+        tabla_rep_ents = repeating_entities.reset_index()
+        tabla_rep_ents.columns = ['Entidad', 'Apariciones'] 
+        tabla_repeating_ents = Tabla(nombre = "Entidades que se repiten", tabla = tabla_rep_ents.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
+        tabla_repeating_ents.save()
+
+
+    # Cantidad de cada tipo de entidades
+    chart_count_ents = alt.Chart(df, title="Distribucion de entidades").mark_bar().encode(
         x = alt.X('label:N', title='Entidades'),
         y = alt.Y('count():Q', title='N° Apariciones'),
-        color = alt.Color('label', scale = alt.Scale(domain=domain, range=range_AR))
-    ).to_html()
-    
-    #.to_json(indent=None)
-    
-    print(chart)
+        color = alt.Color('label', scale = alt.Scale(domain=domain, range=range_))
+    )
+    json_count_ents = chart_count_ents.to_json()
+    grafico_cout_ents = Grafico(nombre = "Distribucion de entidades", chart = json_count_ents, analisis = analisis)
+    grafico_cout_ents.save()
 
-    informe = html_template.format(chart=chart)
 
-    return informe
+    #Entidades por cada archivo
+    file_entity_counts = df.groupby('archivo_origen')['text'].count().reset_index()
+    file_entity_counts.columns = ['archivo_origen', 'entity_count']
+    chart_ents_file = alt.Chart(file_entity_counts).mark_bar().encode(
+        x=alt.X('archivo_origen:N', title='Archivo'),
+        y=alt.Y('entity_count:Q', title='Numero de entidades'),
+        color=alt.Color('archivo_origen:N', title='File', scale = alt.Scale(range=range_)),
+        tooltip=['archivo_origen:N', 'entity_count:Q']
+    ).properties(
+        title='Entidades por archivo'
+    ).interactive()
+    json_ents_file = chart_ents_file.to_json()
+    grafico_ents_file = Grafico(nombre = "Entidades por archivo", chart = json_ents_file, analisis = analisis)
+    grafico_ents_file.save()
+
+
+    #Tipo entidades por cada archivo
+    # Group and count entity labels by file
+    file_label_counts = df.groupby(['archivo_origen', 'label'])['text'].count().reset_index()
+    file_label_counts.columns = ['archivo_origen', 'label', 'count']
+    # Create a stacked bar chart
+    chart_entscomp_file = alt.Chart(file_label_counts).mark_bar().encode(
+        x=alt.X('archivo_origen:N', title='File'),
+        y=alt.Y('count:Q', title='Entity Count'),
+        color=alt.Color('label:N', title='Entity Label',scale = alt.Scale(domain=domain, range=range_)),
+        tooltip=['archivo_origen:N', 'label:N', 'count:Q']
+    ).properties(
+        title='Composicion de entidades por archivo'
+    )
+    json_entscomp_file = chart_entscomp_file.to_json()
+    grafico_entscomp_file = Grafico(nombre = "Composicion de entidades por archivo", chart = json_entscomp_file, analisis = analisis)
+    grafico_entscomp_file.save()
+
+    
+    ## Relacion para cada archivo: numero de entidades y linea 
+    scatterplots = []
+    for file_name, group_df in df.groupby('archivo_origen'):
+        scatterplot = alt.Chart(group_df).mark_circle().encode(
+            x=alt.X('numero_linea:O', title='Numero de lines'),
+            y=alt.Y('label:N', title='Entidad'),
+            color=alt.Color('label:N', title='Entidad', scale = alt.Scale(domain=domain, range=range_)),
+            tooltip=['label:N', 'numero_linea:O', 'text:N']
+        ).properties(
+            title=f'Relación entre numero de linea y entidades en archivo {file_name}'
+        )
+        scatterplots.append(scatterplot)
+    chart_lineas_entidades = alt.vconcat(*scatterplots)
+    json_lineas_entidades = chart_lineas_entidades.to_json()
+    grafico_lineas_entidades = Grafico(nombre = "Relacion entre numero de linea y entidades", chart = json_lineas_entidades, analisis = analisis)
+    grafico_lineas_entidades.save()
+    
+
+
+    #Wordcloud de los textos de las entidades
+    text = ' '.join(df['text'])
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title('Entidades detectadas')
+
+    wordcloud_path = f'analisis/static/graficos/{analisis.id}/wordcloud_{analisis.id}.png'
+    wordcloud.to_file(wordcloud_path)
+    imagen_wordcloud_total = Grafico_Imagen(nombre = "Wordcloud de entidades", analisis = analisis)
+    imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
+    imagen_wordcloud_total.save()
+    
+    """
+
+    # Wordcloud por cada tipo de entidad
+    
+    text_by_label = df.groupby('label')['text'].apply(lambda x: ' '.join(x))
+    for label, text in text_by_label.items():
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+
+        plt.figure(figsize=(8, 4))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        plt.title(f'Word Cloud for Entity Label: {label}')
+        
+        wordcloud_path = f'analisis/static/graficos/{analisis.id}/wordcloud_{label}{analisis.id}.png'
+        wordcloud.to_file(wordcloud_path)
+
+        imagen_wordcloud = Grafico_Imagen(nombre = f"Wordcloud de entidades {label}", analisis = analisis)
+        imagen_wordcloud.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
+        imagen_wordcloud.save()
+    """
+
+    return 1
 
 
 

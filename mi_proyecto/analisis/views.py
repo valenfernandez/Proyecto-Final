@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias
+from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias, Grafico, Grafico_Imagen, Tabla
 from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm
 from .nlp import procesar_analisis
 
@@ -106,21 +106,57 @@ def resultados(request):
 
 @login_required
 def resultado(request, id_analisis):
-
+    """
+    TODO: Agrupar los resultados por archivo de origen y mostrarlos separados 
+    (podria ser separados por tabs o algo asi, o en distintas secciones)
+    
+    """
     usuario_actual = request.user
+    carpetas = Carpeta.objects.filter(usuario = request.user)
     analisis = Analisis.objects.get(id = id_analisis)
-
     if analisis.carpeta.usuario != usuario_actual:
         return HttpResponse("No tiene permiso para ver este resultado")
     
-
+    tablas = Tabla.objects.filter(analisis = analisis)
+    graficos = Grafico.objects.filter(analisis = analisis)
+    imagenes = Grafico_Imagen.objects.filter(analisis = analisis)
     resultados = Resultado.objects.filter(analisis = analisis)
-    context = {
+    
+
+    if analisis.modelo.nombre == 'entidades':
+
+        context = {
         'analisis' : analisis,
         'aplicacion' : analisis.modelo.aplicacion,
         'resultados' : resultados,
-    }
-    return render(request, "analisis/resultado.html", context= context) 
+        'wordclouds' : imagenes,
+        'graficos' : graficos,
+        'tabla_distribucion' : Tabla.objects.get(analisis = analisis, nombre = 'Distribucion de entidades'),
+        'tabla_rep': Tabla.objects.get(analisis = analisis, nombre = 'Entidades que se repiten'),
+        'grafico_distribucion' : Grafico.objects.get(analisis = analisis, nombre = 'Distribucion de entidades'),
+        'grafico_ents_archivo' : Grafico.objects.get(analisis = analisis, nombre = 'Entidades por archivo'),
+        'grafico_comp_archivos' : Grafico.objects.get(analisis = analisis, nombre = 'Composicion de entidades por archivo'),
+        'grafico_lineas_ents': Grafico.objects.get(analisis = analisis, nombre = 'Relacion entre numero de linea y entidades'),
+        }
+        
+        return render(request, "analisis/resultado_entidades.html", context= context)
+    
+    elif analisis.modelo.nombre == 'clasificador':
+        context = {
+        'analisis' : analisis,
+        'aplicacion' : analisis.modelo.aplicacion,
+        'resultados' : resultados,
+        'imagenes' : imagenes,
+        'graficos' : graficos,
+        'tablas' : tablas,
+        }
+        
+        return render(request, "analisis/resultado_clasificador.html", context= context)
+    else:
+        context = {
+        'analisis' : Analisis.objects.filter(carpeta__in = carpetas).order_by("-id")
+        }
+        return render(request, "analisis/resultados.html", context= context) 
 
 
 

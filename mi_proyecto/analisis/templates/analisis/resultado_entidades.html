@@ -1,0 +1,145 @@
+{% extends "analisis/base.html" %}
+{% block content %}
+
+<div class="row">
+    <!-- Menu -->
+    <div class="col-sm">
+        <div class="sidebar">
+            <div class="sidebar-brand"> Menu </div>
+            <a class="active" href="{% url 'analisis-principal' %}">Aplicaciones</a>
+            <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Resultados</a>
+            <a href="{% url 'analisis-config' %}">Configuracion</a>
+        </div>
+    </div>
+    <div class = "col-md-10">
+    <main role="main" class="container">
+            </br>
+            </br>
+            <h2> {{aplicacion.nombre}}: {{analisis.carpeta.nombre}} </h2>
+            </br>
+            <div class = " col-11 text-end">
+                <a href="#" class="btn btn-primary btn-md">Descargar</a> 
+            </div>
+
+            <h5> Informe </h5>
+            </br>
+            </br>
+            <div class="col-6">
+                <div class="card " style="width:75rem;">
+                    <div class="card-body">
+                        <p class="card-text">
+
+                                    <div>
+                                        <div class="container">
+                                            <div class="row">
+                                            <h4> Distribución de entidades </h4>
+                                            </br>
+                                            </br>
+                                              <div class="col">
+                                                <div id="d_ents"></div>
+                                                <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                                <script type="text/javascript">
+                                                    var spec = {{ grafico_distribucion.chart|safe }};
+                                                    vegaEmbed('#d_ents', spec).then(function(result) {
+                                                    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                    }).catch(console.error);
+                                                </script>
+                                              </div>
+                                              <div class="col">
+                                                {{tabla_distribucion.tabla|safe}}
+                                              </div>
+                                            </div>
+                                            </br>
+                                            </br>
+                                            <div class="row">
+
+                                            <h4> Entidades por archivo </h4>
+                                            </br>
+                                            </br>
+                                              <div class="col">
+                                                <div id="ents_arch"></div>
+                                                <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                                <script type="text/javascript">
+                                                    var spec = {{ grafico_ents_archivo.chart|safe }};
+                                                    vegaEmbed('#ents_arch', spec).then(function(result) {
+                                                    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                    }).catch(console.error);
+                                                </script>
+                                              </div>
+                                              <div class="col">
+                                                <div id="comp_arch"></div>
+                                                <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                                <script type="text/javascript">
+                                                    var spec = {{ grafico_comp_archivos.chart|safe }};
+                                                    vegaEmbed('#comp_arch', spec).then(function(result) {
+                                                    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                    }).catch(console.error);
+                                                </script>
+                                              </div>
+                                            </div>
+                                            </br>
+                                            </br>
+                                            <div class="row">
+                                            <h4> Entidades por linea </h4>
+                                            </br>
+                                            </br>
+                                              <div class="col">
+                                                <div id="lineas_e"></div>
+                                                <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                                <script type="text/javascript">
+                                                    var spec = {{ grafico_lineas_ents.chart|safe }};
+                                                    vegaEmbed('#lineas_e', spec).then(function(result) {
+                                                    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                    }).catch(console.error);
+                                                </script>
+                                              </div>
+                                            </div>
+                                            </br>
+                                            </br>
+                                            <div class="row">
+                                            <div class="col-3">
+                                                {{tabla_rep.tabla|safe}}
+                                            </div>
+                                            <div class="col">
+                                                {%for cloud in wordclouds%}
+                                                    <img src="{{ cloud.imagen.url }}" alt="Grafico Imagen">
+                                                {%endfor%}
+                                            </div>
+                                            </div>
+                                            
+                                          </div>
+
+                                    </div>  
+                        </p>
+                    </div>
+                </div> 
+                </br>     
+            </div>
+
+            <h5> Resultados completos </h5>
+            </br>
+            
+            </br>
+            <div class="col-6">
+                <div class="card " style="width:75rem;">
+                    <div class="card-body">
+                        <p class="card-text">
+                                {% for resultado in resultados %}
+                                    <div class="col-6">
+                                        <div>
+                                            {{resultado.html|safe}}
+                                        </div>  
+                                    </div>
+                                {% endfor %}
+                        </p>
+                    </div>
+                </div> 
+                </br>     
+            </div>
+
+    </main>
+    </div>
+</div>
+
+{% endblock content %}

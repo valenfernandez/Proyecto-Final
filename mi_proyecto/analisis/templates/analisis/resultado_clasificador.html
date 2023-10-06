@@ -35,7 +35,7 @@
                                         <div id="vis"></div>
                                         <!--SCRIPT PARA CARGAR UN GRAFICO-->
                                         <script type="text/javascript">
-                                            var spec = {{ analisis.informe|safe }};
+                                            //var spec = {{ analisis.informe|safe }};
                                             vegaEmbed('#vis', spec).then(function(result) {
                                             // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
                                             }).catch(console.error);
@@ -59,15 +59,6 @@
                 <div class="card " style="width:75rem;">
                     <div class="card-body">
                         <p class="card-text">
-                            {% if analisis.modelo.nombre == 'entidades' %}
-                                {% for resultado in resultados %}
-                                    <div class="col-6">
-                                        <div>
-                                            {{resultado.html|safe}}
-                                        </div>  
-                                    </div>
-                                {% endfor %}
-                            {% else %}
                                     <table class="table">
                                         <thead>
                                           <tr>
@@ -109,8 +100,6 @@
                                             {% endfor %}
                                         </tbody>
                                     </table>
-                            {% endif %}
-
                         </p>
                     </div>
                 </div> 

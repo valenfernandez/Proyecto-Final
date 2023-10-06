@@ -46,7 +46,7 @@ class Analisis(models.Model):
     class Meta:
         verbose_name_plural = "Analisis"
     fecha = models.DateTimeField(null=False, default=datetime.now)
-    informe = models.TextField() #htlm
+    informe = models.TextField(blank=True, null=True) #capaz esto lo sacamos y en su ligar armamos el html del informe con los graficos y las imagenes. O aca se pone el template del informe
     carpeta =  models.ForeignKey(Carpeta, on_delete=models.CASCADE, blank=True)  # si se borra la carpeta se borra el analisis. Esto no deberia pasar pero da un error al borrar archivos si no esta esto. 
     modelo = models.ForeignKey(Modelo, on_delete=models.DO_NOTHING, blank=True)
 
@@ -58,7 +58,7 @@ class Analisis(models.Model):
 class Archivo(models.Model):
     nombre = models.CharField(max_length=256)
     fecha_creacion =  models.DateTimeField(blank=True, default=datetime.now) 
-    arch = models.FileField() #upload_to='archivos/'
+    arch = models.FileField(upload_to='archivos/') #upload_to='archivos/'
     carpeta = models.ForeignKey(Carpeta, on_delete=models.CASCADE)
     def __str__(self):
         return (
@@ -91,4 +91,31 @@ class Preferencias(models.Model):
     def __str__(self):
         return (
             f"{self.usuario} - {self.color}"
+        )
+
+class Grafico(models.Model):
+    analisis = models.ForeignKey(Analisis, on_delete = models.CASCADE)
+    nombre = models.CharField(max_length=256)
+    chart = models.TextField(blank=True, null=True) #grafico de altair en formato json
+    def __str__(self):
+        return (
+            f"{self.nombre}"
+        )
+
+class Grafico_Imagen(models.Model):
+    analisis = models.ForeignKey(Analisis, on_delete = models.CASCADE)
+    nombre = models.CharField(max_length=256)
+    imagen = models.ImageField(upload_to='static/graficos/', blank=True, null=True) #imagen del grafico (wordcloud, etc)
+    def __str__(self):
+        return (
+            f"{self.nombre}"
+        )
+    
+class Tabla(models.Model):
+    analisis = models.ForeignKey(Analisis, on_delete = models.CASCADE)
+    nombre = models.CharField(max_length=256)
+    tabla = models.TextField(blank=True, null=True) #tabla de pandas en formato html
+    def __str__(self):
+        return (
+            f"{self.nombre}"
         )
