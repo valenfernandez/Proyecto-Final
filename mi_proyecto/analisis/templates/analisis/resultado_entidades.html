@@ -47,6 +47,16 @@
                                                 </script>
                                               </div>
                                               <div class="col">
+                                                <div id="d_torta"></div>
+                                                <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                                <script type="text/javascript">
+                                                    var spec = {{ grafico_torta.chart|safe }};
+                                                    vegaEmbed('#d_torta', spec).then(function(result) {
+                                                    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                    }).catch(console.error);
+                                                </script>
+                                              </div>
+                                              <div class="col">
                                                 {{tabla_distribucion.tabla|safe}}
                                               </div>
                                             </div>
@@ -121,12 +131,12 @@
             </br>
             
             </br>
-            <div class="col-6">
+            <div class="col">
                 <div class="card " style="width:75rem;">
                     <div class="card-body">
                         <p class="card-text">
                                 {% for resultado in resultados %}
-                                    <div class="col-6">
+                                    <div class="col">
                                         <div>
                                             {{resultado.html|safe}}
                                         </div>  

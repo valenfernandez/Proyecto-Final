@@ -109,7 +109,7 @@ def resultado(request, id_analisis):
     """
     TODO: Agrupar los resultados por archivo de origen y mostrarlos separados 
     (podria ser separados por tabs o algo asi, o en distintas secciones)
-    
+
     """
     usuario_actual = request.user
     carpetas = Carpeta.objects.filter(usuario = request.user)
@@ -137,6 +137,7 @@ def resultado(request, id_analisis):
         'grafico_ents_archivo' : Grafico.objects.get(analisis = analisis, nombre = 'Entidades por archivo'),
         'grafico_comp_archivos' : Grafico.objects.get(analisis = analisis, nombre = 'Composicion de entidades por archivo'),
         'grafico_lineas_ents': Grafico.objects.get(analisis = analisis, nombre = 'Relacion entre numero de linea y entidades'),
+        'grafico_torta': Grafico.objects.get(analisis = analisis, nombre = 'Torta distribucion de entidades'),
         }
         
         return render(request, "analisis/resultado_entidades.html", context= context)
