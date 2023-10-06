@@ -98,9 +98,9 @@ def procesar_entidades(analisis, carpeta, user):
     # 2: Extraer textos de los archivos en la carpeta
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
-        file = archivo.arch
-        with file.open("r") as f: 
+        with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
             lines = f.read().splitlines()
+            print(lines)
         docs = list(nlp.pipe(lines))
 
         # 3: Armar el objeto resultado de cada uno:
