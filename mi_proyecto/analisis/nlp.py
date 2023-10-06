@@ -194,12 +194,22 @@ def armar_informe_entidades(analisis, preferencia):
     chart_count_ents = alt.Chart(df, title="Distribucion de entidades").mark_bar().encode(
         x = alt.X('label:N', title='Entidades'),
         y = alt.Y('count():Q', title='N° Apariciones'),
-        color = alt.Color('label', scale = alt.Scale(domain=domain, range=range_))
-    )
+        color = alt.Color('label', scale = alt.Scale(domain=domain, range=range_)),
+        tooltip=['label:N', 'count():Q']
+    ).interactive()
     json_count_ents = chart_count_ents.to_json()
     grafico_cout_ents = Grafico(nombre = "Distribucion de entidades", chart = json_count_ents, analisis = analisis)
     grafico_cout_ents.save()
 
+
+    chart_torta = alt.Chart(df).mark_arc().encode(
+    theta="count():Q",
+    color= alt.Color('label', scale = alt.Scale(domain=domain, range=range_)),
+    tooltip=['label:N', 'count():Q']
+    ).interactive()
+    json_torta = chart_torta.to_json()
+    grafico_torta = Grafico(nombre = "Torta distribucion de entidades", chart = json_torta, analisis = analisis)
+    grafico_torta.save()
 
     #Entidades por cada archivo
     file_entity_counts = df.groupby('archivo_origen')['text'].count().reset_index()
