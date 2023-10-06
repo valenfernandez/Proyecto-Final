@@ -148,3 +148,25 @@
     font-family: 'Space Grotesk';
     text-decoration: none;
   }
+
+  .category-1 {
+    color: white;
+    background-color: #00065D; 
+  }
+
+  .category-2 {
+    color: white;
+    background-color: #008DDE; 
+  }
+  .category-3 {
+    color: white;
+    background-color: #D2C3C3; 
+  }
+  .category-4 {
+    color: white;
+    background-color: #F94D67; 
+  }
+  .category-5 {
+    color: white;
+    background-color: #99001C; 
+  }
