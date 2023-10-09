@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email 
 from django.contrib.auth.models import User
 import magic
-from .models import Analisis, Carpeta, Colores, Preferencias, Modelo
+from .models import Analisis, Carpeta, Colores, Preferencias, Modelo, Archivo
 from mi_proyecto import settings
 
 
@@ -63,3 +63,18 @@ class PreferenciasForm(ModelForm):
     color = forms.CharField(label='Esquema de colores', 
                             widget=forms.Select(attrs={'class': 'form-control'},
                                                 choices=Colores.choices))
+
+
+class ResultadoViewForm(forms.Form):
+    file_choice = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        analisis_id = kwargs.pop('analisis_id')
+        super(ResultadoViewForm, self).__init__(*args, **kwargs)
+        analisis = Analisis.objects.get(id=analisis_id)
+        archivos = Archivo.objects.filter(carpeta=analisis.carpeta)
+        file_choices = [(archivo.id, archivo.nombre) for archivo in archivos]
+        file_choices.insert(0, ('all', 'Todos los archivos'))
+        self.fields['file_choice'].choices = file_choices
+        self.fields['file_choice'].label = 'Mostrar archivo'
+
