@@ -86,6 +86,16 @@ def procesar_entidades(analisis, carpeta, user):
                             "PERSONA": "#E9255A",
                             "TIEMPO" : "#99001C",
                             }
+    colors_default = {"DINERO": "#F3D850", 
+                            "FECHA":"#FECA74", 
+                            "HORA": "#7AECEC", 
+                            "LUGAR": "#BFE1D9",
+                            "MEDIDA": "#AA9CFC",
+                            "MISC": "#C887FB",
+                            "ORG": "#E4E7D2",
+                            "PERSONA": "#FFB700",
+                            "TIEMPO" : "#52CCCC",
+                            }
 
     preferencia = Preferencias.objects.get(usuario = user)
     if preferencia.color == "AM":
@@ -93,7 +103,7 @@ def procesar_entidades(analisis, carpeta, user):
     elif preferencia.color == "AR":
         options = {"colors": colors_azul_rosa}
     else:
-        options = {}
+        options = {"colors": colors_default}
 
     # 2: Extraer textos de los archivos en la carpeta
     archivos = Archivo.objects.filter(carpeta = carpeta)
@@ -155,7 +165,7 @@ def armar_informe_entidades(analisis, preferencia):
     elif preferencia.color == "AR":
         range_= ["#00065D", "#2257EC","#008DDE","#7A8BE6","#D2C3C3","#FF9696","#F94D67","#E9255A","#99001C"]
     else:
-        range_ = []
+        range_ = ["#F3D850","#FECA74", "#7AECEC", "#BFE1D9", "#AA9CFC", "#C887FB" ,"#E4E7D2" ,"#FFB700", "#52CCCC"]
 
     
     data = []
