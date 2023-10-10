@@ -21,9 +21,8 @@
             <div class = " col-11 text-end">
                 <a href="#" class="btn btn-primary btn-md">Descargar</a> 
             </div>
-
-            <h5> Informe </h5>
             </br>
+            <h3> Informe </h3>
             </br>
             <div class="col-6">
                 <div class="card " style="width:75rem;">
@@ -42,6 +41,16 @@
                                                 <script type="text/javascript">
                                                     var spec = {{ grafico_distribucion.chart|safe }};
                                                     vegaEmbed('#d_ents', spec).then(function(result) {
+                                                    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                    }).catch(console.error);
+                                                </script>
+                                              </div>
+                                              <div class="col">
+                                                <div id="d_torta"></div>
+                                                <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                                <script type="text/javascript">
+                                                    var spec = {{ grafico_torta.chart|safe }};
+                                                    vegaEmbed('#d_torta', spec).then(function(result) {
                                                     // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
                                                     }).catch(console.error);
                                                 </script>
@@ -117,21 +126,41 @@
                 </br>     
             </div>
 
-            <h5> Resultados completos </h5>
+            <h3> Resultados completos </h3>
             </br>
-            
+            <div class = "col-3">
+                <form action="" method=POST enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Filtrar" class="btn btn-primary btn-md"> 
+                </form>
+            </div>
             </br>
-            <div class="col-6">
+            <div class="col">
                 <div class="card " style="width:75rem;">
                     <div class="card-body">
                         <p class="card-text">
-                                {% for resultado in resultados %}
-                                    <div class="col-6">
-                                        <div>
-                                            {{resultado.html|safe}}
-                                        </div>  
-                                    </div>
+                            {%if resultados_x_archivo%}
+                                {% for results_archivo in resultados_x_archivo %}
+                                    {% for resultado in results_archivo %}
+                                        <div class="col">
+                                            <div>
+                                                {{resultado.html|safe}}
+                                            </div>  
+                                        </div>
+                                    {% endfor %}
+                                    <hr>
                                 {% endfor %}
+                            {%else%}
+                                {% for resultado in resultados %}
+                                <div class="col">
+                                    <div>
+                                        {{resultado.html|safe}}
+                                    </div>  
+                                </div>
+                                {% endfor %}
+                            {%endif%}
+
                         </p>
                     </div>
                 </div> 

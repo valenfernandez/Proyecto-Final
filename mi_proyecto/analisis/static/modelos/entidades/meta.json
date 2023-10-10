@@ -10,49 +10,91 @@
   "license":"",
   "spacy_git_version":"Unknown",
   "vectors":{
-    "width":300,
-    "vectors":20000,
-    "keys":500000,
-    "name":"es_vectors",
+    "width":0,
+    "vectors":0,
+    "keys":0,
+    "name":null,
     "mode":"default"
   },
   "labels":{
-    "textcat":[
-      "Violento",
-      "No Violento"
+    "tok2vec":[
+
+    ],
+    "ner":[
+      "DINERO",
+      "FECHA",
+      "HORA",
+      "LUGAR",
+      "MEDIDA",
+      "MISC",
+      "ORG",
+      "PERSONA",
+      "TIEMPO"
     ]
   },
   "pipeline":[
-    "textcat"
+    "tok2vec",
+    "ner"
   ],
   "components":[
-    "textcat"
+    "tok2vec",
+    "ner"
   ],
   "disabled":[
 
   ],
   "performance":{
-    "cats_score":0.8831790972,
-    "cats_score_desc":"macro F",
-    "cats_micro_p":0.8845766129,
-    "cats_micro_r":0.8845766129,
-    "cats_micro_f":0.8845766129,
-    "cats_macro_p":0.8835827426,
-    "cats_macro_r":0.8828130137,
-    "cats_macro_f":0.8831790972,
-    "cats_macro_auc":0.9411455251,
-    "cats_f_per_type":{
-      "Violento":{
-        "p":0.8748577929,
-        "r":0.865990991,
-        "f":0.870401811
+    "ents_f":0.614379085,
+    "ents_p":0.6308724832,
+    "ents_r":0.5987261146,
+    "ents_per_type":{
+      "HORA":{
+        "p":0.8947368421,
+        "r":0.8947368421,
+        "f":0.8947368421
       },
-      "No Violento":{
-        "p":0.8923076923,
-        "r":0.8996350365,
-        "f":0.8959563835
+      "FECHA":{
+        "p":0.8409090909,
+        "r":0.7872340426,
+        "f":0.8131868132
+      },
+      "MISC":{
+        "p":0.2,
+        "r":0.1860465116,
+        "f":0.1927710843
+      },
+      "PERSONA":{
+        "p":0.734939759,
+        "r":0.6630434783,
+        "f":0.6971428571
+      },
+      "LUGAR":{
+        "p":0.5,
+        "r":0.4363636364,
+        "f":0.4660194175
+      },
+      "ORG":{
+        "p":0.3333333333,
+        "r":0.4545454545,
+        "f":0.3846153846
+      },
+      "MEDIDA":{
+        "p":0.4782608696,
+        "r":0.7333333333,
+        "f":0.5789473684
+      },
+      "DINERO":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "TIEMPO":{
+        "p":0.9090909091,
+        "r":0.5882352941,
+        "f":0.7142857143
       }
     },
-    "textcat_loss":5.5359974271
+    "tok2vec_loss":407.1358612409,
+    "ner_loss":1092.0944855358
   }
 }
