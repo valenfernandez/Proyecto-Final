@@ -47,6 +47,12 @@
                     {% for carpeta in carpetas %}
                     <div class="col-6">
                         <div class="card bg-transparent border-0" style="width:10rem;">
+                            <div class = "text-end">
+                                <a href="{% url 'analisis-borrar_carpeta' carpeta.id %}" onclick="return confirm('Estas seguro de que quieres eliminar este archivo? Todos los analisis asociados a la carpeta serán eliminados.')">
+                                    <img src="{% static 'images/trash.png'%}" width="20" >
+                                </a>
+                            </div>
+
                             <div class="text-center" >
                                 <a href="{% url 'analisis-carpeta' carpeta.id %}">
                                     <div class="text-center" >

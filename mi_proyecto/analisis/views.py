@@ -247,27 +247,23 @@ def borrar_archivo(request, id_archivo):
 
 
 @login_required
-def borrar_resultado(request, id_analisis):
-    #TODO
+def borrar_carpeta(request, id_carpeta):
+    
+    carpeta = Carpeta.objects.get(id = id_carpeta)
+    usuario_actual = request.user
+    if carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para borrar este archivo")
+    carpeta.delete()
+    response = redirect('/carpetas')
+    return response
+
+
+@login_required
+def borrar_analisis(request, id_analisis):
     analisis = Analisis.objects.get(id = id_analisis)
     usuario_actual = request.user
     if analisis.carpeta.usuario != usuario_actual:
         return HttpResponse("No tiene permiso para borrar este resultado")
-    return 1
-
-
-"""
-from django.views.generic.edit import DeleteView
-from django.urls import reverse_lazy
-from django.contrib import messages
-
-class CarpetaDeleteView(DeleteView):
-    model = Carpeta
-    success_url = reverse_lazy('carpeta-list')
-
-    def post(self, request, *args, **kwargs):
-        obj = self.get_object()
-        messages.warning(request, f"Deleting {obj.nombre} will also delete all associated files. Please download the results before deleting if possible.")
-        return super().post(request, *args, **kwargs)
-    
-"""
+    analisis.delete()
+    response = redirect('/resultados')
+    return response

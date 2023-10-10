@@ -18,8 +18,15 @@
             </br>
             <h2> {{aplicacion.nombre}}: {{analisis.carpeta.nombre}} </h2>
             </br>
-            <div class = " col-11 text-end">
-                <a href="#" class="btn btn-primary btn-md">Descargar</a> 
+            <div class="container">
+                <div class="d-flex flex-row-reverse bd-highlight">
+                    <div class = " p-2 bd-highlight">
+                        <a href="#" class="btn btn-primary btn-md">Descargar</a> 
+                    </div>
+                    <div class = " p-2 bd-highlight">
+                        <a href= "{% url 'analisis-borrar_analisis' analisis.id %}" onclick="return confirm('Estas seguro de que quieres eliminar este analisis?')" class="btn btn-outline-danger btn-md">Borrar</a>
+                    </div>
+                </div>
             </div>
             </br>
             <h3> Informe </h3>

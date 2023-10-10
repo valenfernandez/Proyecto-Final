@@ -12,4 +12,6 @@ urlpatterns = [
     path("resultado/<id_analisis>", views.resultado, name="analisis-resultado"),
     path("nueva_carpeta", views.nueva_carpeta, name="analisis-nueva_carpeta"),
     path("borrar_archivo/<id_archivo>", views.borrar_archivo, name="analisis-borrar_archivo"),
+    path("borrar_carpeta/<id_carpeta>", views.borrar_carpeta, name="analisis-borrar_carpeta"),
+    path("borrar_analisis/<id_analisis>", views.borrar_analisis, name="analisis-borrar_analisis"),
 ]
