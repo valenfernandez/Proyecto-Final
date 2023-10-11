@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias, Grafico, Grafico_Imagen, Tabla
 from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm
 from .nlp import procesar_analisis
+from xhtml2pdf import pisa
 
 # Create your views here.
 
@@ -266,4 +267,31 @@ def borrar_analisis(request, id_analisis):
         return HttpResponse("No tiene permiso para borrar este resultado")
     analisis.delete()
     response = redirect('/resultados')
+    return response
+
+def descargar_resultados_entidades(request, id_analisis, id_archivo):
+    # https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf
+
+    analisis = Analisis.objects.get(id = id_analisis)
+    resultados_x_archivo = []
+    if id_archivo == 'all':
+        archivos = Archivo.objects.filter(carpeta = analisis.carpeta)
+        for archivo in archivos:
+            resultados_archivo = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
+            resultados_x_archivo.append(resultados_archivo)
+    else:
+        archivo = Archivo.objects.get(id = id_archivo)
+        resultados = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
+        resultados_x_archivo.append(resultados)
+    
+    html = ''
+    for reultados_archivo in resultados_x_archivo:
+        for resultado in reultados_archivo:
+            html += "<div class='col'> <div>"+ resultado.html+"</div> </div>"
+        #agregar pagina al pdf.
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename= "resultados_entidades.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+            return HttpResponse('We had some errors')
     return response

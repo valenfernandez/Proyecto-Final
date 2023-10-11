@@ -1,6 +1,30 @@
 {% extends "analisis/base.html" %}
 {% block content %}
 
+
+<script>
+    window.jsPDF = window.jspdf.jsPDF;
+    function demoFromHTML(titulo, filename) {
+        window.jsPDF = window.jspdf.jsPDF;
+        var cardElement = document.querySelector('.informe');
+
+        html2canvas(cardElement).then((canvas) => {
+            var imgData = canvas.toDataURL('image/png');
+            var width = canvas.width;
+            var height = canvas.height;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [width, height + 50]
+            });
+            doc.setFontSize(50); // Set the font size
+            doc.text('Informe entidades: ' + titulo, 10, 30); // Add the title
+            doc.addImage(imgData, 'PNG', 0, 50, width, height);
+            doc.save(filename + ".pdf");
+        });
+    }
+</script>
+
 <div class="row">
     <!-- Menu -->
     <div class="col-sm">
@@ -21,7 +45,7 @@
             <div class="container">
                 <div class="d-flex flex-row-reverse bd-highlight">
                     <div class = " p-2 bd-highlight">
-                        <a href="#" class="btn btn-primary btn-md">Descargar</a> 
+                        <a href="javascript:demoFromHTML('{{analisis.carpeta.nombre}}','{{analisis}}')" class="btn btn-primary btn-md">Descargar</a>
                     </div>
                     <div class = " p-2 bd-highlight">
                         <a href= "{% url 'analisis-borrar_analisis' analisis.id %}" onclick="return confirm('Estas seguro de que quieres eliminar este analisis?')" class="btn btn-outline-danger btn-md">Borrar</a>
@@ -32,7 +56,7 @@
             <h3> Informe </h3>
             </br>
             <div class="col-6">
-                <div class="card " style="width:75rem;">
+                <div class="card informe" style="width:75rem;">
                     <div class="card-body">
                         <p class="card-text">
 
@@ -123,9 +147,7 @@
                                                 {%endfor%}
                                             </div>
                                             </div>
-                                            
                                           </div>
-
                                     </div>  
                         </p>
                     </div>
@@ -142,9 +164,17 @@
                     <input type="submit" value="Filtrar" class="btn btn-primary btn-md"> 
                 </form>
             </div>
+        </br>
+            <div class="container">
+                <div class="d-flex flex-row-reverse bd-highlight">
+                    <div class = " p-2 bd-highlight">
+                        <a href="{% url 'analisis-descargar_resultados_entidades' analisis.id 'all' %}"class="btn btn-primary btn-md">Descargar</a>
+                    </div>
+                </div>
+            </div>
             </br>
             <div class="col">
-                <div class="card " style="width:75rem;">
+                <div class="card resultados" style="width:75rem;">
                     <div class="card-body">
                         <p class="card-text">
                             {%if resultados_x_archivo%}
