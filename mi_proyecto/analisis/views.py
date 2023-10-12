@@ -112,6 +112,8 @@ def resultado(request, id_analisis):
     TODO: Agrupar los resultados por archivo de origen y mostrarlos separados 
     (podria ser separados por tabs o algo asi, o en distintas secciones)
 
+    testear que pasa si no hay resultados. ver funcionamiento de try y except
+
     """
     usuario_actual = request.user
     carpetas = Carpeta.objects.filter(usuario = request.user)
@@ -141,41 +143,28 @@ def resultado(request, id_analisis):
             resultados_archivo = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
             resultados_x_archivo.append(resultados_archivo)
 
-    
-    tablas = Tabla.objects.filter(analisis = analisis)
     graficos = Grafico.objects.filter(analisis = analisis)
-    imagenes = Grafico_Imagen.objects.filter(analisis = analisis)
     resultados = Resultado.objects.filter(analisis = analisis)
-    
-
         
     if analisis.modelo.nombre == 'entidades':
         """
         TODO: cambiar estos try si se puede
         """
         try:
+            imagenes = Grafico_Imagen.objects.filter(analisis = analisis, nombre = 'Wordcloud de entidades')
             grafico_distribucion = Grafico.objects.get(analisis = analisis, nombre = 'Distribucion de entidades') 
-        except:
-            grafico_distribucion = None
-        try:
             grafico_ents_archivo = Grafico.objects.get(analisis = analisis, nombre = 'Entidades por archivo')
-        except:
-            grafico_ents_archivo = None
-        try:
             grafico_comp_archivos = Grafico.objects.get(analisis = analisis, nombre = 'Composicion de entidades por archivo')
-        except:
-            grafico_comp_archivos = None
-        try:
             grafico_lineas_ents = Grafico.objects.get(analisis = analisis, nombre = 'Relacion entre numero de linea y entidades')
-        except:
-            grafico_lineas_ents = None
-        try:
             grafico_torta = Grafico.objects.get(analisis = analisis, nombre = 'Torta distribucion de entidades')
-        except:
-            grafico_torta = None
-        try:
             tabla_distribucion = Tabla.objects.get(analisis = analisis, nombre = 'Distribucion de entidades')
         except:
+            imagenes = None
+            grafico_distribucion = None
+            grafico_ents_archivo = None
+            grafico_comp_archivos = None
+            grafico_lineas_ents = None
+            grafico_torta = None
             tabla_distribucion = None
         try:
             tabla_rep= Tabla.objects.get(analisis = analisis, nombre = 'Entidades que se repiten')
@@ -202,15 +191,28 @@ def resultado(request, id_analisis):
         return render(request, "analisis/resultado_entidades.html", context= context)
     
     elif analisis.modelo.nombre == 'clasificador':
+        # try:
+        tabla_distribucion = Tabla.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
+        grafico_distribucion = Grafico.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
+        grafico_torta = Grafico.objects.get(analisis = analisis, nombre = 'Torta distribucion de categorias')
+        grafico_categoria_archivo = Grafico.objects.get(analisis = analisis, nombre = 'Composicion de categorias por archivo') 
+        grafico_lineas_cats = Grafico.objects.get(analisis = analisis, nombre = 'Relacion numero de linea y frases violentas')
+        word_cats = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de clasificacion')
+        word_violento = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de violentos')
+       # except:
+         #   pass
         context = {
         'analisis' : analisis,
         'aplicacion' : analisis.modelo.aplicacion,
         'resultados' : resultados,
-        'imagenes' : imagenes,
-        'graficos' : graficos,
-        'tablas' : tablas,
+        'tabla_distribucion' : tabla_distribucion,
+        'grafico_distribucion' : grafico_distribucion,
+        'grafico_torta' : grafico_torta,
+        'grafico_categoria_archivo': grafico_categoria_archivo,
+        'grafico_lineas_cats':grafico_lineas_cats,
+        'word_cats' : word_cats,
+        'word_violento' : word_violento,
         }
-        
         return render(request, "analisis/resultado_clasificador.html", context= context)
     else:
         context = {
@@ -273,6 +275,9 @@ def descargar_resultados_entidades(request, id_analisis, id_archivo):
     # https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf
 
     analisis = Analisis.objects.get(id = id_analisis)
+    usuario_actual = request.user
+    if analisis.carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para descargar este resultado")
     resultados_x_archivo = []
     if id_archivo == 'all':
         archivos = Archivo.objects.filter(carpeta = analisis.carpeta)
