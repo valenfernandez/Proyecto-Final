@@ -22,13 +22,30 @@
             <p> Seleccione una aplicación a utilizar de la lista de aplicaciones disponibles: </p>
             </br>
             </br>
-            <div class="container">              
+            <div class="container">
                 <div id="progress-wrapper">
                     <button id="progress-bar-trigger">Run</button>
                     <div id="progress-bar" style="background-color: blue; width: 0%;">&nbsp;</div>
                     <div id="progress-bar-message">Waiting for progress to start...</div>
                 </div>
                 <script>
+                    var startCeleryUrl = '{% url "comenzar_tarea_celery" %}'; 
+
+                    var trigger = document.getElementById('progress-bar-trigger');
+                    trigger.addEventListener('click', fetchCeleryData)
+
+                    function fetchCeleryData() {
+                        fetch(startCeleryUrl)
+                        .then(response => response.json())
+                        .then(result => {
+                            console.log(result)
+                            var progressUrl = '{% url "task_status" 1 %}'
+                            progressUrl = progressUrl.replace("1", result.task_id);
+                            console.log(progressUrl)
+                            updateProgress(progressUrl);
+                        })
+                    }
+
                     function updateProgress (progressUrl) {
                         fetch(progressUrl).then(function(response) {
                             response.json().then(function(data) {
@@ -38,9 +55,7 @@
                             });
                         });
                     }
-                    var progressUrl = '{% url "task_status" task_id %}';  // django template usage
-                    updateProgress(progressUrl);
-                </script>                  
+                </script>
                 <div class="row">
                     <!--CAMBIAR POR UN FOR DE LAS APPS EXISTENTES!!! habria que cambiar el modelo para incluir la imagen capaz-->
                     <div class="col-6">

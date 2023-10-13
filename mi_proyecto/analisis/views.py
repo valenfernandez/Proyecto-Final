@@ -7,8 +7,10 @@ from django.contrib.auth.decorators import login_required
 from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias, Grafico, Grafico_Imagen, Tabla
 from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm
 from .nlp import procesar_analisis
+from .tasks import comenzar_celery
 from celery.result import AsyncResult
 import json
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -247,6 +249,13 @@ def borrar_archivo(request, id_archivo):
     response = redirect('/carpeta/'+str(carpeta.id))
     return response
 
+def comenzar_tarea_celery(request):
+    download_task = comenzar_celery.delay([1, 2, 3])
+    
+    task_id = download_task.task_id
+	# Print Task ID
+    print (f'Celery Task ID: {task_id}')
+    return JsonResponse({'task_id':task_id})
 
 @login_required
 def borrar_resultado(request, id_analisis):
@@ -259,7 +268,9 @@ def borrar_resultado(request, id_analisis):
 
 
 def get_progress(request, task_id):
+    print("executing!!")
     result = AsyncResult(task_id)
+    print(result)
     response_data = {
         'state': result.state,
         'details': result.info,
