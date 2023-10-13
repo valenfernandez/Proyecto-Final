@@ -9,7 +9,7 @@
             <div class="sidebar-brand"> Menu </div>
             <a href="{% url 'analisis-principal' %}">Aplicaciones</a>
             <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
-            <a class="active" href="">Mis Resultados</a>
+            <a class="active" href="">Mis Analisis</a>
             <a href="{% url 'analisis-config' %}">Configuracion</a>
         </div>
     </div>
@@ -17,7 +17,7 @@
         <main role="main" class="container">
             </br>
             </br>
-            <h2>Mis Resultados</h2>
+            <h2>Mis Analisis</h2>
             </br>
 
             <!--Resultados-->
@@ -28,6 +28,11 @@
                     {% for analisis in analisis %}
                         <div class="col-6">
                             <div class="card bg-transparent border-0" style="width:10rem;">
+                                <div class = "text-end">
+                                    <a href="{% url 'analisis-borrar_analisis' analisis.id %}" onclick="return confirm('Estas seguro de que quieres eliminar este analisis?')">
+                                        <img src="{% static 'images/trash.png'%}" width="20" >
+                                    </a>
+                                </div>
                                 <div class="text-center" >
                                     <a href="{% url 'analisis-resultado' analisis.id %}">
                                         <div class="text-center" >

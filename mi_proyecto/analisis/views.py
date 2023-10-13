@@ -11,6 +11,7 @@ from .tasks import comenzar_celery
 from celery.result import AsyncResult
 import json
 from django.http import JsonResponse
+from xhtml2pdf import pisa
 
 # Create your views here.
 
@@ -258,14 +259,53 @@ def comenzar_tarea_celery(request):
     return JsonResponse({'task_id':task_id})
 
 @login_required
-def borrar_resultado(request, id_analisis):
-    #TODO
+def borrar_carpeta(request, id_carpeta):
+    
+    carpeta = Carpeta.objects.get(id = id_carpeta)
+    usuario_actual = request.user
+    if carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para borrar este archivo")
+    carpeta.delete()
+    response = redirect('/carpetas')
+    return response
+
+
+@login_required
+def borrar_analisis(request, id_analisis):
     analisis = Analisis.objects.get(id = id_analisis)
     usuario_actual = request.user
     if analisis.carpeta.usuario != usuario_actual:
         return HttpResponse("No tiene permiso para borrar este resultado")
-    return 1
+    analisis.delete()
+    response = redirect('/resultados')
+    return response
 
+def descargar_resultados_entidades(request, id_analisis, id_archivo):
+    # https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf
+
+    analisis = Analisis.objects.get(id = id_analisis)
+    resultados_x_archivo = []
+    if id_archivo == 'all':
+        archivos = Archivo.objects.filter(carpeta = analisis.carpeta)
+        for archivo in archivos:
+            resultados_archivo = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
+            resultados_x_archivo.append(resultados_archivo)
+    else:
+        archivo = Archivo.objects.get(id = id_archivo)
+        resultados = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
+        resultados_x_archivo.append(resultados)
+    
+    html = ''
+    for reultados_archivo in resultados_x_archivo:
+        for resultado in reultados_archivo:
+            html += "<div class='col'> <div>"+ resultado.html+"</div> </div>"
+        #agregar pagina al pdf.
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename= "resultados_entidades.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+            return HttpResponse('We had some errors')
+    return response
 
 def get_progress(request, task_id):
     print("executing!!")
@@ -276,19 +316,3 @@ def get_progress(request, task_id):
         'details': result.info,
     }
     return HttpResponse(json.dumps(response_data), content_type='application/json')
-
-"""
-from django.views.generic.edit import DeleteView
-from django.urls import reverse_lazy
-from django.contrib import messages
-
-class CarpetaDeleteView(DeleteView):
-    model = Carpeta
-    success_url = reverse_lazy('carpeta-list')
-
-    def post(self, request, *args, **kwargs):
-        obj = self.get_object()
-        messages.warning(request, f"Deleting {obj.nombre} will also delete all associated files. Please download the results before deleting if possible.")
-        return super().post(request, *args, **kwargs)
-    
-"""

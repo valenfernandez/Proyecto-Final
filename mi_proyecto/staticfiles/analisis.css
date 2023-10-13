@@ -170,3 +170,7 @@
     color: white;
     background-color: #99001C; 
   }
+
+  .card-text {
+    color: black;
+  }
