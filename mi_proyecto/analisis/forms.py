@@ -8,7 +8,6 @@ import magic
 from .models import Analisis, Carpeta, Colores, Preferencias, Modelo, Archivo
 from mi_proyecto import settings
 
-
 class FileForm(forms.Form):
     file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
                            help_text='</br> <br/> Seleccionar archivos .txt .docx .xlsx')
@@ -77,4 +76,29 @@ class ResultadoViewForm(forms.Form):
         file_choices.insert(0, ('all', 'Todos los archivos'))
         self.fields['file_choice'].choices = file_choices
         self.fields['file_choice'].label = 'Mostrar archivo'
+
+
+
+class AnalisisViewForm(forms.Form):
+    carpeta = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
+
+    fecha = forms.DateField(widget=forms.widgets.DateInput(
+            attrs={
+                'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)',
+                'class': 'form-control'
+                }
+            ), required=False)
+
+    def __init__(self, *args, **kwargs):
+        user_id = kwargs.pop('user_id')
+        super(AnalisisViewForm, self).__init__(*args, **kwargs)
+        user = User.objects.get(id=user_id)
+
+        carpetas = Carpeta.objects.filter(usuario = user)
+        carpeta_choices = [(carpeta.id, carpeta.nombre) for carpeta in carpetas]
+        carpeta_choices.insert(0, ('all', 'Todas'))
+        self.fields['carpeta'].choices = carpeta_choices
+        self.fields['carpeta'].label = 'Carpeta'
+        self.fields['fecha'].label = 'Hasta fecha:'
+        self.fields['fecha'].help_text = '<br/> Se mostraran todos los analisis anteriores a la fecha seleccionada.'
 
