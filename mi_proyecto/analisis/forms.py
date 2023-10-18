@@ -66,7 +66,6 @@ class PreferenciasForm(ModelForm):
 
 class ResultadoViewForm(forms.Form):
     file_choice = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
-
     def __init__(self, *args, **kwargs):
         analisis_id = kwargs.pop('analisis_id')
         super(ResultadoViewForm, self).__init__(*args, **kwargs)
@@ -78,17 +77,31 @@ class ResultadoViewForm(forms.Form):
         self.fields['file_choice'].label = 'Mostrar archivo'
 
 
+class ResultadoClasificadorViewForm(forms.Form):
+    file_choice = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
+    violentos = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        analisis_id = kwargs.pop('analisis_id')
+        super(ResultadoClasificadorViewForm, self).__init__(*args, **kwargs)
+        analisis = Analisis.objects.get(id=analisis_id)
+        archivos = Archivo.objects.filter(carpeta=analisis.carpeta)
+        file_choices = [(archivo.id, archivo.nombre) for archivo in archivos]
+        file_choices.insert(0, ('all', 'Todos los archivos'))
+        self.fields['file_choice'].choices = file_choices
+        self.fields['file_choice'].label = 'Mostrar archivo'
+        self.fields['violentos'].label = 'Excluir no violentos'
+
+
 
 class AnalisisViewForm(forms.Form):
     carpeta = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
-
     fecha = forms.DateField(widget=forms.widgets.DateInput(
             attrs={
                 'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)',
                 'class': 'form-control'
                 }
             ), required=False)
-
     def __init__(self, *args, **kwargs):
         user_id = kwargs.pop('user_id')
         super(AnalisisViewForm, self).__init__(*args, **kwargs)

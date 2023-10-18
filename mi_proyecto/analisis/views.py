@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias, Grafico, Grafico_Imagen, Tabla
-from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm, AnalisisViewForm
+from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm, AnalisisViewForm, ResultadoClasificadorViewForm
 from .nlp import procesar_analisis
 from xhtml2pdf import pisa
 from django.db.models import Q
@@ -129,49 +129,49 @@ def resultados(request):
     return render(request, "analisis/resultados.html",context=context) 
 
 
+
+
+
 @login_required
 def resultado(request, id_analisis):
     """
     TODO: testear que pasa si no hay resultados. ver funcionamiento de try y except
 
     """
+
     usuario_actual = request.user
     carpetas = Carpeta.objects.filter(usuario = request.user)
     analisis = Analisis.objects.get(id = id_analisis)
     if analisis.carpeta.usuario != usuario_actual:
         return HttpResponse("No tiene permiso para ver este resultado")
     
-
     resultados_x_archivo = None
-    if request.method == 'POST':
-        form = ResultadoViewForm(request.POST, analisis_id = analisis.id)
-        if form.is_valid():
-            file_choice = form.cleaned_data['file_choice']
-            if file_choice == 'all':
-                resultados_x_archivo = []
-                archivos = Archivo.objects.filter(carpeta = analisis.carpeta)
-                for archivo in archivos:
-                    resultados_archivo = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
-                    resultados_x_archivo.append(resultados_archivo)
-                resultados = Resultado.objects.filter(analisis = analisis)
-            else:
-                resultados = Resultado.objects.filter(analisis = analisis, archivo_origen = Archivo.objects.get(id = file_choice))
-                #no hay resultados_x_archivo porque solo se selecciono un archivo
-    else:
-        form = ResultadoViewForm(analisis_id = analisis.id)
-        resultados_x_archivo = []
-        archivos = Archivo.objects.filter(carpeta = analisis.carpeta)
-        for archivo in archivos:
-            resultados_archivo = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
-            resultados_x_archivo.append(resultados_archivo)
-        resultados = Resultado.objects.filter(analisis = analisis)
-
-    graficos = Grafico.objects.filter(analisis = analisis)
+    form = None
+    form_c = None
         
     if analisis.modelo.nombre == 'entidades':
-        """
-        TODO: cambiar estos try si se puede. 
-        """
+        if request.method == 'POST':
+            form = ResultadoViewForm(request.POST, analisis_id = analisis.id)
+            if form.is_valid():
+                file_choice = form.cleaned_data['file_choice']
+                if file_choice == 'all':
+                    resultados_x_archivo = []
+                    archivos = Archivo.objects.filter(carpeta = analisis.carpeta)
+                    for archivo in archivos:
+                        resultados_archivo = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
+                        resultados_x_archivo.append(resultados_archivo)
+                    resultados = Resultado.objects.filter(analisis = analisis)
+                else:
+                    resultados = Resultado.objects.filter(analisis = analisis, archivo_origen = Archivo.objects.get(id = file_choice))
+                    #no hay resultados_x_archivo porque solo se selecciono un archivo
+        else:
+            form = ResultadoViewForm(analisis_id = analisis.id)
+            resultados_x_archivo = []
+            archivos = Archivo.objects.filter(carpeta = analisis.carpeta)
+            for archivo in archivos:
+                resultados_archivo = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
+                resultados_x_archivo.append(resultados_archivo)
+            resultados = Resultado.objects.filter(analisis = analisis)
         try:
             imagenes = Grafico_Imagen.objects.filter(analisis = analisis, nombre = 'Wordcloud de entidades')
             grafico_distribucion = Grafico.objects.get(analisis = analisis, nombre = 'Distribucion de entidades') 
@@ -198,7 +198,6 @@ def resultado(request, id_analisis):
         'aplicacion' : analisis.modelo.aplicacion,
         'resultados' : resultados,
         'wordclouds' : imagenes,
-        'graficos' : graficos,
         'tabla_distribucion' : tabla_distribucion,
         'tabla_rep': tabla_rep,
         'grafico_distribucion' : grafico_distribucion,
@@ -213,6 +212,22 @@ def resultado(request, id_analisis):
         return render(request, "analisis/resultado_entidades.html", context= context)
     
     elif analisis.modelo.nombre == 'clasificador':
+        if request.method == 'POST':
+            form_c = ResultadoClasificadorViewForm(request.POST, analisis_id = analisis.id)
+            if form_c.is_valid():
+                file_choice = form_c.cleaned_data['file_choice']
+                violentos = form_c.cleaned_data['violentos']
+                if file_choice == 'all':
+                    resultados = Resultado.objects.filter(analisis = analisis).order_by('archivo_origen','numero_linea')
+                else:
+                    resultados = Resultado.objects.filter(analisis = analisis, archivo_origen = Archivo.objects.get(id = file_choice)).order_by('numero_linea')
+                if violentos: #tengo que sacar del resultado los que no son violentos
+                    resultados = resultados.exclude(detectado = 'No Violento')
+
+        else:
+            form_c = ResultadoClasificadorViewForm(analisis_id = id_analisis)
+            resultados = Resultado.objects.filter(analisis = analisis).order_by('archivo_origen','numero_linea')
+
 
         tabla_distribucion = Tabla.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
         grafico_distribucion = Grafico.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
@@ -233,8 +248,7 @@ def resultado(request, id_analisis):
         'grafico_lineas_cats':grafico_lineas_cats,
         'word_cats' : word_cats,
         'word_violento' : word_violento,
-        'resultados_x_archivo': resultados_x_archivo,
-        'form': form,
+        'form': form_c,
         }
         return render(request, "analisis/resultado_clasificador.html", context= context)
     else:
