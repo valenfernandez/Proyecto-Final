@@ -38,11 +38,6 @@ def procesar_analisis(analisis, user):
 
 def procesar_entidades(analisis, carpeta, user):
     """ 
-    TODO: Lectura del archivo en utf-8. Supeuestamente debería ser el default pero no lo esta leyendo asi como es un filefield se tiene que leer con file.open("r") capaz es un problema en el modelo o en el formulario cuando se guarda el archivo.
-
-
-
-
     Esta función se encarga de procesar los archivos de una carpeta con el modelo de detección de entidades.
     Para cada archivo, se extraen los textos y se detectan las entidades.
     Luego, se arma el objeto resultado y se lo guarda en la base de datos.
@@ -110,12 +105,10 @@ def procesar_entidades(analisis, carpeta, user):
     for archivo in archivos:
         with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
             lines = f.read().splitlines()
-            print(lines)
         docs = list(nlp.pipe(lines))
 
         # 3: Armar el objeto resultado de cada uno:
         for index, doc in enumerate(docs):
-
             entidades = []
             for ent in doc.ents:
                 entidad = {
@@ -124,7 +117,6 @@ def procesar_entidades(analisis, carpeta, user):
                 }
                 entidades.append(entidad)
             entidades_json = json.dumps(entidades, ensure_ascii=False)
-
             texto = doc.text
             detectado = entidades_json
             html = displacy.render(doc, style="ent", options=options)
@@ -139,7 +131,7 @@ def procesar_entidades(analisis, carpeta, user):
 
 def armar_informe_entidades(analisis, preferencia): 
     """
-    Esta funcion crea el archivo html que contiene el informe de los resultados de un analisis creado por un modelo de deteccion de entidades.
+    Esta funcion crea los graficos y las tablas que contiene el informe de los resultados de un analisis creado por un modelo de deteccion de entidades.
 
     Parameters
     ----------
@@ -311,8 +303,6 @@ def armar_informe_entidades(analisis, preferencia):
 
     return 1
 
-
-
 def format_msj_wpp(file): #como se plantea la solucion se podria perder el nombre del usuario que envio el mensaje. Podria incorporarse como parte del json en 'detectado' {sentimiento: VIOLENTO, remitente: User} lo mismo con la fecha.
 
     #capaz en un campo 'metadata' porque el tema seria si en una carpeta a analizar hay varios archivos unos de wpp y otros no. 
@@ -354,7 +344,6 @@ def format_msj_wpp(file): #como se plantea la solucion se podria perder el nombr
 
     return user_texts, all_texts
 
-
 def procesar_clasificador(analisis, carpeta, user):
 
     #TODO: La funcion no da los numero de linea y deja todos los no violentos que encuentra primero y los demas despues. No quedan las cosas en orden.
@@ -363,16 +352,14 @@ def procesar_clasificador(analisis, carpeta, user):
     
     model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-binario" )
     nlp = spacy.load(model_path)
-
     model_path_multi = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-multi" )
     nlp_multi = spacy.load(model_path_multi)
 
     # 2: Extraer textos de los archivos en la carpeta
-
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
         file = archivo.arch
-        with file.open("r") as f: 
+        with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
             lines = f.read().splitlines()
 
         # TODO : chequear si el archivo es de wpp o no.
@@ -397,8 +384,6 @@ def procesar_clasificador(analisis, carpeta, user):
                 numero_linea = index + 1
                 Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
                 
-        
-
         docs_multi = list(nlp_multi.pipe(violentos_text))
 
         # 3: Armar el objeto resultado de cada uno:
@@ -408,15 +393,152 @@ def procesar_clasificador(analisis, carpeta, user):
             html = "" #Como no hay displacy predeterminado es mejor directamente armar la tabla en el template.
             archivo_origen = archivo
             numero_linea = violentos_index[doc.text].pop(0)
-
             Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
 
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
-    # analisis.informe = armar_informe_clasificador(analisis)
-    analisis.save() 
+    preferencia = Preferencias.objects.get(usuario = user)
+
+    armar_informe_clasificador(analisis,preferencia)
     return 1
     
 
 
-def armar_informe_clasificador():
-    pass
+def armar_informe_clasificador(analisis, preferencia):
+    """
+    Esta funcion crea los graficos y las tablas que contiene el informe de los resultados de un analisis creado por un modelo de clasificación de violencia
+
+    Parameters
+    ----------
+    :param: analisis (Analisis) Es un analisis realizado previamente que ya tiene resultados asociados, de los cuales se quiere crear un informe.
+
+    :param: preferencia (Preferencias) Es un objeto que contiene las preferencias del usuario que realizo el analisis.
+
+    Return
+    ------
+    :return: 1 (int) Si los elementos del informe se crearon correctamente devuelve 1.
+
+    """
+
+    os.makedirs(f'analisis/static/graficos/{analisis.id}', exist_ok=True)
+
+    resultados = Resultado.objects.filter(analisis = analisis)
+    
+    domain =["No violento", "Sexual", "Física", "Económica", "Simbólica", "Psicológica"]
+    domain_v =["Sexual", "Física", "Económica", "Simbólica", "Psicológica"]
+    range_ = []
+
+    if preferencia.color == "AM":
+        range_= ["#2706AD","#5C40D0","#889AFD","#F3D850","#FFD500","#9A7300"]
+    elif preferencia.color == "AR":
+        range_= ["#00065D","#2257EC","#7A8BE6","#FF9696","#F94D67","#99001C"]
+    else:
+        range_= ["#F3D850","#FECA74","#7AECEC","#BFE1D9","#AA9CFC","#C887FB"]
+
+    data_completos = []
+    data_violentos = []
+    for resultado in resultados:
+        data_completos.append({
+            'text': resultado.texto,
+            'clasificacion': resultado.detectado,
+            'archivo_origen': resultado.archivo_origen.nombre,
+            'numero_linea': resultado.numero_linea
+        })
+        if resultado.detectado != "No Violento":
+            data_violentos.append({
+                'text': resultado.texto,
+                'clasificacion': resultado.detectado,
+                'archivo_origen': resultado.archivo_origen.nombre,
+                'numero_linea': resultado.numero_linea
+            })
+
+    df_completo = pd.DataFrame(data_completos)
+    df_violentos = pd.DataFrame(data_violentos)
+
+    counts = df_completo['clasificacion'].value_counts().reset_index()#pd indice categorias y valor num de apariciones
+    counts.columns = ['Categoria', 'Apariciones']
+    tabla_categorias_count = Tabla(nombre = "Distribucion de categorias", tabla = counts.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
+    tabla_categorias_count.save()
+
+    # -deberia excluir los que tienen valor No violento
+
+    # Cantidad de cada tipo de violencia
+    chart_count_cats = alt.Chart(df_violentos, title="Distribucion de categorias").mark_bar().encode(
+        x = alt.X('clasificacion:N', title='Categoria'),
+        y = alt.Y('count():Q', title='N° Apariciones'),
+        color = alt.Color('clasificacion', scale = alt.Scale(domain=domain_v, range=range_)),
+        tooltip=['clasificacion:N', 'count():Q']
+    ).interactive()
+    json_count_cats = chart_count_cats.to_json()
+    grafico_cout_cats = Grafico(nombre = "Distribucion de categorias", chart = json_count_cats, analisis = analisis)
+    grafico_cout_cats.save()
+
+    chart_torta = alt.Chart(df_violentos).mark_arc().encode(
+    theta="count():Q",
+    color= alt.Color('clasificacion', scale = alt.Scale(domain=domain_v, range=range_)),
+    tooltip=['clasificacion:N', 'count():Q']
+    ).interactive()
+    json_torta = chart_torta.to_json()
+    grafico_torta = Grafico(nombre = "Torta distribucion de categorias", chart = json_torta, analisis = analisis)
+    grafico_torta.save()
+
+    #Tipo de violencia por cada archivo
+    file_label_counts = df_violentos.groupby(['archivo_origen', 'clasificacion'])['text'].count().reset_index()
+    file_label_counts.columns = ['archivo_origen', 'clasificacion', 'count']
+    # Create a stacked bar chart
+    chart_comp_file = alt.Chart(file_label_counts).mark_bar().encode(
+        x=alt.X('archivo_origen:N', title='File'),
+        y=alt.Y('count:Q', title='Categoria Count'),
+        color=alt.Color('clasificacion:N', title='Clasificacion violencia',scale = alt.Scale(domain=domain_v, range=range_)),
+        tooltip=['archivo_origen:N', 'clasificacion:N', 'count:Q']
+    ).properties(
+        title='Composicion de tipos de violencia por archivo'
+    )
+    json_comp_file = chart_comp_file.to_json()
+    grafico_comp_file = Grafico(nombre = "Composicion de categorias por archivo", chart = json_comp_file, analisis = analisis)
+    grafico_comp_file.save()
+
+    ## Relacion para cada archivo: numero de violentos y linea 
+    scatterplots = []
+    for file_name, group_df in df_violentos.groupby('archivo_origen'):
+        scatterplot = alt.Chart(group_df).mark_circle().encode(
+            x=alt.X('numero_linea:O', title='Numero de lines'),
+            y=alt.Y('clasificacion:N', title='Categoria'),
+            color=alt.Color('clasificacion:N', title='Categoria', scale = alt.Scale(domain=domain_v, range=range_)),
+            tooltip=['clasificacion:N', 'numero_linea:O', 'text:N']
+        ).properties(
+            title=f'Relación entre numero de linea y frases violentas en archivo {file_name}'
+        )
+        scatterplots.append(scatterplot)
+    chart_lineas_cat = alt.vconcat(*scatterplots)
+    json_lineas_cat = chart_lineas_cat.to_json()
+    grafico_lineas_cat = Grafico(nombre = "Relacion numero de linea y frases violentas", chart = json_lineas_cat, analisis = analisis)
+    grafico_lineas_cat.save()
+
+    #Wordcloud completo
+    text = ' '.join(df_completo['text'])
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title('Palabras detectadas')
+    wordcloud_path = f'analisis/static/graficos/{analisis.id}/wordcloud_cats_{analisis.id}.png'
+    wordcloud.to_file(wordcloud_path)
+    imagen_wordcloud_total = Grafico_Imagen(nombre = "Wordcloud de clasificacion", analisis = analisis)
+    imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
+    imagen_wordcloud_total.save()
+
+    #Wordcloud violentos
+    text = ' '.join(df_violentos['text'])
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title('Palabras detectadas')
+    wordcloud_path = f'analisis/static/graficos/{analisis.id}/wordcloud_violentos_{analisis.id}.png'
+    wordcloud.to_file(wordcloud_path)
+    imagen_wordcloud_total = Grafico_Imagen(nombre = "Wordcloud de violentos", analisis = analisis)
+    imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
+    imagen_wordcloud_total.save()
+
+
+    return 1

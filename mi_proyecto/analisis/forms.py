@@ -8,7 +8,6 @@ import magic
 from .models import Analisis, Carpeta, Colores, Preferencias, Modelo, Archivo
 from mi_proyecto import settings
 
-
 class FileForm(forms.Form):
     file = forms.FileField(widget=forms.ClearableFileInput(attrs={'allow_multiple_selected': True}),
                            help_text='</br> <br/> Seleccionar archivos .txt .docx .xlsx', required=False)
@@ -67,7 +66,6 @@ class PreferenciasForm(ModelForm):
 
 class ResultadoViewForm(forms.Form):
     file_choice = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
-
     def __init__(self, *args, **kwargs):
         analisis_id = kwargs.pop('analisis_id')
         super(ResultadoViewForm, self).__init__(*args, **kwargs)
@@ -77,4 +75,43 @@ class ResultadoViewForm(forms.Form):
         file_choices.insert(0, ('all', 'Todos los archivos'))
         self.fields['file_choice'].choices = file_choices
         self.fields['file_choice'].label = 'Mostrar archivo'
+
+
+class ResultadoClasificadorViewForm(forms.Form):
+    file_choice = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
+    violentos = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        analisis_id = kwargs.pop('analisis_id')
+        super(ResultadoClasificadorViewForm, self).__init__(*args, **kwargs)
+        analisis = Analisis.objects.get(id=analisis_id)
+        archivos = Archivo.objects.filter(carpeta=analisis.carpeta)
+        file_choices = [(archivo.id, archivo.nombre) for archivo in archivos]
+        file_choices.insert(0, ('all', 'Todos los archivos'))
+        self.fields['file_choice'].choices = file_choices
+        self.fields['file_choice'].label = 'Mostrar archivo'
+        self.fields['violentos'].label = 'Excluir no violentos'
+
+
+
+class AnalisisViewForm(forms.Form):
+    carpeta = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
+    fecha = forms.DateField(widget=forms.widgets.DateInput(
+            attrs={
+                'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)',
+                'class': 'form-control'
+                }
+            ), required=False)
+    def __init__(self, *args, **kwargs):
+        user_id = kwargs.pop('user_id')
+        super(AnalisisViewForm, self).__init__(*args, **kwargs)
+        user = User.objects.get(id=user_id)
+
+        carpetas = Carpeta.objects.filter(usuario = user)
+        carpeta_choices = [(carpeta.id, carpeta.nombre) for carpeta in carpetas]
+        carpeta_choices.insert(0, ('all', 'Todas'))
+        self.fields['carpeta'].choices = carpeta_choices
+        self.fields['carpeta'].label = 'Carpeta'
+        self.fields['fecha'].label = 'Hasta fecha:'
+        self.fields['fecha'].help_text = '<br/> Se mostraran todos los analisis anteriores a la fecha seleccionada.'
 

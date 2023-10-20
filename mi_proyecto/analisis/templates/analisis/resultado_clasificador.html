@@ -1,6 +1,51 @@
 {% extends "analisis/base.html" %}
 {% block content %}
 
+<script>
+    window.jsPDF = window.jspdf.jsPDF;
+    function demoFromHTML(titulo, filename) {
+        window.jsPDF = window.jspdf.jsPDF;
+        var cardElement = document.querySelector('.informe');
+
+        html2canvas(cardElement).then((canvas) => {
+            var imgData = canvas.toDataURL('image/png');
+            var width = canvas.width;
+            var height = canvas.height;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [width, height + 50]
+            });
+            doc.setFontSize(50); // Set the font size
+            doc.text('Informe clasificador de violencia: ' + titulo, 10, 30); // Add the title
+            doc.addImage(imgData, 'PNG', 0, 50, width, height);
+            doc.save(filename + ".pdf");
+        });
+    }
+</script>
+<script>
+    window.jsPDF = window.jspdf.jsPDF;
+    function tableFromHTML(titulo, filename) {
+        window.jsPDF = window.jspdf.jsPDF;
+        var cardElement = document.querySelector('.resultados');
+
+        html2canvas(cardElement).then((canvas) => {
+            var imgData = canvas.toDataURL('image/png');
+            var width = canvas.width;
+            var height = canvas.height;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [width, height + 50]
+            });
+            doc.setFontSize(50); // Set the font size
+            doc.text('Resultados clasificador de violencia: ' + titulo, 10, 30); // Add the title
+            doc.addImage(imgData, 'PNG', 0, 50, width, height);
+            doc.save(filename + ".pdf");
+        });
+    }
+</script>
+
 <div class="row">
     <!-- Menu -->
     <div class="col-sm">
@@ -21,37 +66,90 @@
             <div class="container">
                 <div class="d-flex flex-row-reverse bd-highlight">
                     <div class = " p-2 bd-highlight">
-                        <a href="#" class="btn btn-primary btn-md">Descargar</a> 
+                        <a href="javascript:demoFromHTML('{{analisis.carpeta.nombre}}','{{analisis}}')" class="btn btn-primary btn-md">Descargar</a> 
                     </div>
                     <div class = " p-2 bd-highlight">
                         <a href= "{% url 'analisis-borrar_analisis' analisis.id %}" onclick="return confirm('Estas seguro de que quieres eliminar este analisis?')" class="btn btn-outline-danger btn-md">Borrar</a>
                     </div>
                 </div>
-            </div>sss
+            </div>
 
             <h5> Informe </h5>
             </br>
             </br>
             <div class="col-6">
-                <div class="card " style="width:75rem;">
+                <div class="card informe" style="width:75rem;">
                     <div class="card-body">
-                        <p class="card-text">
-                            {% if analisis.informe %}
-                                <div class="col-6">
-                                    <div>
-                                        <div id="vis"></div>
-                                        <!--SCRIPT PARA CARGAR UN GRAFICO-->
-                                        <script type="text/javascript">
-                                            //var spec = {{ analisis.informe|safe }};
-                                            vegaEmbed('#vis', spec).then(function(result) {
-                                            // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-                                            }).catch(console.error);
-                                        </script>
+                        <p class="card-text ">
+
+                                <div class="container">
+
+                                    <div class="row">
+                                        <h4> Distribución de entidades </h4>
+                                        </br>
+                                        </br>
+                                        <div class="col"> 
+                                            <div id="gdis"></div>
+                                            <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                            <script type="text/javascript">
+                                                var spec = {{ grafico_distribucion.chart|safe }};
+                                                vegaEmbed('#gdis', spec).then(function(result) {
+                                                // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                }).catch(console.error);
+                                            </script>
+                                        </div>
+                                        <div class="col"> 
+                                            <div id="gtorta"></div>
+                                            <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                            <script type="text/javascript">
+                                                var spec = {{ grafico_torta.chart|safe }};
+                                                vegaEmbed('#gtorta', spec).then(function(result) {
+                                                // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                }).catch(console.error);
+                                            </script>
+                                        </div>
+                                        <div class="col"> 
+                                            {{tabla_distribucion.tabla|safe}}
+                                        </div>                                        
                                     </div>  
+                                    </br>
+                                    </br>
+                                    <div class="row">
+                                        <div class="col"> 
+                                            <div id="glineas"></div>
+                                            <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                            <script type="text/javascript">
+                                                var spec = {{ grafico_lineas_cats.chart|safe }};
+                                                vegaEmbed('#glineas', spec).then(function(result) {
+                                                // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                }).catch(console.error);
+                                            </script>
+                                        </div>
+                                        <div class="col"> 
+                                            <div id="gcat_arch"></div>
+                                            <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                            <script type="text/javascript">
+                                                var spec = {{ grafico_categoria_archivo.chart|safe }};
+                                                vegaEmbed('#gcat_arch', spec).then(function(result) {
+                                                // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                }).catch(console.error);
+                                            </script>
+                                        </div>
+                                    </div>
+                                    </br>
+                                    </br>
+                                    <div class="row">
+                                        <div class="col">
+                                                <img src="{{ word_cats.imagen.url }}" alt="Grafico Imagen">
+                                        </div>
+                                    </br>
+                                    </br>
+                                        <div class="col">
+                                            <img src="{{ word_violento.imagen.url }}" alt="Grafico Imagen">
+                                        </div>
+                                    </div>
+
                                 </div>
-                            {% else %}
-                                <p>No hay datos para mostrar.</p>
-                            {% endif %}
                         </p>
                     </div>
                 </div> 
@@ -60,10 +158,22 @@
 
             <h5> Resultados completos </h5>
             </br>
-            
+                <div class = "col-3">
+                    <form action="" method=POST enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit" value="Filtrar" class="btn btn-primary btn-md"> 
+                    </form>
+                </div>
             </br>
+            </br>
+            <div class="d-flex flex-row-reverse bd-highlight">
+                <div class = " p-2 bd-highlight">
+                    <a href= "javascript:tableFromHTML('{{analisis.carpeta.nombre}}','{{analisis}}')"   class="btn btn-primary btn-md">Descargar</a>
+                </div>
+            </div>
             <div class="col-6">
-                <div class="card " style="width:75rem;">
+                <div class="card resultados" style="width:75rem;">
                     <div class="card-body">
                         <p class="card-text">
                                     <table class="table">
@@ -78,7 +188,7 @@
                                         <tbody>
                                             {% for resultado in resultados %}
                                                 <tr>
-                                                    <th scope="row">{{resultado.index}}</th>
+                                                    <th scope="row">{{resultado.numero_linea}}</th>
                                                     <td >{{resultado.texto}}</td>
 
                                                     {% if resultado.detectado == "No Violento" %}
