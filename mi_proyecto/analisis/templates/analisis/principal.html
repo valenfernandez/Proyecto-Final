@@ -47,11 +47,18 @@
                     }
 
                     function updateProgress (progressUrl) {
+                        console.log("volviendo a hacer fetch del progreso")
                         fetch(progressUrl).then(function(response) {
                             response.json().then(function(data) {
-                                // update the appropriate UI components
-                                setProgress(data.state, data.details);
-                                setTimeout(updateProgress, 500, progressUrl);
+                                console.log(data)
+                                if (data.state !== 'SUCCESS') {
+                                    // update the appropriate UI components
+                                    var bar = document.getElementById("progress-bar");
+                                    var barMessage = document.getElementById("progress-bar-message");
+                                    bar.style.width = data.details.current * 10 + "%";
+                                    barMessage.innerHTML = data.details.current * 10 + ' of ' + data.details.total * 10 + ' processed.';
+                                    setTimeout(updateProgress, 500, progressUrl);
+                                }
                             });
                         });
                     }

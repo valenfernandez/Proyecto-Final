@@ -12,6 +12,7 @@ from celery.result import AsyncResult
 import json
 from django.http import JsonResponse
 from xhtml2pdf import pisa
+import time
 
 # Create your views here.
 
@@ -311,6 +312,8 @@ def get_progress(request, task_id):
     print("executing!!")
     result = AsyncResult(task_id)
     print(result)
+    print(result.state)
+    print(result.info)
     response_data = {
         'state': result.state,
         'details': result.info,

@@ -32,6 +32,9 @@ MEDIA_ROOT = (BASE_DIR)
 
 MEDIA_URL = '/media/'
 
+CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mi_proyecto'
 ]
 
 MIDDLEWARE = [
