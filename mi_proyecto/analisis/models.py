@@ -67,11 +67,15 @@ class Archivo(models.Model):
 
 class Resultado(models.Model): #esto lo estamos conciderando como una linea del resultado
     texto = models.CharField(max_length = 5000)
-    detectado = models.TextField() #esto seria un json muy corto o un string (varia segun la aplicación que lo generó)
+    detectado = models.TextField() 
     archivo_origen = models.ForeignKey(Archivo, on_delete=models.CASCADE)  #SI SE BORRA EL ARCHIVO DE ORIGEN SE BORRA EL RESULTADO! (esto es para evitar errores de integridad)
     numero_linea = models.IntegerField() 
     analisis = models.ForeignKey(Analisis, on_delete = models.CASCADE)
-    html = models.TextField(default=" ")
+    html = models.TextField(default=" ") #solo es usado en modelos que generan html con displacy
+    
+    remitente = models.CharField(max_length = 5000, blank=True, null=True, default="Desconocido")
+    fecha_envio = models.DateTimeField(blank=True, null=True)
+
     def __str__(self):
         return (
             f"{self.analisis} - {self.numero_linea}"

@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email 
 from django.contrib.auth.models import User
 import magic
-from .models import Analisis, Carpeta, Colores, Preferencias, Modelo, Archivo
+from .models import Analisis, Carpeta, Colores, Preferencias, Modelo, Archivo, Resultado
 from mi_proyecto import settings
 
 class FileForm(forms.Form):
@@ -80,18 +80,35 @@ class ResultadoViewForm(forms.Form):
 class ResultadoClasificadorViewForm(forms.Form):
     file_choice = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
     violentos = forms.BooleanField(required=False)
-
+    remitente = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
+    fecha = forms.DateField(widget=forms.widgets.DateInput(
+            attrs={
+                'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)',
+                'class': 'form-control'
+                }
+            ), required=False)
+    
     def __init__(self, *args, **kwargs):
         analisis_id = kwargs.pop('analisis_id')
         super(ResultadoClasificadorViewForm, self).__init__(*args, **kwargs)
         analisis = Analisis.objects.get(id=analisis_id)
         archivos = Archivo.objects.filter(carpeta=analisis.carpeta)
+
+        resultados = Resultado.objects.filter(analisis = analisis)
+        remitentes = resultados.values_list('remitente', flat=True).distinct()
+        
+        remitentes_choices = [(remitente, remitente) for remitente in remitentes if remitente]
+        remitentes_choices.insert(0,('all', 'Todos los usuarios'))
         file_choices = [(archivo.id, archivo.nombre) for archivo in archivos]
         file_choices.insert(0, ('all', 'Todos los archivos'))
+        
         self.fields['file_choice'].choices = file_choices
         self.fields['file_choice'].label = 'Mostrar archivo'
+        self.fields['remitente'].choices = remitentes_choices
+        self.fields['remitente'].label = 'Mostrar usuario'
         self.fields['violentos'].label = 'Excluir no violentos'
-
+        self.fields['fecha'].label = 'Hasta fecha:'
+        self.fields['fecha'].help_text = '<br/> Se mostraran todos los mensajes marcados hasta a la fecha seleccionada.'
 
 
 class AnalisisViewForm(forms.Form):

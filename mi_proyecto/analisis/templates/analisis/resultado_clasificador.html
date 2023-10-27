@@ -85,7 +85,6 @@
                                 <div class="container">
 
                                     <div class="row">
-                                        <h4> Distribución de entidades </h4>
                                         </br>
                                         </br>
                                         <div class="col"> 
@@ -163,6 +162,7 @@
                 </div> 
                 </br>     
             </div>
+        </div>
         </br>
         </br>
             <h5> Resultados completos </h5>
@@ -176,9 +176,11 @@
                 </div>
             </br>
             </br>
-            <div class="d-flex flex-row-reverse bd-highlight">
-                <div class = " p-2 bd-highlight">
-                    <a href= "javascript:tableFromHTML('{{analisis.carpeta.nombre}}','{{analisis}}')"   class="btn btn-primary btn-md">Descargar</a>
+            <div class="container">
+                <div class="d-flex flex-row-reverse bd-highlight">
+                    <div class = " p-2 bd-highlight">
+                        <a href= "javascript:tableFromHTML('{{analisis.carpeta.nombre}}','{{analisis}}')"   class="btn btn-primary btn-md">Descargar</a>
+                    </div>
                 </div>
             </div>
             <div class="col-6">
@@ -188,7 +190,9 @@
                                     <table class="table">
                                         <thead>
                                           <tr>
-                                            <th scope="col">#</th>
+                                            <th scope="col">Num Linea</th>
+                                            <th scope="col">Remitente</th>
+                                            <th scope="col">Fecha</th>
                                             <th scope="col">Texto</th>
                                             <th scope="col">Detectado</th>
                                             <th scope="col">Archivo</th>
@@ -198,6 +202,19 @@
                                             {% for resultado in resultados %}
                                                 <tr>
                                                     <th scope="row">{{resultado.numero_linea}}</th>
+
+                                                    {% if resultado.remitente %}
+                                                        <td>{{resultado.remitente}}</td>
+                                                    {% else %}
+                                                        <td> Desconocido </td>
+                                                    {% endif %}
+
+                                                    {% if resultado.fecha_envio %}
+                                                        <td>{{resultado.fecha_envio|date:'Y-m-d'}}</td>
+                                                    {% else %}
+                                                        <td> - </td>
+                                                    {% endif %}
+
                                                     <td >{{resultado.texto}}</td>
 
                                                     {% if resultado.detectado == "No Violento" %}

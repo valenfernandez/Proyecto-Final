@@ -217,25 +217,39 @@ def resultado(request, id_analisis):
             if form_c.is_valid():
                 file_choice = form_c.cleaned_data['file_choice']
                 violentos = form_c.cleaned_data['violentos']
+                remitente = form_c.cleaned_data['remitente']
+                fecha = form_c.cleaned_data['fecha']
+
                 if file_choice == 'all':
                     resultados = Resultado.objects.filter(analisis = analisis).order_by('archivo_origen','numero_linea')
                 else:
                     resultados = Resultado.objects.filter(analisis = analisis, archivo_origen = Archivo.objects.get(id = file_choice)).order_by('numero_linea')
                 if violentos: #tengo que sacar del resultado los que no son violentos
                     resultados = resultados.exclude(detectado = 'No Violento')
-
+                if remitente!= 'all':
+                    resultados = resultados.filter(remitente = remitente)
+                if fecha:
+                    resultados = resultados.filter(Q( fecha_envio__lte = fecha))
         else:
             form_c = ResultadoClasificadorViewForm(analisis_id = id_analisis)
             resultados = Resultado.objects.filter(analisis = analisis).order_by('archivo_origen','numero_linea')
 
-
-        tabla_distribucion = Tabla.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
-        grafico_distribucion = Grafico.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
-        grafico_torta = Grafico.objects.get(analisis = analisis, nombre = 'Torta distribucion de categorias')
-        grafico_categoria_archivo = Grafico.objects.get(analisis = analisis, nombre = 'Composicion de categorias por archivo') 
-        grafico_lineas_cats = Grafico.objects.get(analisis = analisis, nombre = 'Relacion numero de linea y frases violentas')
-        word_cats = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de clasificacion')
-        word_violento = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de violentos')
+        try:
+            tabla_distribucion = Tabla.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
+            grafico_distribucion = Grafico.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
+            grafico_torta = Grafico.objects.get(analisis = analisis, nombre = 'Torta distribucion de categorias')
+            grafico_categoria_archivo = Grafico.objects.get(analisis = analisis, nombre = 'Composicion de categorias por archivo') 
+            grafico_lineas_cats = Grafico.objects.get(analisis = analisis, nombre = 'Relacion numero de linea y frases violentas')
+            word_cats = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de clasificacion')
+            word_violento = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de violentos')
+        except:
+            tabla_distribucion = None
+            grafico_distribucion = None
+            grafico_torta = None
+            grafico_categoria_archivo = None
+            grafico_lineas_cats = None
+            word_cats = None
+            word_violento = None
 
         context = {
         'analisis' : analisis,

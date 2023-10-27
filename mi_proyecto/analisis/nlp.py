@@ -10,7 +10,9 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from django.core.files import File 
 import io
-
+import re
+import datetime
+import docx
 
 
 def procesar_analisis(analisis, user):
@@ -23,6 +25,7 @@ def procesar_analisis(analisis, user):
     ----------
 
     :param: analisis (Analisis) El analisis que recibe tiene: informe vacio, fecha actual, carpeta y modelo elegidos.
+    :param: user (User) El usuario que realiza el analisis.
 
     """
     carpeta = analisis.carpeta
@@ -34,7 +37,6 @@ def procesar_analisis(analisis, user):
         procesar_clasificador(analisis, carpeta, user)
     else:
         raise Exception("El modelo no existe") #podria cambiar esto, intentar cargar el modelo y si no existe tirar un error. Y pasar a hacer un procesamiento 'generico' que no dependa de un modelo en particular.
-
 
 def procesar_entidades(analisis, carpeta, user):
     """ 
@@ -103,8 +105,15 @@ def procesar_entidades(analisis, carpeta, user):
     # 2: Extraer textos de los archivos en la carpeta
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
-        with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
-            lines = f.read().splitlines()
+        lines = []
+        if archivo.arch.name.split('.')[1] == 'docx':
+            doc = docx.Document(archivo.arch.path)
+            for i in doc.paragraphs:
+                print(i.text)
+                lines.append(i.text)
+        else:
+            with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
+                lines = f.read().splitlines()
         docs = list(nlp.pipe(lines))
 
         # 3: Armar el objeto resultado de cada uno:
@@ -174,7 +183,6 @@ def armar_informe_entidades(analisis, preferencia):
     df = pd.DataFrame(data)
 
     total_entidades = df.shape[0]
-
     entidades_counts = df['label'].value_counts().reset_index()#pd indice tipos de entidades y valor num de apariciones
     entidades_counts.columns = ['Etiqueta', 'Apariciones']
     tabla_entidades_count = Tabla(nombre = "Distribucion de entidades", tabla = entidades_counts.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
@@ -265,7 +273,6 @@ def armar_informe_entidades(analisis, preferencia):
     grafico_lineas_entidades.save()
     
 
-
     #Wordcloud de los textos de las entidades
     text = ' '.join(df['text'])
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
@@ -281,7 +288,6 @@ def armar_informe_entidades(analisis, preferencia):
     imagen_wordcloud_total.save()
     
     """
-
     # Wordcloud por cada tipo de entidad
     
     text_by_label = df.groupby('label')['text'].apply(lambda x: ' '.join(x))
@@ -303,97 +309,139 @@ def armar_informe_entidades(analisis, preferencia):
 
     return 1
 
-def format_msj_wpp(file): #como se plantea la solucion se podria perder el nombre del usuario que envio el mensaje. Podria incorporarse como parte del json en 'detectado' {sentimiento: VIOLENTO, remitente: User} lo mismo con la fecha.
-
-    #capaz en un campo 'metadata' porque el tema seria si en una carpeta a analizar hay varios archivos unos de wpp y otros no. 
-
+def wpp_format(s):
     """
-    Formatear el archivo de conversación de WhatsApp a un diccionario con los 
-    mensajes de cada usuario y otro diccionario con todos los mensajes justo con su
-    fecha.
+    Verificar si la línea tiene el formato de mensaje de WhatsApp.
 
-    Parameters 
+    Parameters
     ----------
-    :param: file (str)  Nombre del archivo de conversación de WhatsApp.
+    :param: s (str) Línea del archivo.
 
     Returns
     -------
-    :return: user_texts (dict) Diccionario con los mensajes de cada usuario.
-    :return: all_texts (dict) Diccionario con todos los mensajes con su fecha.
+    :return: (bool) True si la línea tiene el formato de mensaje de WhatsApp, False en caso contrario.
     """
-    with open(file, 'r', encoding='utf-8') as file:
-        user_texts = {}
-        all_texts = {}
-        file.readline()
-        for line in file:
-            if not line.strip():
-                continue
-            date_name_text = line.strip().split(' - ')
-            if len(date_name_text) != 2:
-                continue
-            name_index = date_name_text[1].find(':')
-            name = date_name_text[1][:name_index]
-            text = date_name_text[1][name_index+2:]
+    pattern = r"\d{1,2}/\d{1,2}/\d{4}, \d{2}:\d{2} - .+: .+"
+    match = re.match(pattern, s)
+    return match is not None
 
-            if name not in user_texts:
-                user_texts[name] = []
-            
-            user_texts[name].append(text)
-            date = date_name_text[0]
-            all_texts[date] = {'User': name, 'Date': date, 'Text': text}
 
-    return user_texts, all_texts
+def procesar_linea(analisis, archivo, line, index):
+    elemento = {}
+    if wpp_format(line):
+        date_name_text = line.strip().split(' - ') # [date, name: text]
+        name_index = date_name_text[1].find(':') 
+        name = date_name_text[1][:name_index] 
+        text = date_name_text[1][name_index+2:]
+        date = date_name_text[0]
+        fecha = datetime.datetime.strptime(date, "%d/%m/%Y, %H:%M").date()
+        #Problema: fechas con dia y mes intercambiados (puedo hacer que si no esta en ese formato queda 'desconocida' y listo)
+
+        if(text.find('(archivo adjunto)') != -1):
+            texto = text.replace('(archivo adjunto)', '') 
+            numero_linea = index + 1
+            Resultado(texto= texto, detectado = 'Adjunto', html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save() 
+        elif (text.find('<Multimedia omitido>') != -1):
+            texto = "Adjunto Desconocido"
+            numero_linea = elemento['numero_linea']
+            Resultado(texto= texto, detectado = 'Adjunto', html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save()
+        else:
+            elemento = {
+                'texto': text,
+                'fecha': fecha,
+                'remitente': name,
+                'numero_linea': index + 1,
+                'archivo_origen': archivo,
+                'doc' : None
+            }
+    else:
+        elemento = {
+            'texto': line,
+            'fecha': None,
+            'remitente': None,
+            'numero_linea': index + 1,
+            'archivo_origen': archivo,
+            'doc' : None
+        }
+    return elemento
+
 
 def procesar_clasificador(analisis, carpeta, user):
+    """
+    Esta función se encarga de procesar los archivos de una carpeta con el modelo de clasificación de violencia. Crea los objetos Resultado en la base de datos para cada linea que se pidió analizar.
 
-    #TODO: La funcion no da los numero de linea y deja todos los no violentos que encuentra primero y los demas despues. No quedan las cosas en orden.
+    Parameters
+    ----------
+    :param: analisis (Analisis) El analisis que recibe tiene: informe vacio, fecha actual, carpeta y modelo elegidos.
+    :param: carpeta (Carpeta) La carpeta que recibe tiene: nombre, usuario y archivos.
+    :param: user (User) El usuario que realiza el analisis.
 
-    # 1: Cargar el modelo de spacy binario y el multicategoría
+    Return
+    ------
+    :return: 1 (int) Si el analisis se realizo correctamente devuelve 1.
+
+    """
     
     model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-binario" )
     nlp = spacy.load(model_path)
     model_path_multi = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-multi" )
     nlp_multi = spacy.load(model_path_multi)
 
-    # 2: Extraer textos de los archivos en la carpeta
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
-        file = archivo.arch
-        with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
-            lines = f.read().splitlines()
+        dict_text = []
+        lines = []
+        if archivo.arch.name.split('.')[1] == 'docx':
+            doc = docx.Document(archivo.arch.path)
+            for index, i in enumerate(doc.paragraphs):
+                line = i.text
+                elemento = procesar_linea(analisis= analisis, archivo= archivo, line= line, index= index)
+                if elemento:
+                    dict_text.append(elemento)
+        else:        
+            with open(archivo.arch.path, "r", encoding = 'UTF -8') as f:
+                for index, line in enumerate(f):
+                    elemento = procesar_linea(analisis= analisis, archivo= archivo, line= line, index= index)
+                    if elemento:
+                        dict_text.append(elemento)
 
-        # TODO : chequear si el archivo es de wpp o no.
-
+        lines = [elemento['texto'] for elemento in dict_text] # tengo que sacar la comprobacion de si es o no adjunto porque necesito que los docs_binarios sean paralelos a dict_text no me los puedo saltear
         docs_binarios = list(nlp.pipe(lines))
-        violentos_text = []
-        violentos_index = {}
-
         for index, doc in enumerate(docs_binarios):
-            print(doc.cats)
-            if doc.cats['Violento']> 0.8:
-                if doc.text not in violentos_index:
-                    violentos_index[doc.text] = [index + 1]
-                else:
-                    violentos_index[doc.text].append(index + 1)
-                violentos_text.append(doc.text)
-            else: 
+            dict_text[index]['doc'] = doc
+
+        violentos_text = []
+        elementos_violentos = []
+        for elemento in dict_text:
+            doc = elemento['doc']
+            if doc.cats['Violento'] < 0.8:
                 texto = doc.text
                 detectado = 'No Violento'
                 html = ""
                 archivo_origen = archivo
-                numero_linea = index + 1
-                Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
-                
-        docs_multi = list(nlp_multi.pipe(violentos_text))
+                numero_linea = elemento['numero_linea']
+                fecha = elemento['fecha']
+                remitente = elemento['remitente']
+                Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
+            else:
+                elementos_violentos.append(elemento)
 
-        # 3: Armar el objeto resultado de cada uno:
-        for doc in docs_multi:
+        violentos_text = [elemento['texto'] for elemento in elementos_violentos]
+        docs_multi = list(nlp_multi.pipe(violentos_text))
+        for index, doc in enumerate(docs_multi):
+            elementos_violentos[index]['doc'] = doc
+
+        for elemento in elementos_violentos:
+            doc = elemento['doc']
             texto = doc.text
             detectado = max(doc.cats, key=doc.cats.get)
-            html = "" #Como no hay displacy predeterminado es mejor directamente armar la tabla en el template.
+            html = ""
             archivo_origen = archivo
-            numero_linea = violentos_index[doc.text].pop(0)
-            Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
+            numero_linea = elemento['numero_linea']
+            fecha = elemento['fecha']
+            remitente = elemento['remitente']
+            Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
+
 
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
     preferencia = Preferencias.objects.get(usuario = user)
@@ -423,7 +471,7 @@ def armar_informe_clasificador(analisis, preferencia):
 
     resultados = Resultado.objects.filter(analisis = analisis)
     
-    domain =["No violento", "Sexual", "Física", "Económica", "Simbólica", "Psicológica"]
+    domain =["No violento", "Sexual", "Física", "Económica", "Simbólica", "Psicológica", "Adjunto"]
     domain_v =["Sexual", "Física", "Económica", "Simbólica", "Psicológica"]
     range_ = []
 
@@ -443,13 +491,14 @@ def armar_informe_clasificador(analisis, preferencia):
             'archivo_origen': resultado.archivo_origen.nombre,
             'numero_linea': resultado.numero_linea
         })
-        if resultado.detectado != "No Violento":
+        if (resultado.detectado != "No Violento"):
             data_violentos.append({
                 'text': resultado.texto,
                 'clasificacion': resultado.detectado,
                 'archivo_origen': resultado.archivo_origen.nombre,
                 'numero_linea': resultado.numero_linea
             })
+        
 
     df_completo = pd.DataFrame(data_completos)
     df_violentos = pd.DataFrame(data_violentos)
