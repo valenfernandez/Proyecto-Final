@@ -54,10 +54,26 @@ with open('dataset.json', 'r', encoding = 'utf-8') as f:
 
 random.shuffle(input_data) 
 
+unique_violento = list({ each['text'] : each for each in input_data if each['sentiment'] == 'Violento'}.values())
+unique_no_violento = list({ each['text'] : each for each in input_data if each['sentiment'] == 'No Violento'}.values())
+
 # select 70% of input data for training set
-train_size = int(len(input_data) * 0.7)
-train_data = input_data[:train_size]
-test_data = input_data[train_size:]
+train_size_violento = int(len(unique_violento) * 0.7)
+train_size_no_violento = int(len(unique_no_violento) * 0.7)
+
+train_data_violento = unique_violento[:train_size_violento]
+test_data_violento = unique_violento[train_size_violento:]
+train_data_no_violento = unique_no_violento[:train_size_no_violento]
+test_data_no_violento = unique_no_violento[train_size_no_violento:]
+
+test_data = test_data_violento + test_data_no_violento
+train_data = train_data_no_violento + train_data_violento
+
+random.shuffle(test_data) 
+random.shuffle(train_data) 
+
+print(len(train_data))
+print(len(test_data))
 
 records_train = read_json_items(train_data)
 records_test = read_json_items(test_data)
