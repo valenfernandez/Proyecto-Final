@@ -15,9 +15,9 @@ class FileForm(forms.Form):
     def clean_file(self):
         file = self.cleaned_data['file']
         if file:
-            print(file.name.split('.'))
             #if file.name.split('.')[1] not in settings.TASK_UPLOAD_FILE_TYPES:
-            if file.name.split('.')[1] not in ["txt", "docx" , "xlsx"]: 
+            nombre, partition, extension = file.name.rpartition('.')
+            if extension not in ["txt", "docx" , "xlsx"]: 
                 raise forms.ValidationError('File type is not supported')
         return file
 

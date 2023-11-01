@@ -80,7 +80,6 @@ def carpeta(request, id_carpeta):
 def aplicacion(request, id_app):
 
     analisis = Analisis(informe ='')
-
     aplicacion = Aplicacion.objects.get(id = id_app)
     form_analisis = AnalisisForm(request.POST or None, request.FILES or None, instance=analisis, aplicacion = aplicacion)
     
@@ -91,9 +90,15 @@ def aplicacion(request, id_app):
 
     if form_analisis.is_valid():
         form_analisis.save()
-
-        procesar_analisis(analisis, request.user)
-        
+        try:
+            procesar_analisis(analisis, request.user)
+        except FileNotFoundError: #no deberia entrar casi nunca
+            analisis.delete() 
+            return HttpResponse(FileNotFoundError)
+        except ValueError:
+            analisis.delete()
+            return HttpResponse(ValueError)
+            
         response = redirect('/resultado/'+str(analisis.id))
         return response
     return render(request, "analisis/aplicacion.html", context=context) 

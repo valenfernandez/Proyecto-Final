@@ -14,7 +14,6 @@ import re
 import datetime
 import docx
 
-
 def procesar_analisis(analisis, user):
     """ 
     Esta funcion realiza el procesamiento pedido por el usuario y genera los resultados.
@@ -36,7 +35,7 @@ def procesar_analisis(analisis, user):
     elif modelo.nombre == 'clasificador': # aplico primero el modelo binario y despues el modelo multicategoria.  
         procesar_clasificador(analisis, carpeta, user)
     else:
-        raise Exception("El modelo no existe") #podria cambiar esto, intentar cargar el modelo y si no existe tirar un error. Y pasar a hacer un procesamiento 'generico' que no dependa de un modelo en particular.
+        raise FileNotFoundError("El modelo no existe") #podria cambiar esto, intentar cargar el modelo y si no existe tirar un error. Y pasar a hacer un procesamiento 'generico' que no dependa de un modelo en particular.
 
 def procesar_entidades(analisis, carpeta, user):
     """ 
@@ -54,8 +53,6 @@ def procesar_entidades(analisis, carpeta, user):
     Return
     ------
     :return: 1 (int) Si el analisis se realizo correctamente devuelve 1.
-
-
     """
     
     # 1: Cargar el modelo de spacy
@@ -106,14 +103,22 @@ def procesar_entidades(analisis, carpeta, user):
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
         lines = []
-        if archivo.arch.name.split('.')[1] == 'docx':
+        nombre, partition, extension = archivo.arch.name.rpartition('.')
+        if extension == 'docx':
             doc = docx.Document(archivo.arch.path)
             for i in doc.paragraphs:
                 print(i.text)
                 lines.append(i.text)
-        else:
+        elif extension == 'xlsx':
+            df = pd.read_excel(archivo.arch.path, usecols="A") #siempre leo la primera columna
+            lines = df.values.tolist()
+        elif extension == 'txt':
             with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
                 lines = f.read().splitlines()
+        else: 
+            #file not supported exception
+            #avisar al usuario que la carpeta tiene un archivo en un formato no soportado
+            raise ValueError(f'Tipo de archivo no soportado: {extension}', archivo)
         docs = list(nlp.pipe(lines))
 
         # 3: Armar el objeto resultado de cada uno:
