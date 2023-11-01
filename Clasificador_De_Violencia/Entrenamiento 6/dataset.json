@@ -872,6 +872,10 @@
         "sentiment": "No Violento"
     },
     {
+        "text": "la zorra",
+        "sentiment": "Violento"
+    },
+    {
         "text": "cual es la fiesta mas pobre ? la de la pija solamente hay 2 globos y un monton de pendejos jeje esa weada me mata",
         "sentiment": "Violento"
     },
@@ -15381,6 +15385,954 @@
     },
     {
         "text": "te voy a hacer una transferencia",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "que negra estúpida",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vi un auto negro en la ruta",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te prendo fuego",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "lo de incogible no se te va",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "mas incogible no podes ser",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a pegarte un tiro",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vi una nube negra en el cielo y pense que iba a llover",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te prendo fuego",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vas a arder frente a tus hijos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a degollarte frente a tus hijos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "mis hijos me hicieron un desayuno como regalo para el dia de la madre",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el que paga la comida y la casa soy yo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "anda a hacerte coger yo no te doy mas plata",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "por que no vas a chuparle la guita a tu jefe para que te de un aumento",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vas a terminar en la calle asi que no me jodas mas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "hoy te cago a palos cuando vuelva a casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "por que no vas a chuparle la guita a tu jefe para que te de un aumento",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a sacar todo lo que te di",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "agradece que te doy de comer",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "necesito que me muestres todos tus recibos y expliques en que gastaste cada centavo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "aca el que decide soy yo, si queres comprar algo me tenes que preguntar a mi porque la plata es mia",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no me rompas las pelotas, porque bien que mi plata te la gastas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no tienes derecho a gastar mi dinero",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "si queres plata para salir con tus amigas, me tenes que hacer la venia primero",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ni se te ocurra esconderme plata",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "portate bien o no te paso un mango y te quedas en bolas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "se me rompio el mango de la olla",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "se comieron la guita ustedes hijas de mil puta",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te recuerdo que todos los chongos con los que estuviste y a donde saliste lo hiciste con plata mia porque la sube te la pagaba yo",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "como si laburaras vos negra de mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "con mi plata hago lo que quiero",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me quedo con toda la plata y te dejo en banda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tarjeta de credito vos no vas a tener porque aca el que maneja la guita soy yo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una egoista gastando toda mi plata",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "la re concha de tu madre porque no cerras el orto, pedazo de hijo de mil puta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te aviso que te voy a hacer mierda tu casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ojala te pase un camión x encima y te mueras y q te aplaste la cabeza x enfermita mental q soss",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "mira que yo trato de ser la mas buena con todos, pero algunos sobrepasan y te hacen quedar como una mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "agradece que estas viva si no fuese por mi estarias muerta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "pelotuda inutil de mierda no servis para nada",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no denuncies  sabes lo que se te viene",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a pegarte un balazo en la cabeza",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a tirarte un balazo en la cabeza",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te tiro un balazo y te mato",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "una bala en la cabeza es lo te hace falta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te pego un escopetazo antes que me dejes",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a matarte de un escopetazo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "termina el colegio, parásito hijo de la gran puta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "nos tenes podridos vos y toda tu lacra, que le encanta reinar en la pobreza",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "termina el colegio, parásito hijo de la gran puta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "mira la cara de pelotudo que tenes",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ayer tenias la cara muy cansada, te paso algo?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el profe nos aviso que no hay clases",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "nunca me gusto el colegio a donde fui",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "compre acciones antes de las elecciones y despues no me rindio",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te aviso que te voy a hacer mierda tu casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a hacerte mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos la mierda más grande que existe",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no se encuentra una palabra que califique a semejante pedazo de mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "conozco tus pasos, te tengo vigilado",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "mas te vale que te cuides",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "los voy a encontrar y los voy a hacer cagar es una promesa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "la vas a pagar vas a llorar no me dejas otra opcion",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "si no me contestas voy a ir a casa ya vas a ver",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "hoy te vas de esta casa con la policia no me vas a asustar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no te rompo la cara porque estan los nenes",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "anda a saber de quien estas embarazada",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no quiero estar con vos putita barata",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una fracasada con razon te metieron los cuernos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no hay que tenerle miedo a la palabra fracaso",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "soy demasiado para vos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no te voy a dejar estar con nadie",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me pusiste otra denuncia espero que no te arrepientas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no te voy a dejar ver mas a tus hijas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "por culpa tuya estoy en la calle",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no te metas mas conmigo ya se donde te mudaste",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no vas a poder caminar tranquila",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vas a ver lo que te va a pasar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a hacer echar del trabajo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "estas viva porque yo quiero",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "dame a mi hija te tiro la puerta abajo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "perra puta te voy a quitar a mi hija",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no me rompas las pelotas porque me voy a ir",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una mierda te voy a hacer mierda vos no tenes a nadie",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "estupida tarada yo te lo prometo que te hago la vida imposible",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vos te mereces que te pegue",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "con razon tu familia no te quiere",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me voy a suicidar es tu culpa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ya no te voy a escribir mas andate a la concha de tu madre",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "pendeja de mierda vos no te tenes que meter sos una cualquiera como tu mama",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "gorda lechona vas a vivir toda tu vida asi te falta mucho para bajar de peso",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vos te sacas las ganas con tus compañeros del colegio por eso no queres estar conmigo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vos y yo no vamos a salir de aca lo lamento por los chicos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vos tenes la culpa de que yo tome y vuelva a consumir",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "porque sos asi no eras asi te voy a sacar a los chicos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "mira lo que tengo y lo puedo usar en tu contra",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te vas a arrepentir asi son ustedes que inventan asi son ustedes",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "agradece que estas viva si no fuese por mi estarias muerta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "inutil de mierda no servis para nada",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no denuncies sabes lo que se te viene",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sabes que viene despues de la muestra?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "yo te quiero pero a vos te voy a castigar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "que se consiga un buen abogado porque se esta equivocando y pronto voy a salir",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "deseo con toda mi alma q te pase lo peor en tu vida",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vos te cojes a otro y me mato en frente tuyo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "si me vas a engañar, me mato",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no aportas nada",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "raja groncha de mierda y sabes que? Tenes toda la razón que me tengo que rebajar a tu nivel",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "que negra de mierda, siempre arruinando todo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tus amigos son unos perdedores no entiendo cómo puedes pasar tiempo con ellos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no se por que seguis hablando con tu amiga, nunca me cayo bien",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me conozco y soy muy forro si me joden",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no deberias existir das asco",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "eres horrible deberias matarte",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no vas a querer ni salir de kasa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "y no voy a parar hasta tenerte en mis brazos nadie me va a parar escuchaste",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no tengas miedo preciosa se donde vivis se donde salis",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te hiciste la directa y la correcta y nada de eso sos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "dejame de joder porque sino voy a joder con vos pero de verdad",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no me jodas mas flaca ni me hables mas porque sino te voy a joder posta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "con cuidado nena por dnde vives tamuy peligroso",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "hay si te veo y vamos a dnde quieras nena y no asepto un no",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tene cuidado porque unos de estos dias te robo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "cuando menos lo esperes te vere muñequita,asi que cuidate y no andes muy solita miamor",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sera mejor que estes soltera porque me enojara saber que es tu novio y enojado hago muchas cosas malas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ya te dije que no te voy a dejar en paz hasta que aceptes salir conmigo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ya te voy a agarrar por la calle o cuando vayas a la feria",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "perdona que te grite es que te quiero demasiado",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "por meterte en una pagina de mayores voy a arruinar a tus padres por tu culpa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "perdona que te grite es que te quiero demasiado",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "yo soy un buen novio hago las cosas bien y vos me seguis tomando de boludo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no seras feliz mientras yo este vivo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "van a ver lo que es un macho alfa cuando molestan a alguien de mi familia",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me van a agarrar luego de hacerte lo que yo quiera",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vas a vivir el resto de tus dias con miedo y sin salir a la calle",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tu cuerpo va a arder cuando salga de la carcel",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "la guita es mia se hace lo que yo digo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "despues vas a aver cuando te deje en la calle sin un peso",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "queres salir usando mi plata? pedime permiso",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "hace lo que yo quiero o te dejo sin un mango",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "la tarjeta no te la voy a dar porque no sabes como no gastar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "si queres comprar algo me lo tenes que preguntar a mi",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te quedás sin un peso y te vas a tener que arreglar como puedas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te quejas de que te grito pero queres que te pase plata",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "olvidate de que te de plata para cualquier otra cosa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no gastes mi guita en caprichos estupidos ",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "si me dejas te voy a quitar todo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "estamos endeudados porque vos gastas en estupideces",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a hacer mierda me hiciste gastar un monton de plata en viajes ",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "mi plata es mia vos gastas sin control",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me llego el resumen de la tarjeta y me vas a dar explicaciones ya",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vos hija de puta nunca aportas una mierda vivis de lo que te doy yo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "con vos gasto toda mi vida",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "¿que te pasa hdp mi plata no vale para vos ?",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "bueno pedile plata a otro pelotudo porque yo no te voy a dar nada",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tenemos deudas por culpa tuya",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no te dejo en la calle por mis hijos nada mas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te echo de la casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una mantenida de mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no hables porque vos no laburas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "hacete prostituta para que alguien mas le pague las cosas al nene",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "devolveme toda la guita que gaste en vos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "despues vas a aver cuando te deje en la calle sin un peso",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te vas a arrepentir cuando te deje en la calle",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "yo pago aca vos te vas a ir",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "solo me haces perder plata que hija de puta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "todo lo que hiciste fue gracias a que yo te di la plata",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "rompiste todo otra vez que boluda que sos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "aunque no quieras vamos a coger",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "esta noche te hago mia quieras o no",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "habia de varios colores y yo me quede con el negro",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te voy a dar un regalo especial hoy",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te voy a mandar muchos saludos de tu parte",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te voy a informar sobre lo que paso en la fiesta",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "guarda conmigo, porque se a donde te mudaste",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a dar una mano con la casa",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te doy una mano con el revoque?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "tenes todo para el asado o te doy una ayuda?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te voy a ayudar con la organizacion",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "ellos te pueden dar una mano para sacarlo adelante",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te voy a buscar si no te calmas conmigo y me dejas de joder",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una geniaaaa",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "sos lo mejor amigaa",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "sos fantastica la mejor del mundo",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "sos increible que buena mina que sos",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "sos un capo chabon",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el cuchillo y el tenedor estan en la cocina",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "aunque te resistas te voy a coger por el culo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "cuando yo quiera te puedo ir a romper toda la casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "la resistencia del transistor tiene muchas explicaciones",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "voy a hacer varias celebraciones",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "la resistencia del transistor tiene muchas explicaciones",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "quieras o no te vamos a coger todos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "dale si vos sabes que te moris por mi pija",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una puta y lo sabes muy bien",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tene cuidado con tu hija te la pueden violar en cualquier momento a tu hija guarda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "en el oscuro te voy a violar a vos pendeja analfabeta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "soy tu marido y te toco todo lo que quiero",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "a vos te hace falta una buena cogida",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una frigida de mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "que calientapijas que sos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "toda la lechita en la cara te voy a tirar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ahora voy a publicar tu numero en una página nopor",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tu culo es un deposito de leche",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "quiero ser quien viole ese cuerpo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "que ganas de follarte sin condon y violarte ese coño y llenarte el culo y que cuando paras a nuestros hijos ellos vean lo puta que eres mientras te fallo frente a ellos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "como me gustaría llevarte a un cine porno para cogerte ahí y que los demás se calienten y se masturben mientras te uso",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "buscalo o subire todo tu material a las redes",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "la azotaria hasta que sangrase",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "escuchame putita soy tu dueño te quiero romper bien el culo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tenes 2 opciones cogemos sin que nadie se entere o te secuetro y te violo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "esta para reventarle la vagina a pijazos muy brusco y despues dejarla muerta dando espasmos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "desde hace mucho te deseo y no me lo vas a impedir",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "que rico ya quiero tenerte aunque sea por las malas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "soy tu seguidor quiero cojerte putita linda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me encantaria besarte hasta que te duela, a vos te gusta que te fuercen no?",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "aguantas bien que te humillen?",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "le destruyo el ano",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "nos turnamos para romperle el culo a la muy puta esa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "si no me contestas recorda q tengo unas fotos q no te gustaria q los demas vieran",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos mi puta personal",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a dejarte escurriendo esa carita de niña buena que tenes",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "cuidate porque te voy a dar un buen garche en el transporte publico o una rica cogida en un parque o en mi auto",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a humillarte y mojar ese gordo culo de zorra",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me encantaria tenerte a mi merce para cogerte por tu anito",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a coger mientras dormis",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "Oye zorra dejame mandarte un audio diciendo como te voy a violar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "llevo un fierro o una faca a tu casa para matarte",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "cuando quiera te puedo romper la casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te puedo dejar en la calle cuando quiera",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te tiro la puerta abajo cuando me saquen de aca",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "hola, como estas?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "yo tengo que pagar todas las cagadas que te mandas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me vas a hacer pagar todo lo que rompes?",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "hola, que haces? que contas?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "hola, te busque en la lista y no estabas",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "hola, ya encontraste el cafe?",
         "sentiment": "No Violento"
     }
 ]
