@@ -241,14 +241,17 @@ def resultado(request, id_analisis):
             grafico_categoria_archivo = Grafico.objects.get(analisis = analisis, nombre = 'Composicion de categorias por archivo') 
             grafico_lineas_cats = Grafico.objects.get(analisis = analisis, nombre = 'Relacion numero de linea y frases violentas')
             word_cats = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de clasificacion')
-            word_violento = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de violentos')
+
         except:
             tabla_distribucion = None
             grafico_distribucion = None
             grafico_torta = None
             grafico_categoria_archivo = None
             grafico_lineas_cats = None
-            word_cats = None
+            word_cats = None    
+        try: 
+            word_violento = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de violentos')
+        except:
             word_violento = None
 
         context = {

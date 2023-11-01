@@ -254,12 +254,23 @@ def armar_informe_entidades(analisis, preferencia):
     grafico_entscomp_file = Grafico(nombre = "Composicion de entidades por archivo", chart = json_entscomp_file, analisis = analisis)
     grafico_entscomp_file.save()
 
-    
+    num_ticks = 10
     ## Relacion para cada archivo: numero de entidades y linea 
     scatterplots = []
     for file_name, group_df in df.groupby('archivo_origen'):
-        scatterplot = alt.Chart(group_df).mark_circle().encode(
-            x=alt.X('numero_linea:O', title='Numero de lines'),
+        vector_valores = []
+        max_v = group_df['numero_linea'].max()
+        min_v = group_df['numero_linea'].min()
+        range_v = max_v - min_v
+        interval = max(1, int(range_v / num_ticks))
+        current_value = min_v
+        while current_value <= max_v:
+                vector_valores.append(current_value)
+                current_value += interval
+        axis=alt.Axis(values=vector_valores)
+
+        scatterplot = alt.Chart(group_df, width = 900).mark_circle().encode(
+            x=alt.X('numero_linea:O', title='Numero de lines', axis=axis),
             y=alt.Y('label:N', title='Entidad'),
             color=alt.Color('label:N', title='Entidad', scale = alt.Scale(domain=domain, range=range_)),
             tooltip=['label:N', 'numero_linea:O', 'text:N']
@@ -340,11 +351,13 @@ def procesar_linea(analisis, archivo, line, index):
         if(text.find('(archivo adjunto)') != -1):
             texto = text.replace('(archivo adjunto)', '') 
             numero_linea = index + 1
-            Resultado(texto= texto, detectado = 'Adjunto', html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save() 
+            detectado = 'Adjunto'
+            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save() 
         elif (text.find('<Multimedia omitido>') != -1):
             texto = "Adjunto Desconocido"
+            detectado = 'Adjunto'
             numero_linea = elemento['numero_linea']
-            Resultado(texto= texto, detectado = 'Adjunto', html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save()
+            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save()
         else:
             elemento = {
                 'texto': text,
@@ -471,7 +484,7 @@ def armar_informe_clasificador(analisis, preferencia):
 
     resultados = Resultado.objects.filter(analisis = analisis)
     
-    domain =["No violento", "Sexual", "Física", "Económica", "Simbólica", "Psicológica", "Adjunto"]
+    domain =["No Violento", "Sexual", "Física", "Económica", "Simbólica", "Psicológica", "Adjunto"]
     domain_v =["Sexual", "Física", "Económica", "Simbólica", "Psicológica"]
     range_ = []
 
@@ -491,13 +504,14 @@ def armar_informe_clasificador(analisis, preferencia):
             'archivo_origen': resultado.archivo_origen.nombre,
             'numero_linea': resultado.numero_linea
         })
-        if (resultado.detectado != "No Violento"):
-            data_violentos.append({
-                'text': resultado.texto,
-                'clasificacion': resultado.detectado,
-                'archivo_origen': resultado.archivo_origen.nombre,
-                'numero_linea': resultado.numero_linea
-            })
+        if (str(resultado.detectado) != "No Violento"):
+                    data_violentos.append({
+                        'text': resultado.texto,
+                        'clasificacion': str(resultado.detectado),
+                        'archivo_origen': resultado.archivo_origen.nombre,
+                        'numero_linea': resultado.numero_linea
+                    })
+
         
 
     df_completo = pd.DataFrame(data_completos)
@@ -546,11 +560,23 @@ def armar_informe_clasificador(analisis, preferencia):
     grafico_comp_file = Grafico(nombre = "Composicion de categorias por archivo", chart = json_comp_file, analisis = analisis)
     grafico_comp_file.save()
 
+    
     ## Relacion para cada archivo: numero de violentos y linea 
     scatterplots = []
+    num_ticks = 10
     for file_name, group_df in df_violentos.groupby('archivo_origen'):
-        scatterplot = alt.Chart(group_df).mark_circle().encode(
-            x=alt.X('numero_linea:O', title='Numero de lines'),
+        vector_valores = []
+        max_v = group_df['numero_linea'].max()
+        min_v = group_df['numero_linea'].min()
+        range_v = max_v - min_v
+        interval = max(1, int(range_v / num_ticks))
+        current_value = min_v
+        while current_value <= max_v:
+                vector_valores.append(current_value)
+                current_value += interval
+        axis=alt.Axis(values=vector_valores)
+        scatterplot = alt.Chart(group_df, width=900).mark_circle().encode(
+            x=alt.X('numero_linea:O', title='Numero de lines', axis=axis),
             y=alt.Y('clasificacion:N', title='Categoria'),
             color=alt.Color('clasificacion:N', title='Categoria', scale = alt.Scale(domain=domain_v, range=range_)),
             tooltip=['clasificacion:N', 'numero_linea:O', 'text:N']
@@ -559,6 +585,7 @@ def armar_informe_clasificador(analisis, preferencia):
         )
         scatterplots.append(scatterplot)
     chart_lineas_cat = alt.vconcat(*scatterplots)
+
     json_lineas_cat = chart_lineas_cat.to_json()
     grafico_lineas_cat = Grafico(nombre = "Relacion numero de linea y frases violentas", chart = json_lineas_cat, analisis = analisis)
     grafico_lineas_cat.save()
@@ -577,17 +604,17 @@ def armar_informe_clasificador(analisis, preferencia):
     imagen_wordcloud_total.save()
 
     #Wordcloud violentos
-    text = ' '.join(df_violentos['text'])
-    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
-    plt.figure(figsize=(10, 5))
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis('off')
-    plt.title('Palabras detectadas')
-    wordcloud_path = f'analisis/static/graficos/{analisis.id}/wordcloud_violentos_{analisis.id}.png'
-    wordcloud.to_file(wordcloud_path)
-    imagen_wordcloud_total = Grafico_Imagen(nombre = "Wordcloud de violentos", analisis = analisis)
-    imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
-    imagen_wordcloud_total.save()
-
-
+    df_v = df_violentos.loc[df_violentos['clasificacion'] != 'Adjunto'] 
+    if df_v.shape[0] > 0:
+        text = ' '.join(df_v['text'])
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+        plt.figure(figsize=(10, 5))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        plt.title('Palabras detectadas')
+        wordcloud_path = f'analisis/static/graficos/{analisis.id}/wordcloud_violentos_{analisis.id}.png'
+        wordcloud.to_file(wordcloud_path)
+        imagen_wordcloud_total = Grafico_Imagen(nombre = "Wordcloud de violentos", analisis = analisis)
+        imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
+        imagen_wordcloud_total.save()
     return 1
