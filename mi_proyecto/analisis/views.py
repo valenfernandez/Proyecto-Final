@@ -90,14 +90,27 @@ def aplicacion(request, id_app):
 
     if form_analisis.is_valid():
         form_analisis.save()
+        
         try:
             procesar_analisis(analisis, request.user)
         except FileNotFoundError: #no deberia entrar casi nunca
-            analisis.delete() 
-            return HttpResponse(FileNotFoundError)
-        except ValueError:
             analisis.delete()
-            return HttpResponse(ValueError)
+            message = e.args
+            context = {
+                "aplicacion": aplicacion,
+                "form_analisis" : form_analisis,
+                "error" : message,
+            }
+            return render(request, "analisis/aplicacion.html", context=context)
+        except ValueError as e:
+            analisis.delete()
+            message, error_files = e.args
+            context = {
+                "aplicacion": aplicacion,
+                "form_analisis" : form_analisis,
+                "error" : message,
+            }
+            return render(request, "analisis/aplicacion.html", context=context)
             
         response = redirect('/resultado/'+str(analisis.id))
         return response

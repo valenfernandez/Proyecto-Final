@@ -21,6 +21,11 @@
             <p>{{aplicacion.descripcion}}</p>
             </br>
             </br>
+            {% if error %}
+                <div class="alert alert-warning" role="alert">
+                {{error}}. Por favor, elimine los archivos de esa extension de su carpeta.
+                </div>
+            {% endif %}
             <div class="col-6">
                 <div class="card " style="width:75rem;">
                     <div class="card-body">

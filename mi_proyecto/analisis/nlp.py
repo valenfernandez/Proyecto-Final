@@ -35,7 +35,9 @@ def procesar_analisis(analisis, user):
     elif modelo.nombre == 'clasificador': # aplico primero el modelo binario y despues el modelo multicategoria.  
         procesar_clasificador(analisis, carpeta, user)
     else:
-        raise FileNotFoundError("El modelo no existe") #podria cambiar esto, intentar cargar el modelo y si no existe tirar un error. Y pasar a hacer un procesamiento 'generico' que no dependa de un modelo en particular.
+        raise FileNotFoundError("El modelo no existe") 
+    
+
 
 def procesar_entidades(analisis, carpeta, user):
     """ 
@@ -116,9 +118,7 @@ def procesar_entidades(analisis, carpeta, user):
             with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
                 lines = f.read().splitlines()
         else: 
-            #file not supported exception
-            #avisar al usuario que la carpeta tiene un archivo en un formato no soportado
-            raise ValueError(f'Tipo de archivo no soportado: {extension}', archivo)
+            raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
         docs = list(nlp.pipe(lines))
 
         # 3: Armar el objeto resultado de cada uno:
@@ -409,19 +409,39 @@ def procesar_clasificador(analisis, carpeta, user):
     for archivo in archivos:
         dict_text = []
         lines = []
-        if archivo.arch.name.split('.')[1] == 'docx':
+        nombre, partition, extension = archivo.arch.name.rpartition('.')
+        """
+         elif extension == 'xlsx':
+            df = pd.read_excel(archivo.arch.path, usecols="A") #siempre leo la primera columna
+            lines = df.values.tolist()
+        elif extension == 'txt':
+            with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
+                lines = f.read().splitlines()
+        else: 
+            raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
+        """
+        if extension == 'docx':
             doc = docx.Document(archivo.arch.path)
             for index, i in enumerate(doc.paragraphs):
                 line = i.text
                 elemento = procesar_linea(analisis= analisis, archivo= archivo, line= line, index= index)
                 if elemento:
                     dict_text.append(elemento)
-        else:        
+        elif extension == 'txt':        
             with open(archivo.arch.path, "r", encoding = 'UTF -8') as f:
                 for index, line in enumerate(f):
                     elemento = procesar_linea(analisis= analisis, archivo= archivo, line= line, index= index)
                     if elemento:
                         dict_text.append(elemento)
+        elif extension == 'xlsx':
+            df = pd.read_excel(archivo.arch.path, usecols="A") #siempre leo la primera columna
+            list_texts = df.values.tolist()
+            for index, text in enumerate(list_texts):
+                elemento = procesar_linea(analisis= analisis, archivo= archivo, line= text[0], index= index)
+                if elemento:
+                    dict_text.append(elemento)
+        else:
+            raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
 
         lines = [elemento['texto'] for elemento in dict_text] # tengo que sacar la comprobacion de si es o no adjunto porque necesito que los docs_binarios sean paralelos a dict_text no me los puedo saltear
         docs_binarios = list(nlp.pipe(lines))
