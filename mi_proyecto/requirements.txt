@@ -10,3 +10,4 @@ celery
 wordcloud
 xhtml2pdf
 python-docx 
+openpyxl
