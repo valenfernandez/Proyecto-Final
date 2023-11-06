@@ -10,14 +10,14 @@ from mi_proyecto import settings
 
 class FileForm(forms.Form):
     file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
-                           help_text='</br> <br/> Seleccionar archivos .txt .docx .xlsx')
+                           help_text='</br> <br/> Seleccionar archivos de extension .txt .docx .xlsx o .zip')
     
     def clean_file(self):
         file = self.cleaned_data['file']
         if file:
             #if file.name.split('.')[1] not in settings.TASK_UPLOAD_FILE_TYPES:
             nombre, partition, extension = file.name.rpartition('.')
-            if extension not in ["txt", "docx" , "xlsx"]: 
+            if extension not in ["txt", "docx" , "xlsx", "zip"]: 
                 raise forms.ValidationError('File type is not supported')
         return file
 

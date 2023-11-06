@@ -13,135 +13,7 @@ import io
 import re
 import datetime
 import docx
-
-def procesar_analisis(analisis, user):
-    """ 
-    Esta funcion realiza el procesamiento pedido por el usuario y genera los resultados.
-    Por ahora la funcion solo permite aplicar modelos de entidades y clasificadores.
-    Pero se podria extender para que permita aplicar otros modelos de NLP.
-    
-    Parameters
-    ----------
-
-    :param: analisis (Analisis) El analisis que recibe tiene: informe vacio, fecha actual, carpeta y modelo elegidos.
-    :param: user (User) El usuario que realiza el analisis.
-
-    """
-    carpeta = analisis.carpeta
-    modelo = analisis.modelo 
-
-    if modelo.nombre == 'entidades': #cargo ese solo modelo y lo aplico
-        procesar_entidades(analisis, carpeta, user)
-    elif modelo.nombre == 'clasificador': # aplico primero el modelo binario y despues el modelo multicategoria.  
-        procesar_clasificador(analisis, carpeta, user)
-    else:
-        raise FileNotFoundError("El modelo no existe") 
-    
-
-
-def procesar_entidades(analisis, carpeta, user):
-    """ 
-    Esta función se encarga de procesar los archivos de una carpeta con el modelo de detección de entidades.
-    Para cada archivo, se extraen los textos y se detectan las entidades.
-    Luego, se arma el objeto resultado y se lo guarda en la base de datos.
-    Finalmente, se arma el informe con los resultados y se lo guarda en el analisis.
-
-    Parameters
-    ----------
-    :param: analisis (Analisis) El analisis que recibe tiene: informe vacio, fecha actual, carpeta y modelo elegidos.
-    :param: carpeta (Carpeta) La carpeta que recibe tiene: nombre, usuario y archivos.
-    :param: user (User) El usuario que realiza el analisis.
-
-    Return
-    ------
-    :return: 1 (int) Si el analisis se realizo correctamente devuelve 1.
-    """
-    
-    # 1: Cargar el modelo de spacy
-    model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "entidades" )
-    nlp = spacy.load(model_path)
-
-    colors_azul_amarillo = {"DINERO": "#00065D", 
-                            "FECHA":"#2706AD", 
-                            "HORA": "#5C40D0", 
-                            "LUGAR": "#889AFD",
-                            "MEDIDA": "#CCC5B2",
-                            "MISC": "#F3D850",
-                            "ORG": "#FFD500",
-                            "PERSONA": "#9A7300",
-                            "TIEMPO" : "#DFA000",
-                            }
-    
-    colors_azul_rosa = {"DINERO": "#00065D", 
-                            "FECHA":"#2257EC", 
-                            "HORA": "#008DDE", 
-                            "LUGAR": "#7A8BE6",
-                            "MEDIDA": "#D2C3C3",
-                            "MISC": "#FF9696",
-                            "ORG": "#F94D67",
-                            "PERSONA": "#E9255A",
-                            "TIEMPO" : "#99001C",
-                            }
-    colors_default = {"DINERO": "#F3D850", 
-                            "FECHA":"#FECA74", 
-                            "HORA": "#7AECEC", 
-                            "LUGAR": "#BFE1D9",
-                            "MEDIDA": "#AA9CFC",
-                            "MISC": "#C887FB",
-                            "ORG": "#E4E7D2",
-                            "PERSONA": "#FFB700",
-                            "TIEMPO" : "#52CCCC",
-                            }
-
-    preferencia = Preferencias.objects.get(usuario = user)
-    if preferencia.color == "AM":
-        options = {"colors": colors_azul_amarillo}
-    elif preferencia.color == "AR":
-        options = {"colors": colors_azul_rosa}
-    else:
-        options = {"colors": colors_default}
-
-    # 2: Extraer textos de los archivos en la carpeta
-    archivos = Archivo.objects.filter(carpeta = carpeta)
-    for archivo in archivos:
-        lines = []
-        nombre, partition, extension = archivo.arch.name.rpartition('.')
-        if extension == 'docx':
-            doc = docx.Document(archivo.arch.path)
-            for i in doc.paragraphs:
-                print(i.text)
-                lines.append(i.text)
-        elif extension == 'xlsx':
-            df = pd.read_excel(archivo.arch.path, usecols="A") #siempre leo la primera columna
-            lines = df.values.tolist()
-        elif extension == 'txt':
-            with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
-                lines = f.read().splitlines()
-        else: 
-            raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
-        docs = list(nlp.pipe(lines))
-
-        # 3: Armar el objeto resultado de cada uno:
-        for index, doc in enumerate(docs):
-            entidades = []
-            for ent in doc.ents:
-                entidad = {
-                    "text": ent.text,
-                    "label": ent.label_
-                }
-                entidades.append(entidad)
-            entidades_json = json.dumps(entidades, ensure_ascii=False)
-            texto = doc.text
-            detectado = entidades_json
-            html = displacy.render(doc, style="ent", options=options)
-            archivo_origen = archivo
-            numero_linea = index + 1
-            Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
-
-    # 4: Procesar los resultados y armar el informe segun el modelo que sea
-    armar_informe_entidades(analisis, preferencia)
-
-    return 1
+import zipfile
 
 def armar_informe_entidades(analisis, preferencia): 
     """
@@ -325,68 +197,13 @@ def armar_informe_entidades(analisis, preferencia):
 
     return 1
 
-def wpp_format(s):
-    """
-    Verificar si la línea tiene el formato de mensaje de WhatsApp.
 
-    Parameters
-    ----------
-    :param: s (str) Línea del archivo.
-
-    Returns
-    -------
-    :return: (bool) True si la línea tiene el formato de mensaje de WhatsApp, False en caso contrario.
-    """
-    pattern = r"\d{1,2}/\d{1,2}/\d{4}, \d{2}:\d{2} - .+: .+"
-    match = re.match(pattern, s)
-    return match is not None
-
-
-def procesar_linea(analisis, archivo, line, index):
-    elemento = {}
-    if wpp_format(line):
-        date_name_text = line.strip().split(' - ') # [date, name: text]
-        name_index = date_name_text[1].find(':') 
-        name = date_name_text[1][:name_index] 
-        text = date_name_text[1][name_index+2:]
-        date = date_name_text[0]
-        fecha = datetime.datetime.strptime(date, "%d/%m/%Y, %H:%M").date()
-        #Problema: fechas con dia y mes intercambiados (puedo hacer que si no esta en ese formato queda 'desconocida' y listo)
-
-        if(text.find('(archivo adjunto)') != -1):
-            texto = text.replace('(archivo adjunto)', '') 
-            numero_linea = index + 1
-            detectado = 'Adjunto'
-            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save() 
-        elif (text.find('<Multimedia omitido>') != -1):
-            texto = "Adjunto Desconocido"
-            detectado = 'Adjunto'
-            numero_linea = elemento['numero_linea']
-            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save()
-        else:
-            elemento = {
-                'texto': text,
-                'fecha': fecha,
-                'remitente': name,
-                'numero_linea': index + 1,
-                'archivo_origen': archivo,
-                'doc' : None
-            }
-    else:
-        elemento = {
-            'texto': line,
-            'fecha': None,
-            'remitente': None,
-            'numero_linea': index + 1,
-            'archivo_origen': archivo,
-            'doc' : None
-        }
-    return elemento
-
-
-def procesar_clasificador(analisis, carpeta, user):
-    """
-    Esta función se encarga de procesar los archivos de una carpeta con el modelo de clasificación de violencia. Crea los objetos Resultado en la base de datos para cada linea que se pidió analizar.
+def procesar_entidades(analisis, carpeta, user):
+    """ 
+    Esta función se encarga de procesar los archivos de una carpeta con el modelo de detección de entidades.
+    Para cada archivo, se extraen los textos y se detectan las entidades.
+    Luego, se arma el objeto resultado y se lo guarda en la base de datos.
+    Finalmente, se arma el informe con los resultados y se lo guarda en el analisis.
 
     Parameters
     ----------
@@ -397,21 +214,63 @@ def procesar_clasificador(analisis, carpeta, user):
     Return
     ------
     :return: 1 (int) Si el analisis se realizo correctamente devuelve 1.
-
     """
     
-    model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-binario" )
+    # 1: Cargar el modelo de spacy
+    model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "entidades" )
     nlp = spacy.load(model_path)
-    model_path_multi = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-multi" )
-    nlp_multi = spacy.load(model_path_multi)
 
+    colors_azul_amarillo = {"DINERO": "#00065D", 
+                            "FECHA":"#2706AD", 
+                            "HORA": "#5C40D0", 
+                            "LUGAR": "#889AFD",
+                            "MEDIDA": "#CCC5B2",
+                            "MISC": "#F3D850",
+                            "ORG": "#FFD500",
+                            "PERSONA": "#9A7300",
+                            "TIEMPO" : "#DFA000",
+                            }
+    
+    colors_azul_rosa = {"DINERO": "#00065D", 
+                            "FECHA":"#2257EC", 
+                            "HORA": "#008DDE", 
+                            "LUGAR": "#7A8BE6",
+                            "MEDIDA": "#D2C3C3",
+                            "MISC": "#FF9696",
+                            "ORG": "#F94D67",
+                            "PERSONA": "#E9255A",
+                            "TIEMPO" : "#99001C",
+                            }
+    colors_default = {"DINERO": "#F3D850", 
+                            "FECHA":"#FECA74", 
+                            "HORA": "#7AECEC", 
+                            "LUGAR": "#BFE1D9",
+                            "MEDIDA": "#AA9CFC",
+                            "MISC": "#C887FB",
+                            "ORG": "#E4E7D2",
+                            "PERSONA": "#FFB700",
+                            "TIEMPO" : "#52CCCC",
+                            }
+
+    preferencia = Preferencias.objects.get(usuario = user)
+    if preferencia.color == "AM":
+        options = {"colors": colors_azul_amarillo}
+    elif preferencia.color == "AR":
+        options = {"colors": colors_azul_rosa}
+    else:
+        options = {"colors": colors_default}
+
+    # 2: Extraer textos de los archivos en la carpeta
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
-        dict_text = []
         lines = []
         nombre, partition, extension = archivo.arch.name.rpartition('.')
-        """
-         elif extension == 'xlsx':
+        if extension == 'docx':
+            doc = docx.Document(archivo.arch.path)
+            for i in doc.paragraphs:
+                print(i.text)
+                lines.append(i.text)
+        elif extension == 'xlsx':
             df = pd.read_excel(archivo.arch.path, usecols="A") #siempre leo la primera columna
             lines = df.values.tolist()
         elif extension == 'txt':
@@ -419,74 +278,30 @@ def procesar_clasificador(analisis, carpeta, user):
                 lines = f.read().splitlines()
         else: 
             raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
-        """
-        if extension == 'docx':
-            doc = docx.Document(archivo.arch.path)
-            for index, i in enumerate(doc.paragraphs):
-                line = i.text
-                elemento = procesar_linea(analisis= analisis, archivo= archivo, line= line, index= index)
-                if elemento:
-                    dict_text.append(elemento)
-        elif extension == 'txt':        
-            with open(archivo.arch.path, "r", encoding = 'UTF -8') as f:
-                for index, line in enumerate(f):
-                    elemento = procesar_linea(analisis= analisis, archivo= archivo, line= line, index= index)
-                    if elemento:
-                        dict_text.append(elemento)
-        elif extension == 'xlsx':
-            df = pd.read_excel(archivo.arch.path, usecols="A") #siempre leo la primera columna
-            list_texts = df.values.tolist()
-            for index, text in enumerate(list_texts):
-                elemento = procesar_linea(analisis= analisis, archivo= archivo, line= text[0], index= index)
-                if elemento:
-                    dict_text.append(elemento)
-        else:
-            raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
+        docs = list(nlp.pipe(lines))
 
-        lines = [elemento['texto'] for elemento in dict_text] # tengo que sacar la comprobacion de si es o no adjunto porque necesito que los docs_binarios sean paralelos a dict_text no me los puedo saltear
-        docs_binarios = list(nlp.pipe(lines))
-        for index, doc in enumerate(docs_binarios):
-            dict_text[index]['doc'] = doc
-
-        violentos_text = []
-        elementos_violentos = []
-        for elemento in dict_text:
-            doc = elemento['doc']
-            if doc.cats['Violento'] < 0.8:
-                texto = doc.text
-                detectado = 'No Violento'
-                html = ""
-                archivo_origen = archivo
-                numero_linea = elemento['numero_linea']
-                fecha = elemento['fecha']
-                remitente = elemento['remitente']
-                Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
-            else:
-                elementos_violentos.append(elemento)
-
-        violentos_text = [elemento['texto'] for elemento in elementos_violentos]
-        docs_multi = list(nlp_multi.pipe(violentos_text))
-        for index, doc in enumerate(docs_multi):
-            elementos_violentos[index]['doc'] = doc
-
-        for elemento in elementos_violentos:
-            doc = elemento['doc']
+        # 3: Armar el objeto resultado de cada uno:
+        for index, doc in enumerate(docs):
+            entidades = []
+            for ent in doc.ents:
+                entidad = {
+                    "text": ent.text,
+                    "label": ent.label_
+                }
+                entidades.append(entidad)
+            entidades_json = json.dumps(entidades, ensure_ascii=False)
             texto = doc.text
-            detectado = max(doc.cats, key=doc.cats.get)
-            html = ""
+            detectado = entidades_json
+            html = displacy.render(doc, style="ent", options=options)
             archivo_origen = archivo
-            numero_linea = elemento['numero_linea']
-            fecha = elemento['fecha']
-            remitente = elemento['remitente']
-            Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
-
+            numero_linea = index + 1
+            Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
 
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
-    preferencia = Preferencias.objects.get(usuario = user)
+    armar_informe_entidades(analisis, preferencia)
 
-    armar_informe_clasificador(analisis,preferencia)
     return 1
-    
+
 
 
 def armar_informe_clasificador(analisis, preferencia):
@@ -643,3 +458,214 @@ def armar_informe_clasificador(analisis, preferencia):
         imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
         imagen_wordcloud_total.save()
     return 1
+
+def wpp_format(s):
+    """
+    Verificar si la línea tiene el formato de mensaje de WhatsApp.
+
+    Parameters
+    ----------
+    :param: s (str) Línea del archivo.
+
+    Returns
+    -------
+    :return: (bool) True si la línea tiene el formato de mensaje de WhatsApp, False en caso contrario.
+    """
+    pattern = r"\d{1,2}/\d{1,2}/\d{4}, \d{2}:\d{2} - .+: .+"
+    match = re.match(pattern, s)
+    return match is not None
+
+
+def procesar_linea(analisis, archivo, line, index):
+    """
+    Esta funcion se encarga de procesar una linea de un archivo de texto. Crea un objeto Resultado en la base de datos para esa linea si es posible (se detectó todo lo necesario) o devolviendo un diccionario con los datos de la linea si no es posible y requiere mas procesamiento.
+    """
+    elemento = {}
+    if wpp_format(line):
+        date_name_text = line.strip().split(' - ') # [date, name: text]
+        name_index = date_name_text[1].find(':') 
+        name = date_name_text[1][:name_index] 
+        text = date_name_text[1][name_index+2:]
+        date = date_name_text[0]
+        fecha = datetime.datetime.strptime(date, "%d/%m/%Y, %H:%M").date()
+        #Problema: fechas con dia y mes intercambiados (puedo hacer que si no esta en ese formato queda 'desconocida' y listo)
+
+        if(text.find('(archivo adjunto)') != -1):
+            texto = text.replace('(archivo adjunto)', '') 
+            numero_linea = index + 1
+            detectado = 'Adjunto'
+            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save() 
+        elif (text.find('<Multimedia omitido>') != -1):
+            texto = "Adjunto Desconocido"
+            detectado = 'Adjunto'
+            numero_linea = elemento['numero_linea']
+            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save()
+        else:
+            elemento = {
+                'texto': text,
+                'fecha': fecha,
+                'remitente': name,
+                'numero_linea': index + 1,
+                'archivo_origen': archivo,
+                'doc' : None
+            }
+    else:
+        elemento = {
+            'texto': line,
+            'fecha': None,
+            'remitente': None,
+            'numero_linea': index + 1,
+            'archivo_origen': archivo,
+            'doc' : None
+        }
+    return elemento
+
+
+def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
+    datos_lineas = [] #lista de diccionarios con los datos de cada linea
+    lines = []
+    nombre, partition, extension = archivo.name.rpartition('.')
+
+    if extension == 'docx':
+        if isinstance(archivo, zipfile.ZipExtFile):
+            with io.BytesIO(archivo.read()) as file_in_memory:
+                doc = docx.Document(file_in_memory)
+        else:
+            doc = docx.Document(archivo.path)
+        # doc = docx.Document(archivo.path)
+        for index, i in enumerate(doc.paragraphs):
+            line = i.text
+            elemento = procesar_linea(analisis= analisis, archivo= archivo_db, line= line, index= index)
+            if elemento:
+                datos_lineas.append(elemento)
+    elif extension == 'txt':    
+        if isinstance(archivo, zipfile.ZipExtFile):
+            with io.TextIOWrapper(archivo, encoding='UTF-8') as text_in_memory:
+                for index, line in enumerate(text_in_memory):
+                    elemento = procesar_linea(analisis=analisis, archivo=archivo_db, line=line, index=index)
+                    if elemento:
+                        datos_lineas.append(elemento)
+        else:
+            with open(archivo.path, "r", encoding = 'UTF -8') as f:
+                for index, line in enumerate(f):
+                    elemento = procesar_linea(analisis= analisis, archivo= archivo_db, line= line, index= index)
+                    if elemento:
+                        datos_lineas.append(elemento)
+    elif extension == 'xlsx':
+        if isinstance(archivo, zipfile.ZipExtFile):
+            with io.BytesIO(archivo.read()) as xlsx_in_memory:
+                df = pd.read_excel(xlsx_in_memory, usecols="A")  # Siempre leo la primera columna
+        else:
+            df = pd.read_excel(archivo, usecols="A")  # Siempre leo la primera columna
+
+        #df = pd.read_excel(archivo.path, usecols="A") #siempre leo la primera columna
+        list_texts = df.values.tolist()
+        for index, text in enumerate(list_texts):
+            elemento = procesar_linea(analisis= analisis, archivo= archivo_db, line= text[0], index= index)
+            if elemento:
+                datos_lineas.append(elemento) 
+    else:
+        raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
+
+    lines = [elemento['texto'] for elemento in datos_lineas] # tengo que sacar la comprobacion de si es o no adjunto porque necesito que los docs_binarios sean paralelos a datos_lineas no me los puedo saltear
+    docs_binarios = list(nlp.pipe(lines))
+    for index, doc in enumerate(docs_binarios):
+        datos_lineas[index]['doc'] = doc
+
+    violentos_text = []
+    elementos_violentos = []
+    for elemento in datos_lineas:
+        doc = elemento['doc']
+        if doc.cats['Violento'] < 0.8:
+            texto = doc.text
+            detectado = 'No Violento'
+            html = ""
+            archivo_origen = archivo_db
+            numero_linea = elemento['numero_linea']
+            fecha = elemento['fecha']
+            remitente = elemento['remitente']
+            Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
+        else:
+            elementos_violentos.append(elemento)
+
+    violentos_text = [elemento['texto'] for elemento in elementos_violentos]
+    docs_multi = list(nlp_multi.pipe(violentos_text))
+    for index, doc in enumerate(docs_multi):
+        elementos_violentos[index]['doc'] = doc
+
+    for elemento in elementos_violentos:
+        doc = elemento['doc']
+        texto = doc.text
+        detectado = max(doc.cats, key=doc.cats.get)
+        html = ""
+        archivo_origen = archivo_db
+        numero_linea = elemento['numero_linea']
+        fecha = elemento['fecha']
+        remitente = elemento['remitente']
+        Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
+    return 1
+
+def procesar_clasificador(analisis, carpeta, user):
+    """
+    Esta función se encarga de procesar los archivos de una carpeta con el modelo de clasificación de violencia. Crea los objetos Resultado en la base de datos para cada linea que se pidió analizar.
+
+    Parameters
+    ----------
+    :param: analisis (Analisis) El analisis que recibe tiene: informe vacio, fecha actual, carpeta y modelo elegidos.
+    :param: carpeta (Carpeta) La carpeta que recibe tiene: nombre, usuario y archivos.
+    :param: user (User) El usuario que realiza el analisis.
+
+    Return
+    ------
+    :return: 1 (int) Si el analisis se realizo correctamente devuelve 1.
+
+    """
+    
+    model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-binario" )
+    nlp = spacy.load(model_path)
+    model_path_multi = os.path.join(os.getcwd(),"analisis", "static", "modelos", "clasificador-multi" )
+    nlp_multi = spacy.load(model_path_multi)
+    archivos = Archivo.objects.filter(carpeta = carpeta)
+
+    for archivo in archivos:
+        nombre, partition, extension = archivo.arch.name.rpartition('.')
+        if extension == 'zip':
+            with zipfile.ZipFile(archivo.arch, 'r') as zip_ref:
+                for file in zip_ref.namelist():
+                    with zip_ref.open(file) as zip_file:
+                        archivo_in_zip = Archivo(nombre = file, arch = archivo.arch, carpeta = carpeta)
+                        archivo_in_zip.save()
+                        procesar_archivo(archivo_db = archivo_in_zip, archivo= zip_file, analisis= analisis, nlp = nlp ,nlp_multi = nlp_multi)
+        else:
+            procesar_archivo(archivo_db = archivo, archivo= archivo.arch, analisis= analisis, nlp = nlp ,nlp_multi = nlp_multi)
+
+    # 4: Procesar los resultados y armar el informe segun el modelo que sea
+    preferencia = Preferencias.objects.get(usuario = user)
+
+    armar_informe_clasificador(analisis,preferencia)
+    return 1
+    
+
+
+def procesar_analisis(analisis, user):
+    """ 
+    Esta funcion realiza el procesamiento pedido por el usuario y genera los resultados.
+    Por ahora la funcion solo permite aplicar modelos de entidades y clasificadores.
+    Pero se podria extender para que permita aplicar otros modelos de NLP.
+    
+    Parameters
+    ----------
+
+    :param: analisis (Analisis) El analisis que recibe tiene: informe vacio, fecha actual, carpeta y modelo elegidos.
+    :param: user (User) El usuario que realiza el analisis.
+
+    """
+    carpeta = analisis.carpeta
+    modelo = analisis.modelo 
+
+    if modelo.nombre == 'entidades': #cargo ese solo modelo y lo aplico
+        procesar_entidades(analisis, carpeta, user)
+    elif modelo.nombre == 'clasificador': # aplico primero el modelo binario y despues el modelo multicategoria.  
+        procesar_clasificador(analisis, carpeta, user)
+    else:
+        raise FileNotFoundError("El modelo no existe") 
