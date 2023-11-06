@@ -48,7 +48,7 @@ def config(request):
 def carpetas(request):
     usuario_actual = request.user
     context = {
-        "carpetas": Carpeta.objects.filter(usuario = usuario_actual),
+        "carpetas": Carpeta.objects.filter(usuario = usuario_actual).order_by("-id"),
     }
     return render(request, "analisis/carpetas.html", context= context) 
 
