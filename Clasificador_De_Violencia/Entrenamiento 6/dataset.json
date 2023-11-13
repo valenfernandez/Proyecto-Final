@@ -15776,10 +15776,6 @@
         "sentiment": "Violento"
     },
     {
-        "text": "agradece que estas viva si no fuese por mi estarias muerta",
-        "sentiment": "Violento"
-    },
-    {
         "text": "inutil de mierda no servis para nada",
         "sentiment": "Violento"
     },
@@ -16333,6 +16329,758 @@
     },
     {
         "text": "hola, ya encontraste el cafe?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "El 8 de noviembre de 1903 la corbeta ARA Uruguay rescató a la expedición antártica liderada por el explorador sueco Otto Nordenskjöld",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "de la que participó un único oficial de la Armada Argentina, el alférez José María Sobral",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el primer marino argentino en invernar entre los hielos del continente blanco.",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Esta misión fue el puntapié para materializar esa proyección antártica que el Estado ya había planificado en el siglo XIX",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "El alférez Sobral, además, se convirtió en el primer marino argentino en invernar entre los hielos de la Antártida.",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Esta misión fue de vital importancia para el país, ya que marcó el inicio de una etapa fundacional para las tareas en la Antártida Argentina",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "A más de un siglo del primer rescate de relevancia internacional en la Antártida, historiadores consultados por Télam reconstruyeron las características de la proeza",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "detallaron que los exploradores tuvieron que sobrevivir dos años en el continente blanco",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "atravesando inviernos con temperaturas de 40 grados bajo cero y utilizando la grasa de foca como combustible para calefaccionarse",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Adriana Schottlender fue una de las pioneras de la informática en el país",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "pero también es periodista de ciencia y espectáculos, vestuarista y escenógrafa",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Considera que la matemática y la creatividad se tocan en la abstracción",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el infinito matemático coincide con el infinito poético",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Desde chica, siempre combinó su amor por las matemáticas con las danzas clásicas.",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "A la par que se presentaba en teatro para bailar, ayudaba a sus compañeras a entender la materia",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": " Estudió piano durante 15 años, disciplina que mantuvo durante toda su carrera en Exactas.  ",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "y después llegaron escenografía y vestuario",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Más tarde, estudió timbal con la Sinfónica Nacional (no solía haber timbalistas mujeres en esa época) ",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "siempre combinadas con la computación y las clases",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Cuando Schottlender tenía 25 años, viajó para hacer una excursión por dos meses, pero volvió recién a sus 30 años",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Para ella, vivir afuera fue una experiencia no siempre fácil, pero sí inolvidable",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": " Cuando llegó a España, buscó trabajo como computadora científica, pero la competencia era mucha y la situación, difícil para los extranjeros",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Mientras esperaba la oportunidad, se vio obligada a conseguir otro trabajo para mantenerse",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "La contactaron con una modista, que en realidad era diseñadora de vestuario teatral",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Como Schottlender sabía coser, siempre se había hecho su propia ropa",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "incluso en su familia hacían los trajes con los que ella bailaba",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Se apasionó y siguió por ese camino, al punto de romper su pasaje de regreso.",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Trabajó para importantes producciones, como el aniversario de los 25 años del cantante Raphael",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "le llegó a hacer un nuevo vestido a Norma Aleandro cuando le habían robado el suyo en un camarín del Teatro Lido de Madrid",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Si bien matizaba estas tareas con las clases de matemática del colegio secundario, este era su principal oficio",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Al volver a Argentina, estudio vestuario y escenografía de manera formal ",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Sus temáticas en la radio como periodista, columnista y conductora también fueron el teatro y la ciencia",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Trabajó con personalidades como Betty Elizalde, Rómulo Berruti y Carlos Sciacaluga, entre otros",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Hoy es columnista del programa “Parece que viene bien”, conducido por Pablo Gorlero, en Radio Ciudad",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Tuvo su propio programa de ciencia en la misma emisora,",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "llamado “Radio de la circunferencia” y otro en la Universidad Tecnológica Nacional (UTN)",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Hoy desempeña los conocimientos adquiridos como productora cultural en la UNDAV.",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "El 19 de octubre pasado la carrera de Computador Científico de la Universidad de Buenos Aires",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "que consolidó el desarrollo de la informática académica en Argentina, cumplió 60 años",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Su sede, la Facultad de Ciencias Exactas y Naturales de la Universidad de Buenos Aires",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "recibió a la primera computadora del país, la Mercury de Ferranti, conocida como “Clementina”",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "por sus pasillos pasaron muchos estudiantes, entre ellos los autoproclamados “dinosaurios de la informática”",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Una de ellos es la también periodista Adriana Schottlender",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "quien ingresó a la carrera en 1969 y supo combinar las ciencias exactas, las humanidades y las artes",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Miembro de la Red Argentina de Periodismo Científico (RAdPC); conductora y columnista radial; productora cultural; escenógrafa y vestuarista",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "También es docente de matemáticas",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "fue convocada en 2010 para la puesta en marcha de la Universidad Nacional de Avellaneda inaugurada en 2011",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "para entrenar el pensamiento lógico, creativo y deductivo",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": " además de organizar un ciclo con científicos artistas porque opina que ambas disciplinas tienen bastante más en común de lo que se piensa",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Hoy, en la institución educativa realiza las Jornadas de Juegos de Mesa",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Trabajamos en las primeras máquinas que se instalaron en el país y fuimos formadores",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Cuál fue el rol de los pioneros de la computación?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "capacitamos a trabajadores que solo sabían llenar formularios con lápiz y papel",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": " Había que tener mucha paciencia en la docencia",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "pero fue muy interesante y estoy muy satisfecha de haber participado de una época histórica",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Soy hija de profesores",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "mi padre, de Filosofía, Historia y Sociología, y mi madre, de Literatura y Lingüística",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "mi nombre proviene de aquella canción de Tom Jobim",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Mis hermanos se llaman Chico, Caetano y Bethania",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Entonces te podés imaginar cómo fue mi infancia ¡Poesía oral hasta en las venas!",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Un ensayo en el que Carson analiza cómo el pensamiento filosófico griego se fundamenta a partir de un referencial masculino",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "de conocimiento, retórica y participación en la vida política, estigmatizando las voces femeninas y desviantes como desagradables y sin parsimonia",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Es precioso!",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Cuál es la urgencia el pensamiento feminista decolonial que define a tu activismo y de qué manera se expresa en tu arte?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Me encantan los proyectos que investigan el hibridismo de géneros textuales y lenguajes artísticos",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "que sacan a la superficie del texto el cuerpo y el procedimiento de la creación",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "También las sagas y los novelones. Y la poesía. Y los libros sobre fútbol.",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": " Allí se encuentra con un rey y su hija, la princesa Irina",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "En octubre, popularmente conocido como el mes rosa",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "las miradas giran en torno a la concientización y sensibilización del cáncer de mama",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": " cáncer de mama y embarazo.",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "¿Es posible lidiar con una enfermedad oncológica siendo gestante?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Cuánto tiempo se recomienda esperar para concebir un hijo una vez superada la enfermedad?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Madre hace 25 años que no ve a sus hijas y pide ayuda para encontrarlas",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "le quitaron la tenencia de sus hijas y nunca más supo de ellas",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Quiero saber cómo están y decirles que siempre las extrañe",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Una mujer oriunda de Paraná, Estella, solicita ayuda a la comunidad para encontrar a sus dos hijas",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el hijo o hija reside en el domicilio de uno de los progenitores pero ambos comparten las decisiones y se distribuyen las labores",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Por ejemplo, el hijo o hija vive con uno de ellos pero el otro se ocupa de llevarlo al colegio",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Si uno de los progenitores tiene el cuidado del hijo o hija ¿qué derechos tiene el otro?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Tiene el derecho y el deber de tener una comunicación fluida con su hijo o hija.",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Es lo que antes se llamaba “visitas” y consiste en la posibilidad que tiene el progenitor que no convive con su hijo o hija de poder pasear",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "compartir momentos, que pueda quedarse a dormir en su casa según la edad y necesidades del hijo.",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el progenitor que no vive con el hijo o hija tiene el derecho y el deber de colaborar con el progenitor que sí convive",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "cada progenitor debe informar al otro sobre cuestiones de educación, salud y otras relativas a la persona y los bienes de los hijos e hijas",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Cómo puedo ayudar a mi hijo a dormir?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Eduardo de Wessex, el hijo de Isabel II que creció",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el DT Louis Van Gaal le regaló a JR una camiseta chiquita del Culé con el nombre de su hijo",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "Nicoló Pirlo, hijo de 17 años de Andrea Pirlo, entrenador de Juventus",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "gustín Riquelme, hijo de Juan Román, se expresó en sus redes sociales tras la derrota de Boca contra Fluminense",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "como vas a gastar 7000 en estupideces para los pibes",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "yo me rompo el lomo para ganar la plata y venis vos a gastar para los pendejos esos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "si queres tomar decisiones entonces anda a laburar, mientras pago yo decido yo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me da asco la cantidad  de plata que gasto en vos y tus estupideces",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una mantenida hace 15 meses ganas sin saber nada de nada",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "Contesta puta de mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "No se encuentra una palabra que califique a semejante pedazo de mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "Mas te vale que te cuides. Conozco tus pasos, te tengo vigilado",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "Te aviso que te voy a hacer mierda tu casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "Andate a la re contra concha puta de tu hermana enano de mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tu vieja debe ser o haber sido muy mierda para criar un sorete como vos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "cuando puedo stalkearte porque sos una dolida de mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ni cuenta te das que está mal redactado. Negro ignorante de remil mierda!",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "regalada idiota tarada tu familia no te quiere",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no te rompo la cara porque estan los nenes",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vos te mereces que te pegue",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ya vas a ver me la vas a pagar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a hacer quilombo en tu casa y en tu trabajo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vos sos una hija de puta vos va a matar a mis hijos  segui haciendo denuncias asi te va a ir",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "hoy te vas de esta casa   con la policia no me vas a asustar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vas a ver lo que te va a pasar no tengo nada que perder   nadie te va a poder salvar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "si no estas conmigo no vas a ser feliz con nadie",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una fracasada  con razon te metieron los cuernos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "seguis tratandome mal   yo que te ame como nadie te amara jamas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no vas a estar con nadie no te voy a dejar estar con nadie",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una mala madre te voy a sacar a tus hijos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a ingresar a la casa tirando la puerta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "Yo se donde vivís y se todo tu recorridovos sos la segunda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "Si me vas a engañar, me mato",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a prender fuego la casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "vas a sufrir hoy voy a buscarte te pongo un tiro",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a quemar la casa si haces la denuncia",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "callate la concha de tu madre vos y la pendeja de mierda me tienen podrido las voy a matar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te hago desaparecer",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "sos una mierda de mina puta te voy a hacer pelota",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "andate de aca no te quiero ni ver aca",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a prender fuego la casa con vos adentro",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "despues no queres que te golpee te vas de aca pero los chicos se quedan",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a pasar en cana toda mi vida pero a ese hijo de puta lo voy a matar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "zorra te voy a grabar para mandar a alguien que te mate puta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a mandar a matar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a clavar un cuchillo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "antes de ir preso por amenazas prefiero ir preso por femicidio",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a hacer algo que te va a doler",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "traeme al nene, mas vale que lo traigas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "tienes que estar a mis órdenes",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "me estas provocando queres que te cague a trompadas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "a mi nadie me toca ya te voy a agarrar sola",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "mañana no vas a estar viva",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a destruirte a vos y a tu familia",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te voy a matar te voy a desaparecer a tus hijos los voy a agarrar tambien",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ojala de agarren tanto a sopapos tus nuevos amiguitos que vas a tener.",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "Basta trola xq te voy a sacudir asi si te seguís haciendo la viva",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "esta trola atrevida y sucia que se hace la picante bardeando a mi signo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "la voy a arrastrar por toda la calle junin",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "le hago un aborto manual y la hago sufrir y q se caguenmuriendo",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "La única hormona tiene que ser de plomo y en la cabeza",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "dios estaba apunto de pegarle una piña a la negra esa de mierda",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "ojalá mueras de la forma mas lenta y dolorosa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "te dejo las piernas como dos resortes y te acomodo la cara gratis",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a buscar una cuchilla y lo apuñaló no me importa nada",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "para que aprendas a ser una puta obediente, el dolor te va a ayudar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "voy a romper la casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "si no me aceptas vas a aparecer en una bolsa tirada en la zanja asi que no te hagas la viva",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "con gusto me pego un tiro con vos",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "denunciame y te prendo fuego la casa",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "devolveme las cosas o te pego 30000 tiros",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "animate a venir boluda que sos boleta",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "no te tengo miedo aca todos en el barrio te van a matar",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "queres que me compre un fierro para matar a todos con los que hablas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "cuidate mucho pero te quedan horas",
+        "sentiment": "Violento"
+    },
+    {
+        "text": "abrigate bien porque hace frio",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "me encanta el te verde por la mañana",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "nos fuimos con raul al festival internacional de cine de mar del plata",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "la mejor pelicula de campanella es el hijo de la novia",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el padre del encargado no abrio la puerta hasta la mañana siguiente",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te comiste toda la pizza?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te mando un whatsapp cuando llegue",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te ordene la habitacion mientras no estabas",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te planche el uniforme para la entrevista de mañana",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "queres que te prepare unos sanguchitos de miga?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "el plan de estudios se actualizo el año pasado",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "los hijos de gonzales y las hijas de mi hermana se casaron en una boda multiple",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "me voy de viaje con mi mejor amiga y la prima de ella",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "en españa me aloje con unos tios de mi novia que emigraron en la crisis de 2001",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "esaslas mejores noches que vivimos durante nuestros años en la facultad",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "la casa de mi bisabuela quedo en disputa porque todos los hijos querian quedarsela",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "la comida de navidad era tan abundante que al dia siguiente siempre me llevaban al medico por una indigestion",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "si queres te puedo pasar el contacto del mi plomero",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te hago un presupuesto?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te marcaron donde tenes que inscribirte?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te dijeron la nota?",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te voy a dar dos mil pesos",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te voy a ayudar a mejorar en el futbol",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "tevoy a organizar una fiestita para tu cumple",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te voy a informar de los resultados el martes",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te llamo apenas tenga noticias del numero",
+        "sentiment": "No Violento"
+    },
+    {
+        "text": "te dieron un turno para la semana que viene",
         "sentiment": "No Violento"
     }
 ]

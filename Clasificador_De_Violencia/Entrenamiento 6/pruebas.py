@@ -23,8 +23,8 @@ def prueba_txt(file):
 
     # process the text with spaCy
     for text in textList:
-        doc = nlp(text)
-        if (doc.cats['Violento'] > doc.cats['No Violento']):
+        doc = nlp(text.lower())
+        if (doc.cats['Violento'] >= 0.7):
             print("Violento\t", round(doc.cats['Violento'], 2), "\t", round(doc.cats['No Violento'], 2), "\t", text)
         else:
             print("No Violento\t", round(doc.cats['Violento'], 2), "\t", round(doc.cats['No Violento'], 2), "\t", text)

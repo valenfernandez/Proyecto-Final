@@ -49,7 +49,7 @@ def convert_record(nlp, record, categories):
 
 categories = ["Violento", "No Violento"]
 nlp = spacy.blank("es")
-with open('dataset.json', 'r', encoding = 'utf-8') as f:
+with open('clean-dataset.json', 'r', encoding = 'utf-8') as f:
     input_data = json.load(f)     
 
 random.shuffle(input_data) 
@@ -59,7 +59,7 @@ unique_no_violento = list({ each['text'] : each for each in input_data if each['
 
 # select 70% of input data for training set
 train_size_violento = int(len(unique_violento) * 0.7)
-train_size_no_violento = int(len(unique_no_violento) * 0.7)
+train_size_no_violento = int(len(unique_no_violento)* 0.7)
 
 train_data_violento = unique_violento[:train_size_violento]
 test_data_violento = unique_violento[train_size_violento:]
