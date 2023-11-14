@@ -49,7 +49,7 @@ def convert_record(nlp, record, categories):
 
 categories = ["Violento", "No Violento"]
 nlp = spacy.blank("es")
-with open('clean-dataset.json', 'r', encoding = 'utf-8') as f:
+with open('clean-dataset-mayusculas-aleatorias.json', 'r', encoding = 'utf-8') as f:
     input_data = json.load(f)     
 
 random.shuffle(input_data) 

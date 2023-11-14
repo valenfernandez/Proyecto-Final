@@ -40,6 +40,9 @@ def cleanText(dictElement):
 
     wordList = list(dictText)
 
+#    for x in range(0, len(wordList) // 2):
+#        pasarUnCaracterAMayuscula(wordList)
+
     print("".join(wordList))
 
     dictElement.update({'text': "".join(wordList), 'sentiment': dictElement['sentiment']})
@@ -60,5 +63,5 @@ with open('dataset.json', 'r', encoding = 'utf-8') as f:
 
     unique = list({ each['text'] : cleanText(each) for each in input_data if len(each['text']) < 200}.values())
 
-with open('clean-dataset.json'.format(1), 'w', encoding='utf-8') as file:
+with open('clean-dataset-mayusculas-aleatorias.json'.format(1), 'w', encoding='utf-8') as file:
     json.dump(unique, file, ensure_ascii=False)

@@ -12,7 +12,7 @@ def prueba_txt(file):
     """
     # define path to custom-trained model
     #model_path = os.path.join(os.getcwd(), "sentiment_model")
-    model_path = os.path.join(os.getcwd(), "output", "model-best")
+    model_path = os.path.join(os.getcwd(), "output-etapa-4", "model-best")
 
     # load the custom-trained model
     nlp = spacy.load(model_path)
@@ -25,9 +25,9 @@ def prueba_txt(file):
     for text in textList:
         doc = nlp(text.lower())
         if (doc.cats['Violento'] >= 0.7):
-            print("Violento\t", round(doc.cats['Violento'], 2), "\t", round(doc.cats['No Violento'], 2), "\t", text)
+            print("Violento\t", round(doc.cats['Violento'], 2), "\t", round(doc.cats['No Violento'], 2), "\t", text.lower())
         else:
-            print("No Violento\t", round(doc.cats['Violento'], 2), "\t", round(doc.cats['No Violento'], 2), "\t", text)
+            print("No Violento\t", round(doc.cats['Violento'], 2), "\t", round(doc.cats['No Violento'], 2), "\t", text.lower())
 
 
 prueba_txt('pruebas.txt')
