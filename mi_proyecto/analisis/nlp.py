@@ -567,7 +567,7 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
     else:
         raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
 
-    lines = [elemento['texto'] for elemento in datos_lineas] # tengo que sacar la comprobacion de si es o no adjunto porque necesito que los docs_binarios sean paralelos a datos_lineas no me los puedo saltear
+    lines = [elemento['texto'].lower() for elemento in datos_lineas] # tengo que sacar la comprobacion de si es o no adjunto porque necesito que los docs_binarios sean paralelos a datos_lineas no me los puedo saltear
     docs_binarios = list(nlp.pipe(lines))
     for index, doc in enumerate(docs_binarios):
         datos_lineas[index]['doc'] = doc
@@ -576,7 +576,7 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
     elementos_violentos = []
     for elemento in datos_lineas:
         doc = elemento['doc']
-        if doc.cats['Violento'] < 0.8:
+        if doc.cats['Violento'] < 0.7:
             texto = doc.text
             detectado = 'No Violento'
             html = ""
