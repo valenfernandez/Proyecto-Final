@@ -479,6 +479,18 @@ def wpp_format(s):
 def procesar_linea(analisis, archivo, line, index):
     """
     Esta funcion se encarga de procesar una linea de un archivo de texto. Crea un objeto Resultado en la base de datos para esa linea si es posible (se detectó todo lo necesario) o devolviendo un diccionario con los datos de la linea si no es posible y requiere mas procesamiento.
+
+    Parameters
+    ----------
+    :param: analisis (Analisis) El analisis que recibe tiene: informe vacio, fecha actual, carpeta y modelo elegidos.
+    :param: archivo (Archivo) El archivo que recibe tiene: nombre, archivo y carpeta.
+    :param: line (str) La linea que se quiere procesar.
+    :param: index (int) El numero de linea que se esta procesando.
+
+    Return
+    ------
+    :return: elemento (dict) Si la linea se pudo procesar correctamente devuelve un diccionario con los datos de la linea.
+    :return: None (NoneType) Si la linea directamente crea un objeto Resultado (es decir, no requiere mas procesamiento) devuelve None.
     """
     elemento = {}
     if wpp_format(line):
@@ -520,6 +532,42 @@ def procesar_linea(analisis, archivo, line, index):
         }
     return elemento
 
+def clean_text(text):
+    new_text = text.lower().replace(";", " ") \
+    .replace(".", " ") \
+    .replace("\"", " ") \
+    .replace("/", " ") \
+    .replace("\\", " ") \
+    .replace("[", " ") \
+    .replace("]", " ") \
+    .replace("*", " ") \
+    .replace("'", " ") \
+    .replace("-", " ") \
+    .replace("|", " ") \
+    .replace("(", " ") \
+    .replace(")", " ") \
+    .replace("!", " ") \
+    .replace("¡", " ") \
+    .replace(":", " ") \
+    .replace(",", " ") \
+    .replace("»", " ") \
+    .replace("+", " ") \
+    .replace("…", " ") \
+    .replace("`", " ") \
+    .replace("´", " ") \
+    .replace("á", "a") \
+    .replace("é", "e") \
+    .replace("í", "i") \
+    .replace("ó", "o") \
+    .replace("ú", "u") \
+    .replace("ú", "u") \
+    .replace("ḉ", " ") \
+    .replace("  ", " ") \
+    .replace("  ", " ") \
+    .replace("  ", " ") \
+    .strip() \
+    
+    return new_text
 
 def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
     datos_lineas = [] #lista de diccionarios con los datos de cada linea
@@ -567,7 +615,11 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
     else:
         raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
 
-    lines = [elemento['texto'].lower() for elemento in datos_lineas] # tengo que sacar la comprobacion de si es o no adjunto porque necesito que los docs_binarios sean paralelos a datos_lineas no me los puedo saltear
+    lines = [ clean_text(elemento['texto']) for elemento in datos_lineas] # tengo que sacar la comprobacion de si es o no adjunto porque necesito que los docs_binarios sean paralelos a datos_lineas no me los puedo saltear
+
+
+# TODO: NORMALIZACION DE LOS TEXTOS
+
     docs_binarios = list(nlp.pipe(lines))
     for index, doc in enumerate(docs_binarios):
         datos_lineas[index]['doc'] = doc
