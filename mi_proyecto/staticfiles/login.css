@@ -8,6 +8,7 @@ body, html {
 /* Background*/
 body {
     background: linear-gradient(rgba(199, 249, 204, 1), rgba(34, 87, 122, 1));
+    overflow: hidden;
 }
 
 /* Center the login container */
