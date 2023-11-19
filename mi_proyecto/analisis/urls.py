@@ -15,4 +15,6 @@ urlpatterns = [
     path("borrar_carpeta/<id_carpeta>", views.borrar_carpeta, name="analisis-borrar_carpeta"),
     path("borrar_analisis/<id_analisis>", views.borrar_analisis, name="analisis-borrar_analisis"),
     path("descargar_resultados_entidades/<id_analisis>/<id_archivo>", views.descargar_resultados_entidades, name="analisis-descargar_resultados_entidades"),
+    path("comenzar_tarea_celery/<id_analisis>", views.comenzar_tarea_celery, name="analisis-comenzar_tarea_celery"),
+    path("get_progress/<task_id>", views.get_progress, name="analisis-get_progress"),
 ]

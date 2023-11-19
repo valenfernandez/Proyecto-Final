@@ -9,6 +9,10 @@ from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, Result
 from .nlp import procesar_analisis
 from xhtml2pdf import pisa
 from django.db.models import Q
+from .tasks import comenzar_celery
+from celery.result import AsyncResult
+import json
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -84,6 +88,7 @@ def aplicacion(request, id_app):
     form_analisis = AnalisisForm(request.POST or None, request.FILES or None, instance=analisis, aplicacion = aplicacion)
     
     context = {
+        "analisis" : analisis,
         "aplicacion": aplicacion,
         "form_analisis" : form_analisis,
     }
@@ -91,30 +96,45 @@ def aplicacion(request, id_app):
     if form_analisis.is_valid():
         form_analisis.save()
         
-        try:
-            procesar_analisis(analisis, request.user)
-        except FileNotFoundError: #no deberia entrar casi nunca
-            analisis.delete()
-            message = e.args
-            context = {
-                "aplicacion": aplicacion,
-                "form_analisis" : form_analisis,
-                "error" : message,
-            }
-            return render(request, "analisis/aplicacion.html", context=context)
-        except ValueError as e:
-            analisis.delete()
-            message, error_files = e.args
-            context = {
-                "aplicacion": aplicacion,
-                "form_analisis" : form_analisis,
-                "error" : message,
-            }
-            return render(request, "analisis/aplicacion.html", context=context)
+        
             
         response = redirect('/resultado/'+str(analisis.id))
         return response
     return render(request, "analisis/aplicacion.html", context=context) 
+
+
+@login_required
+def procesar(request, id_analisis):
+    """
+    try:
+            procesar_analisis(request.user, analisis)
+    except FileNotFoundError: #no deberia entrar casi nunca
+        analisis.delete()
+        message = e.args
+        context = {
+            "aplicacion": aplicacion,
+            "form_analisis" : form_analisis,
+            "error" : message,
+        }
+        return render(request, "analisis/aplicacion.html", context=context)
+    except ValueError as e:
+        analisis.delete()
+        message, error_files = e.args
+        context = {
+            "aplicacion": aplicacion,
+            "form_analisis" : form_analisis,
+            "error" : message,
+        }
+        return render(request, "analisis/aplicacion.html", context=context)
+    """
+    analisis = Analisis.objects.get(id = id_analisis)
+
+    context = {
+        "analisis" : analisis,
+    }
+    return render(request, "analisis/procesar.html", context=context)
+
+
 
 @login_required
 def resultados(request):
@@ -373,3 +393,26 @@ def descargar_resultados_entidades(request, id_analisis, id_archivo):
     if pisa_status.err:
             return HttpResponse('We had some errors')
     return response
+
+
+def comenzar_tarea_celery(request, analisis_id):
+    analisis = Analisis.objects.get(id = analisis_id)
+    download_task = comenzar_celery.delay([{"analisis": analisis, "user": request.user}])
+    
+    task_id = download_task.task_id
+	# Print Task ID
+    print (f'Celery Task ID: {task_id}')
+    return JsonResponse({'task_id':task_id})
+
+
+def get_progress(request, task_id):
+    print("executing!!")
+    result = AsyncResult(task_id)
+    print(result)
+    print(result.state)
+    print(result.info)
+    response_data = {
+        'state': result.state,
+        'details': result.info,
+    }
+    return HttpResponse(json.dumps(response_data), content_type='application/json')
