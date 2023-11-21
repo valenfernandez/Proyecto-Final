@@ -23,3 +23,5 @@ mi_proyecto/mi_proyecto/__pycache__/
 mi_proyecto/analisis/__pycache__/
 mi_proyecto/analisis/static/modelos/clasificador-multi/transformer/model
 Clasificador_De_Violencia/Entrenamiento 6/transformers
+mi_proyecto/venv
+mi_proyecto\venv
