@@ -44,7 +44,7 @@
                     .then(response => response.json())
                     .then(result => {
                         console.log(result)
-                        var progressUrl = '{% url "task_status" 1 %}'
+                        var progressUrl = 'get_progress/1/'
                         progressUrl = progressUrl.replace("1", result.task_id);
                         console.log(progressUrl)
                         updateProgress(progressUrl);
