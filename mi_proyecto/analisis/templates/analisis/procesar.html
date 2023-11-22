@@ -20,7 +20,11 @@
             </br>
             <p>{{aplicacion.descripcion}}</p>
             </br>
-
+            {% if error %}
+            <div class="alert alert-warning" role="alert">
+            {{error}}. Por favor, elimine los archivos de esa extension de su carpeta.
+            </div>
+            {% endif %}
 
             <div id="progress-wrapper">
                 <button id="progress-bar-trigger">Comenzar</button>
@@ -28,8 +32,9 @@
                 <div id="progress-bar-message">Esperando...</div>
             </div>
 
+
             <script>
-                var startCeleryUrl = '{% url "comenzar_tarea_celery" {{analisis.id}} %}'; 
+                var startCeleryUrl = '/comenzar_tarea_celery/'+id_analisis+ '/';
 
                 var trigger = document.getElementById('progress-bar-trigger');
                 trigger.addEventListener('click', fetchCeleryData)

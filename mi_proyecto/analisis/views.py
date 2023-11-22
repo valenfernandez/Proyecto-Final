@@ -95,16 +95,17 @@ def aplicacion(request, id_app):
 
     if form_analisis.is_valid():
         form_analisis.save()
-        
-        
-            
-        response = redirect('/resultado/'+str(analisis.id))
+
+        response = redirect('/procesar/'+str(analisis.id))
         return response
     return render(request, "analisis/aplicacion.html", context=context) 
 
 
 @login_required
 def procesar(request, id_analisis):
+    #Asi ya no puedo detectar el error de tipo de archivo no soportado.
+    #Antes al llamar hacia un try y catch que me daba el error.
+    #Podria al recibir el formulario tomar la lista de nombres de carpetas, chequear ahi, y si hay una erronea mostrar el error ahi y sino redirigir aca directamente.
     """
     try:
             procesar_analisis(request.user, analisis)
@@ -129,8 +130,11 @@ def procesar(request, id_analisis):
     """
     analisis = Analisis.objects.get(id = id_analisis)
 
+    
+
     context = {
         "analisis" : analisis,
+        "id_analisis" : id_analisis,
     }
     return render(request, "analisis/procesar.html", context=context)
 
@@ -397,7 +401,7 @@ def descargar_resultados_entidades(request, id_analisis, id_archivo):
 
 def comenzar_tarea_celery(request, analisis_id):
     analisis = Analisis.objects.get(id = analisis_id)
-    download_task = comenzar_celery.delay([{"analisis": analisis, "user": request.user}])
+    download_task = comenzar_celery.delay([analisis, request.user])
     
     task_id = download_task.task_id
 	# Print Task ID
