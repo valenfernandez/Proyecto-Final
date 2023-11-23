@@ -32,7 +32,7 @@ pip install -r requirements.txt
 
 Realizar migraciones y activar servidor
 ```
-pip install -r requirements.txt
+python manage.py migrate
 ```
 
 - Iniciar servidor con

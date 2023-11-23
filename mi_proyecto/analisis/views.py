@@ -2,11 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime
 from django.shortcuts import render, redirect
-from django.db.models import Count
+from django.core import serializers
 from django.contrib.auth.decorators import login_required
-from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias, Grafico, Grafico_Imagen, Tabla
+from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Preferencias, Grafico, Grafico_Imagen, Tabla
 from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm, AnalisisViewForm, ResultadoClasificadorViewForm
-from .nlp import procesar_analisis
 from xhtml2pdf import pisa
 from django.db.models import Q
 from .tasks import comenzar_celery
@@ -399,10 +398,9 @@ def descargar_resultados_entidades(request, id_analisis, id_archivo):
     return response
 
 
-def comenzar_tarea_celery(request, analisis_id):
-    analisis = Analisis.objects.get(id = analisis_id)
-    download_task = comenzar_celery.delay([analisis, request.user])
-    
+def comenzar_tarea_celery(request, id_analisis):
+    data = serializers.serialize('json', [request.user])
+    download_task = comenzar_celery.delay(id_analisis, data)
     task_id = download_task.task_id
 	# Print Task ID
     print (f'Celery Task ID: {task_id}')

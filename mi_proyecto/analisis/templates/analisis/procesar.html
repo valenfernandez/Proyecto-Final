@@ -34,7 +34,7 @@
 
 
             <script>
-                var startCeleryUrl = '/comenzar_tarea_celery/'+id_analisis+ '/';
+                var startCeleryUrl = '/comenzar_tarea_celery/'+ "{{ id_analisis }}" ;
 
                 var trigger = document.getElementById('progress-bar-trigger');
                 trigger.addEventListener('click', fetchCeleryData)
@@ -44,7 +44,7 @@
                     .then(response => response.json())
                     .then(result => {
                         console.log(result)
-                        var progressUrl = 'get_progress/1/'
+                        var progressUrl = 'get_progress/1'
                         progressUrl = progressUrl.replace("1", result.task_id);
                         console.log(progressUrl)
                         updateProgress(progressUrl);
