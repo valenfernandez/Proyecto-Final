@@ -252,7 +252,10 @@ def procesar_entidades(analisis, carpeta, user):
                             "TIEMPO" : "#52CCCC",
                             }
 
-    preferencia = Preferencias.objects.get(usuario = user)
+    try:
+        preferencia = Preferencias.objects.get(usuario = user)
+    except Preferencias.DoesNotExist:
+        preferencia = Preferencias(usuario = user, color = 'CLASICO')
     if preferencia.color == "AM":
         options = {"colors": colors_azul_amarillo}
     elif preferencia.color == "AR":
@@ -692,7 +695,11 @@ def procesar_clasificador(analisis, carpeta, user):
             procesar_archivo(archivo_db = archivo, archivo= archivo.arch, analisis= analisis, nlp = nlp ,nlp_multi = nlp_multi)
 
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
-    preferencia = Preferencias.objects.get(usuario = user)
+    try:
+        preferencia = Preferencias.objects.get(usuario = user)
+    except Preferencias.DoesNotExist:
+        preferencia = Preferencias(usuario = user, color = 'CLASICO')
+
 
     armar_informe_clasificador(analisis,preferencia)
     return 1
