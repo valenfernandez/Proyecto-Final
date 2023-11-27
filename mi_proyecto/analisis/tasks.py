@@ -34,7 +34,7 @@ def comenzar_celery(self, id_analisis, data):
         meta={
             'current': 10,
             'total': 10,
-            'mensaje': 'No se pudo procesar la tarea de celery' + exc
+            'mensaje': 'No se pudo procesar el análisis.'
         }
     )  
         raise self.retry(exc=exc)

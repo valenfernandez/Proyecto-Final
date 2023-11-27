@@ -128,9 +128,28 @@ def procesar(request, id_analisis):
         return render(request, "analisis/aplicacion.html", context=context)
     """
     analisis = Analisis.objects.get(id = id_analisis)
-
-    
-
+    carpeta = analisis.carpeta
+    archivos = Archivo.objects.filter(carpeta = carpeta)
+    for archivo in archivos:
+        nombre, partition, extension = archivo.arch.name.rpartition('.')
+        if extension == 'zip':
+            with zipfile.ZipFile(archivo.arch, 'r') as zip_ref:
+                for file in zip_ref.namelist():
+                    name, partition, extension = file.rpartition('.')
+                    if extension not in ['txt', 'docx', 'pdf', 'doc']:
+                        analisis.delete()
+                        context = {
+                            "error" : "No se soporta el tipo de archivo "+extension+" en la carpeta "+carpeta.nombre+".",
+                            "analisis" : analisis,
+                        }
+                        return render(request, "analisis/procesar.html", context=context)
+        if extension not in ['txt', 'docx', 'pdf', 'doc', 'zip']: #TODO chequear adentro del zip
+            analisis.delete()
+            context = {
+                "error" : "No se soporta el tipo de archivo "+extension+" en la carpeta "+carpeta.nombre+".",
+                "analisis" : analisis,
+            }
+            return render(request, "analisis/procesar.html", context=context)
     context = {
         "analisis" : analisis,
         "id_analisis" : id_analisis,
