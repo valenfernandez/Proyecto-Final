@@ -434,3 +434,71 @@ def get_progress(request, task_id):
         'details': result.info,
     }
     return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+
+def descargar_resultados_clasificador(request, id_analisis):
+    analisis = Analisis.objects.get(id = id_analisis)
+    usuario_actual = request.user
+    if analisis.carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para descargar este resultado")
+    resultados = Resultado.objects.filter(analisis = analisis)
+    html = """
+    <table class="table">
+                            <thead>
+                                <tr>
+                                <th scope="col">Num Linea</th>
+                                <th scope="col">Remitente</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Texto</th>
+                                <th scope="col">Detectado</th>
+                                <th scope="col">Archivo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+    """
+    for resultado in resultados:
+        html += "<div class='col'> <div>"+ resultado.html+"</div> </div>"
+        html += """<tr>
+                <th scope="row">"""+str(resultado.numero_linea)+"""</th>"""
+
+        if resultado.remitente:
+            html += """<td>"""+resultado.remitente+"""</td>"""
+        else:
+            html += """<td> Desconocido </td>"""
+        
+        if resultado.fecha_envio:
+            html += """<td>"""+str(resultado.fecha_envio)+"""</td>"""
+        else:
+            html += """<td> - </td>"""
+        html += """<td >"""+resultado.texto+"""</td>"""
+        if resultado.detectado == "No Violento":
+            html += """<td > 
+                        <span class="badge category-3 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        elif resultado.detectado == "Sexual":
+            html += """<td > 
+                        <span class="badge category-2 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        elif resultado.detectado == "Físico":
+            html += """<td > 
+                        <span class="badge category-1 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        elif resultado.detectado == "Psicológica":
+            html += """<td > 
+                        <span class="badge category-4 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        else:
+            html += """<td > 
+                        <span class="badge category-5 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        html += """<td>"""+resultado.archivo_origen.nombre+"""</td>
+            </tr>
+        """
+    html += """</tbody>
+            </table>"""
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename= "resultados_completos_clasificador.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+            return HttpResponse('We had some errors')
+    return response
