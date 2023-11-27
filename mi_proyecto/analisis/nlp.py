@@ -16,6 +16,9 @@ import docx
 import zipfile
 import time
 
+pattern = r"\d{1,2}/\d{1,2}/\d{4}, \d{2}:\d{2} - .+: .+"
+regex_wpp = re.compile(pattern)
+
 def armar_informe_entidades(analisis, preferencia): 
     """
     Esta funcion crea los graficos y las tablas que contiene el informe de los resultados de un analisis creado por un modelo de deteccion de entidades.
@@ -506,7 +509,7 @@ def procesar_linea(analisis, archivo, line, index):
     :return: None (NoneType) Si la linea directamente crea un objeto Resultado (es decir, no requiere mas procesamiento) devuelve None.
     """
     elemento = {}
-    if wpp_format(line):
+    if regex_wpp.match(line) is not None: #cumple formato whatsapp
         date_name_text = line.strip().split(' - ') # [date, name: text]
         name_index = date_name_text[1].find(':') 
         name = date_name_text[1][:name_index] 
@@ -546,40 +549,18 @@ def procesar_linea(analisis, archivo, line, index):
     return elemento
 
 def clean_text(text):
-    new_text = text.lower().replace(";", " ") \
-    .replace(".", " ") \
-    .replace("\"", " ") \
-    .replace("/", " ") \
-    .replace("\\", " ") \
-    .replace("[", " ") \
-    .replace("]", " ") \
-    .replace("*", " ") \
-    .replace("'", " ") \
-    .replace("-", " ") \
-    .replace("|", " ") \
-    .replace("(", " ") \
-    .replace(")", " ") \
-    .replace("!", " ") \
-    .replace("¡", " ") \
-    .replace(":", " ") \
-    .replace(",", " ") \
-    .replace("»", " ") \
-    .replace("+", " ") \
-    .replace("…", " ") \
-    .replace("`", " ") \
-    .replace("´", " ") \
-    .replace("á", "a") \
-    .replace("é", "e") \
-    .replace("í", "i") \
-    .replace("ó", "o") \
-    .replace("ú", "u") \
-    .replace("ú", "u") \
-    .replace("ḉ", " ") \
-    .replace("  ", " ") \
-    .replace("  ", " ") \
-    .replace("  ", " ") \
-    .strip() \
-    
+    #TODO TRANSLATION TABLE COMPLETAR
+    #ESPACIOS REPETIDOS: 
+
+    regex_espacios = re.compile(r"\s+")
+
+    ttable = str.maketrans(
+        ".\/[]*'-|()!¡:;,»+-…`´áéíóúḉ",
+        "                      aeiou "
+    )
+    new_text = text.translate(ttable)
+    regex_espacios.sub(" ", new_text)
+
     return new_text
 
 def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
