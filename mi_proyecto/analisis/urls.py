@@ -17,5 +17,5 @@ urlpatterns = [
     path("descargar_resultados_entidades/<id_analisis>/<id_archivo>", views.descargar_resultados_entidades, name="analisis-descargar_resultados_entidades"),
     path("procesar/<id_analisis>", views.procesar, name = "analisis-procesar"),
     path("comenzar_tarea_celery/<id_analisis>", views.comenzar_tarea_celery, name="analisis-comenzar_tarea_celery"),
-    path("get_progress/<task_id>", views.get_progress, name="analisis-get_progress"),
+    path("procesar/obtener_progreso_tarea_celery/<task_id>", views.get_progress, name="analisis-get_progress"),
 ]

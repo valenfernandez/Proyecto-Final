@@ -149,6 +149,10 @@
     text-decoration: none;
   }
 
+  .form-control {
+    appearance: menulist;
+  }
+
   .category-1 {
     color: white;
     background-color: #00065D; 

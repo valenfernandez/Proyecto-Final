@@ -14,6 +14,7 @@ import re
 import datetime
 import docx
 import zipfile
+import time
 
 def armar_informe_entidades(analisis, preferencia): 
     """
@@ -198,7 +199,7 @@ def armar_informe_entidades(analisis, preferencia):
     return 1
 
 
-def procesar_entidades(analisis, carpeta, user):
+def procesar_entidades(tarea_celery, analisis, carpeta, user):
     """ 
     Esta función se encarga de procesar los archivos de una carpeta con el modelo de detección de entidades.
     Para cada archivo, se extraen los textos y se detectan las entidades.
@@ -266,6 +267,15 @@ def procesar_entidades(analisis, carpeta, user):
     # 2: Extraer textos de los archivos en la carpeta
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
+        tarea_celery.update_state(
+        state='PROGRESS',
+        meta={
+            'current': 4,
+            'total': 10,
+            'mensaje': 'Analizando archivo: ' + archivo.nombre + "..."
+            }
+        )
+        time.sleep(3) # REMOVER ESTO DESPUES, ES SOLO PARA VER QUE EL PROGRESO SE ACTUALIZA
         lines = []
         nombre, partition, extension = archivo.arch.name.rpartition('.')
         if extension == 'docx':
@@ -660,7 +670,7 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
         Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
     return 1
 
-def procesar_clasificador(analisis, carpeta, user):
+def procesar_clasificador(tarea_celery, analisis, carpeta, user):
     """
     Esta función se encarga de procesar los archivos de una carpeta con el modelo de clasificación de violencia. Crea los objetos Resultado en la base de datos para cada linea que se pidió analizar.
 
@@ -683,6 +693,15 @@ def procesar_clasificador(analisis, carpeta, user):
     archivos = Archivo.objects.filter(carpeta = carpeta)
 
     for archivo in archivos:
+        tarea_celery.update_state(
+        state='PROGRESS',
+        meta={
+            'current': 4,
+            'total': 10,
+            'mensaje': 'Analizando archivo: ' + archivo.nombre + "..."
+            }
+        )
+        time.sleep(5)
         nombre, partition, extension = archivo.arch.name.rpartition('.')
         if extension == 'zip':
             with zipfile.ZipFile(archivo.arch, 'r') as zip_ref:
@@ -706,7 +725,7 @@ def procesar_clasificador(analisis, carpeta, user):
     
 
 
-def procesar_analisis(analisis, user):
+def procesar_analisis(tarea_celery, analisis, user):
     """ 
     Esta funcion realiza el procesamiento pedido por el usuario y genera los resultados.
     Por ahora la funcion solo permite aplicar modelos de entidades y clasificadores.
@@ -723,8 +742,8 @@ def procesar_analisis(analisis, user):
     modelo = analisis.modelo 
 
     if modelo.nombre == 'entidades': #cargo ese solo modelo y lo aplico
-        procesar_entidades(analisis, carpeta, user)
+        procesar_entidades(tarea_celery, analisis, carpeta, user)
     elif modelo.nombre == 'clasificador': # aplico primero el modelo binario y despues el modelo multicategoria.  
-        procesar_clasificador(analisis, carpeta, user)
+        procesar_clasificador(tarea_celery, analisis, carpeta, user)
     else:
         raise FileNotFoundError("El modelo no existe") 

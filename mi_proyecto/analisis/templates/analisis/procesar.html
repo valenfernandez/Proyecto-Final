@@ -5,11 +5,11 @@
     <!-- Menu -->
     <div class="col-sm">
         <div class="sidebar">
-            <div class="sidebar-brand"> Menu </div>
+            <div class="sidebar-brand"> Menú </div>
             <a class="active" href="{% url 'analisis-principal' %}">Aplicaciones</a>
             <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
-            <a href="{% url 'analisis-resultados' %}">Mis Analisis</a>
-            <a href="{% url 'analisis-config' %}">Configuracion</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Análisis</a>
+            <a href="{% url 'analisis-config' %}">Configuración</a>
         </div>
     </div>
     <div class = "col-md-10">
@@ -27,9 +27,13 @@
             {% endif %}
 
             <div id="progress-wrapper">
-                <button id="progress-bar-trigger">Comenzar</button>
+                <button id="progress-bar-trigger" class="btn btn-primary btn-md">Comenzar análisis</button>
+                <br>
+                <br>
+                <div id="progress-bar-message">Análisis listo para comenzar...</div>
+                <br>
+                <br>
                 <div id="progress-bar" style="background-color: rgb(234, 0, 255); width: 0%;">&nbsp;</div>
-                <div id="progress-bar-message">Esperando...</div>
             </div>
 
 
@@ -44,7 +48,7 @@
                     .then(response => response.json())
                     .then(result => {
                         console.log(result)
-                        var progressUrl = 'get_progress/1'
+                        var progressUrl = 'obtener_progreso_tarea_celery/1'
                         progressUrl = progressUrl.replace("1", result.task_id);
                         console.log(progressUrl)
                         updateProgress(progressUrl);
@@ -52,7 +56,6 @@
                 }
 
                 function updateProgress (progressUrl) {
-                    console.log("volviendo a hacer fetch del progreso")
                     fetch(progressUrl).then(function(response) {
                         response.json().then(function(data) {
                             console.log(data)
@@ -60,9 +63,12 @@
                                 // update the appropriate UI components
                                 var bar = document.getElementById("progress-bar");
                                 var barMessage = document.getElementById("progress-bar-message");
-                                bar.style.width = data.details.current * 10 + "%";
-                                barMessage.innerHTML = data.details.current * 10 + ' of ' + data.details.total * 10 + ' processed.';
-                                setTimeout(updateProgress, 500, progressUrl);
+                                bar.style.width = (data.details.current * 10 / data.details.total) * 10 + "%";
+                                barMessage.innerHTML = data.details.mensaje;
+                                setTimeout(updateProgress, 1000, progressUrl);
+                            } else {
+                                console.log("redirigiendo")
+                                window.location.href = '/resultado/'+ "{{ id_analisis }}";
                             }
                         });
                     });

@@ -5,11 +5,11 @@
     <!-- Menu -->
     <div class="col-sm">
         <div class="sidebar">
-            <div class="sidebar-brand"> Menu </div>
+            <div class="sidebar-brand"> Menú </div>
             <a class="active" href="{% url 'analisis-principal' %}">Aplicaciones</a>
             <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
-            <a href="{% url 'analisis-resultados' %}">Mis Analisis</a>
-            <a href="{% url 'analisis-config' %}">Configuracion</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Análisis</a>
+            <a href="{% url 'analisis-config' %}">Configuración</a>
         </div>
     </div>
     <div class = "col-md-10">
@@ -23,13 +23,13 @@
             </br>
             {% if error %}
                 <div class="alert alert-warning" role="alert">
-                {{error}}. Por favor, elimine los archivos de esa extension de su carpeta.
+                {{error}}. Por favor, elimine los archivos de esa extensión de su carpeta.
                 </div>
             {% endif %}
             <div class="col-6">
                 <div class="card " style="width:75rem;">
                     <div class="card-body">
-                        <h5 class="card-title">Nuevo Analisis</h5>
+                        <h5 class="card-title">Nuevo Análisis</h5>
 
                         <form action="" method=POST enctype="multipart/form-data">
                           {% csrf_token %}

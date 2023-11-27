@@ -402,17 +402,14 @@ def comenzar_tarea_celery(request, id_analisis):
     data = serializers.serialize('json', [request.user])
     download_task = comenzar_celery.delay(id_analisis, data)
     task_id = download_task.task_id
-	# Print Task ID
-    print (f'Celery Task ID: {task_id}')
+    print (f'Creada nueva tarea de celery con task_id={task_id}')
     return JsonResponse({'task_id':task_id})
 
 
 def get_progress(request, task_id):
-    print("executing!!")
+    print(f'Buscando estado actual de la tarea de celery {task_id}')
     result = AsyncResult(task_id)
-    print(result)
-    print(result.state)
-    print(result.info)
+    print("Estado actual:", result.state, ". Informacion actual:", result.info)
     response_data = {
         'state': result.state,
         'details': result.info,

@@ -29,11 +29,11 @@
     <!-- Menu -->
     <div class="col-sm">
         <div class="sidebar">
-            <div class="sidebar-brand"> Menu </div>
+            <div class="sidebar-brand"> Menú </div>
             <a class="active" href="{% url 'analisis-principal' %}">Aplicaciones</a>
             <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
-            <a href="{% url 'analisis-resultados' %}">Mis Analisis</a>
-            <a href="{% url 'analisis-config' %}">Configuracion</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Análisis</a>
+            <a href="{% url 'analisis-config' %}">Configuración</a>
         </div>
     </div>
     <div class = "col-md-10">
@@ -48,7 +48,7 @@
                         <a href="javascript:demoFromHTML('{{analisis.carpeta.nombre}}','{{analisis}}')" class="btn btn-primary btn-md">Descargar</a>
                     </div>
                     <div class = " p-2 bd-highlight">
-                        <a href= "{% url 'analisis-borrar_analisis' analisis.id %}" onclick="return confirm('Estas seguro de que quieres eliminar este analisis?')" class="btn btn-outline-danger btn-md">Borrar</a>
+                        <a href= "{% url 'analisis-borrar_analisis' analisis.id %}" onclick="return confirm('¿Estás seguro de que quieres eliminar este análisis?')" class="btn btn-outline-danger btn-md">Borrar</a>
                     </div>
                 </div>
             </div>
@@ -154,7 +154,9 @@
                 </div> 
                 </br>     
             </div>
-
+            </br>
+            <hr>
+            </br>
             <h3> Resultados completos </h3>
             </br>
             <div class = "col-3">
