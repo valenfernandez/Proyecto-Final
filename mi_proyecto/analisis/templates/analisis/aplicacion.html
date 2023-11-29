@@ -26,22 +26,25 @@
                 {{error}}. Por favor, elimine los archivos de esa extensión de su carpeta.
                 </div>
             {% endif %}
-            <div class="col-6">
-                <div class="card " style="width:75rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Nuevo Análisis</h5>
-
-                        <form action="" method=POST enctype="multipart/form-data">
-                          {% csrf_token %}
-                          {{ form_analisis.as_p }}
-                        <br/>                        
-                    </div>
-                </div> 
-                </br>     
+            <div class ="container">
+                <div class="col-11">
+                    <div class="card " style="width:100%">
+                        <div class="card-body">
+                            <h5 class="card-title">Nuevo Análisis</h5>
+    
+                            <form action="" method=POST enctype="multipart/form-data">
+                              {% csrf_token %}
+                              {{ form_analisis.as_p }}
+                            <br/>                        
+                        </div>
+                    </div> 
+                    </br>     
+                </div>
+                <div class = " col-11 text-end">
+                    <input type="submit" value="Procesar" class="btn btn-primary btn-md">
+                </div>
             </div>
-            <div class = " col-11 text-end">
-                <input type="submit" value="Procesar" class="btn btn-primary btn-md">
-            </div>
+            
     </main>
     </div>
 </div>
