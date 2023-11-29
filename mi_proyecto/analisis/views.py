@@ -86,7 +86,7 @@ def aplicacion(request, id_app):
     analisis = Analisis(informe ='')
     aplicacion = Aplicacion.objects.get(id = id_app)
     form_analisis = AnalisisForm(request.POST or None, request.FILES or None, instance=analisis, aplicacion = aplicacion)
-    
+
     context = {
         "analisis" : analisis,
         "aplicacion": aplicacion,
@@ -103,55 +103,33 @@ def aplicacion(request, id_app):
 
 @login_required
 def procesar(request, id_analisis):
-    #Asi ya no puedo detectar el error de tipo de archivo no soportado.
-    #Antes al llamar hacia un try y catch que me daba el error.
-    #Podria al recibir el formulario tomar la lista de nombres de carpetas, chequear ahi, y si hay una erronea mostrar el error ahi y sino redirigir aca directamente.
-    """
-    try:
-            procesar_analisis(request.user, analisis)
-    except FileNotFoundError: #no deberia entrar casi nunca
-        analisis.delete()
-        message = e.args
-        context = {
-            "aplicacion": aplicacion,
-            "form_analisis" : form_analisis,
-            "error" : message,
-        }
-        return render(request, "analisis/aplicacion.html", context=context)
-    except ValueError as e:
-        analisis.delete()
-        message, error_files = e.args
-        context = {
-            "aplicacion": aplicacion,
-            "form_analisis" : form_analisis,
-            "error" : message,
-        }
-        return render(request, "analisis/aplicacion.html", context=context)
-    """
+
     analisis = Analisis.objects.get(id = id_analisis)
     carpeta = analisis.carpeta
     archivos = Archivo.objects.filter(carpeta = carpeta)
+    modelo = analisis.modelo
+    aplicacion = modelo.aplicacion
+
+    if 'error' in request.session:
+        del request.session['error']
+    
     for archivo in archivos:
         nombre, partition, extension = archivo.arch.name.rpartition('.')
+        if extension not in ['txt', 'docx', 'pdf', 'doc', 'zip']: #TODO chequear adentro del zip
+            analisis.delete()
+            request.session['error'] = "No se soporta el tipo de archivo "+extension+" en la carpeta "+carpeta.nombre+"."
+            return redirect('/aplicacion/' + str(aplicacion.id))
         if extension == 'zip':
             with zipfile.ZipFile(archivo.arch, 'r') as zip_ref:
                 for file in zip_ref.namelist():
                     name, partition, extension = file.rpartition('.')
                     if extension not in ['txt', 'docx', 'pdf', 'doc']:
                         analisis.delete()
-                        context = {
-                            "error" : "No se soporta el tipo de archivo "+extension+" en la carpeta "+carpeta.nombre+".",
-                            "analisis" : analisis,
-                        }
-                        return render(request, "analisis/procesar.html", context=context)
-        if extension not in ['txt', 'docx', 'pdf', 'doc', 'zip']: #TODO chequear adentro del zip
-            analisis.delete()
-            context = {
-                "error" : "No se soporta el tipo de archivo "+extension+" en la carpeta "+carpeta.nombre+".",
-                "analisis" : analisis,
-            }
-            return render(request, "analisis/procesar.html", context=context)
+                        request.session['error'] = "No se soporta el tipo de archivo "+extension+" en la carpeta "+carpeta.nombre+"."
+                        return redirect('/aplicacion/' + str(aplicacion.id))
+    
     context = {
+        "aplicacion": aplicacion,
         "analisis" : analisis,
         "id_analisis" : id_analisis,
     }

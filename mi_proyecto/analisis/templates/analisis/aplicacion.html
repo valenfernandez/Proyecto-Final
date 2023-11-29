@@ -21,9 +21,9 @@
             <p>{{aplicacion.descripcion}}</p>
             </br>
             </br>
-            {% if error %}
+            {% if request.session.error %}
                 <div class="alert alert-warning" role="alert">
-                {{error}}. Por favor, elimine los archivos de esa extensión de su carpeta.
+                {{ request.session.error }}. Por favor, elimine los archivos de esa extensión de su carpeta e intente nuevamente.
                 </div>
             {% endif %}
             <div class ="container">

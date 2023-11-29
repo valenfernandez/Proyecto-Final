@@ -278,7 +278,6 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
             'mensaje': 'Analizando archivo: ' + archivo.nombre + "..."
             }
         )
-        time.sleep(3) # REMOVER ESTO DESPUES, ES SOLO PARA VER QUE EL PROGRESO SE ACTUALIZA
         lines = []
         nombre, partition, extension = archivo.arch.name.rpartition('.')
         if extension == 'docx':
