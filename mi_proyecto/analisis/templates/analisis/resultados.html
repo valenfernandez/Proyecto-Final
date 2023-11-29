@@ -6,18 +6,18 @@
     <!-- Menu -->
     <div class="col-sm">
         <div class="sidebar">
-            <div class="sidebar-brand"> Menu </div>
+            <div class="sidebar-brand"> Menú </div>
             <a href="{% url 'analisis-principal' %}">Aplicaciones</a>
             <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
-            <a class="active" href="">Mis Analisis</a>
-            <a href="{% url 'analisis-config' %}">Configuracion</a>
+            <a class="active" href="">Mis Análisis</a>
+            <a href="{% url 'analisis-config' %}">Configuración</a>
         </div>
     </div>
     <div class = "col-md-10">
         <main role="main" class="container">
             </br>
             </br>
-            <h2>Mis Analisis</h2>
+            <h2>Mis Análisis</h2>
             </br>
 
             <!--Resultados-->
@@ -37,7 +37,7 @@
                         <div class="col-6">
                             <div class="card bg-transparent border-0" style="width:10rem;">
                                 <div class = "text-end">
-                                    <a href="{% url 'analisis-borrar_analisis' analisis.id %}" onclick="return confirm('Estas seguro de que quieres eliminar este analisis?')">
+                                    <a href="{% url 'analisis-borrar_analisis' analisis.id %}" onclick="return confirm('¿Estás seguro de que quieres eliminar este análisis?')">
                                         <img src="{% static 'images/trash.png'%}" width="20" >
                                     </a>
                                 </div>

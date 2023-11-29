@@ -14,6 +14,10 @@ import re
 import datetime
 import docx
 import zipfile
+import time
+
+pattern = r"\d{1,2}/\d{1,2}/\d{4}, \d{2}:\d{2} - .+: .+"
+regex_wpp = re.compile(pattern)
 
 def armar_informe_entidades(analisis, preferencia): 
     """
@@ -198,7 +202,7 @@ def armar_informe_entidades(analisis, preferencia):
     return 1
 
 
-def procesar_entidades(analisis, carpeta, user):
+def procesar_entidades(tarea_celery, analisis, carpeta, user):
     """ 
     Esta función se encarga de procesar los archivos de una carpeta con el modelo de detección de entidades.
     Para cada archivo, se extraen los textos y se detectan las entidades.
@@ -252,7 +256,10 @@ def procesar_entidades(analisis, carpeta, user):
                             "TIEMPO" : "#52CCCC",
                             }
 
-    preferencia = Preferencias.objects.get(usuario = user)
+    try:
+        preferencia = Preferencias.objects.get(usuario = user)
+    except Preferencias.DoesNotExist:
+        preferencia = Preferencias(usuario = user, color = 'CLASICO')
     if preferencia.color == "AM":
         options = {"colors": colors_azul_amarillo}
     elif preferencia.color == "AR":
@@ -263,6 +270,15 @@ def procesar_entidades(analisis, carpeta, user):
     # 2: Extraer textos de los archivos en la carpeta
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
+        tarea_celery.update_state(
+        state='PROGRESS',
+        meta={
+            'current': 4,
+            'total': 10,
+            'mensaje': 'Analizando archivo: ' + archivo.nombre + "..."
+            }
+        )
+        time.sleep(3) # REMOVER ESTO DESPUES, ES SOLO PARA VER QUE EL PROGRESO SE ACTUALIZA
         lines = []
         nombre, partition, extension = archivo.arch.name.rpartition('.')
         if extension == 'docx':
@@ -493,7 +509,7 @@ def procesar_linea(analisis, archivo, line, index):
     :return: None (NoneType) Si la linea directamente crea un objeto Resultado (es decir, no requiere mas procesamiento) devuelve None.
     """
     elemento = {}
-    if wpp_format(line):
+    if regex_wpp.match(line) is not None: #cumple formato whatsapp
         date_name_text = line.strip().split(' - ') # [date, name: text]
         name_index = date_name_text[1].find(':') 
         name = date_name_text[1][:name_index] 
@@ -533,40 +549,18 @@ def procesar_linea(analisis, archivo, line, index):
     return elemento
 
 def clean_text(text):
-    new_text = text.lower().replace(";", " ") \
-    .replace(".", " ") \
-    .replace("\"", " ") \
-    .replace("/", " ") \
-    .replace("\\", " ") \
-    .replace("[", " ") \
-    .replace("]", " ") \
-    .replace("*", " ") \
-    .replace("'", " ") \
-    .replace("-", " ") \
-    .replace("|", " ") \
-    .replace("(", " ") \
-    .replace(")", " ") \
-    .replace("!", " ") \
-    .replace("¡", " ") \
-    .replace(":", " ") \
-    .replace(",", " ") \
-    .replace("»", " ") \
-    .replace("+", " ") \
-    .replace("…", " ") \
-    .replace("`", " ") \
-    .replace("´", " ") \
-    .replace("á", "a") \
-    .replace("é", "e") \
-    .replace("í", "i") \
-    .replace("ó", "o") \
-    .replace("ú", "u") \
-    .replace("ú", "u") \
-    .replace("ḉ", " ") \
-    .replace("  ", " ") \
-    .replace("  ", " ") \
-    .replace("  ", " ") \
-    .strip() \
-    
+    #TODO TRANSLATION TABLE COMPLETAR
+    #ESPACIOS REPETIDOS: 
+
+    regex_espacios = re.compile(r"\s+")
+
+    ttable = str.maketrans(
+        ".\/[]*'-|()!¡:;,»+-…`´áéíóúḉ",
+        "                      aeiou "
+    )
+    new_text = text.translate(ttable)
+    regex_espacios.sub(" ", new_text)
+
     return new_text
 
 def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
@@ -657,7 +651,7 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
         Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
     return 1
 
-def procesar_clasificador(analisis, carpeta, user):
+def procesar_clasificador(tarea_celery, analisis, carpeta, user):
     """
     Esta función se encarga de procesar los archivos de una carpeta con el modelo de clasificación de violencia. Crea los objetos Resultado en la base de datos para cada linea que se pidió analizar.
 
@@ -680,6 +674,15 @@ def procesar_clasificador(analisis, carpeta, user):
     archivos = Archivo.objects.filter(carpeta = carpeta)
 
     for archivo in archivos:
+        tarea_celery.update_state(
+        state='PROGRESS',
+        meta={
+            'current': 4,
+            'total': 10,
+            'mensaje': 'Analizando archivo: ' + archivo.nombre + "..."
+            }
+        )
+        time.sleep(5)
         nombre, partition, extension = archivo.arch.name.rpartition('.')
         if extension == 'zip':
             with zipfile.ZipFile(archivo.arch, 'r') as zip_ref:
@@ -692,14 +695,18 @@ def procesar_clasificador(analisis, carpeta, user):
             procesar_archivo(archivo_db = archivo, archivo= archivo.arch, analisis= analisis, nlp = nlp ,nlp_multi = nlp_multi)
 
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
-    preferencia = Preferencias.objects.get(usuario = user)
+    try:
+        preferencia = Preferencias.objects.get(usuario = user)
+    except Preferencias.DoesNotExist:
+        preferencia = Preferencias(usuario = user, color = 'CLASICO')
+
 
     armar_informe_clasificador(analisis,preferencia)
     return 1
     
 
 
-def procesar_analisis(analisis, user):
+def procesar_analisis(tarea_celery, analisis, user):
     """ 
     Esta funcion realiza el procesamiento pedido por el usuario y genera los resultados.
     Por ahora la funcion solo permite aplicar modelos de entidades y clasificadores.
@@ -716,8 +723,8 @@ def procesar_analisis(analisis, user):
     modelo = analisis.modelo 
 
     if modelo.nombre == 'entidades': #cargo ese solo modelo y lo aplico
-        procesar_entidades(analisis, carpeta, user)
+        procesar_entidades(tarea_celery, analisis, carpeta, user)
     elif modelo.nombre == 'clasificador': # aplico primero el modelo binario y despues el modelo multicategoria.  
-        procesar_clasificador(analisis, carpeta, user)
+        procesar_clasificador(tarea_celery, analisis, carpeta, user)
     else:
         raise FileNotFoundError("El modelo no existe") 

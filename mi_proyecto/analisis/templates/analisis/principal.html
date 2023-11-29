@@ -7,18 +7,18 @@
     <!-- Menu -->
     <div class="col-sm">
         <div class="sidebar">
-            <div class="sidebar-brand"> Menu </div>
+            <div class="sidebar-brand"> Menú </div>
             <a class="active" href="">Aplicaciones</a>
             <a href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
-            <a href="{% url 'analisis-resultados' %}">Mis Analisis</a>
-            <a href="{% url 'analisis-config' %}">Configuracion</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Análisis</a>
+            <a href="{% url 'analisis-config' %}">Configuración</a>
         </div>
     </div>
     <div class = "col-md-10">
     <main role="main" class="container">
             </br>
             </br>
-            <h2>Aplicaciones de Analisis</h2>
+            <h2>Aplicaciones de Análisis</h2>
             </br>
             <p> Seleccione una aplicación a utilizar de la lista de aplicaciones disponibles: </p>
             </br>
@@ -32,8 +32,8 @@
                                 <img src="{% static 'images/entidades.png' %}" width="200" height="250">
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">Deteccion de Entidades</h5>
-                                <p class="card-text">Aplicacion de deteccion de entidades</p>
+                                <h5 class="card-title">Detección de Entidades</h5>
+                                <p class="card-text">Aplicación de detección de entidades</p>
                                 <div class="text-center"> 
                                     <a href="{% url 'analisis-aplicacion' 2 %}" class="btn btn-outline-primary btn-md">Iniciar</a>
                                 </div>
@@ -49,7 +49,7 @@
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Clasificación de texto</h5>
-                                <p class="card-text">Aplicacion de deteccion y clasificación de violencia de genero</p>
+                                <p class="card-text">Aplicación de detección y clasificación de violencia de género</p>
                                 <div class="text-center"> 
                                     <a href="{% url 'analisis-aplicacion' 1 %}"  class="btn btn-outline-primary btn-md">Iniciar</a>
                                 </div>

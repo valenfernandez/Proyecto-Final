@@ -10,16 +10,14 @@ Clasificador_De_Violencia/Entrenamiento 3 con transformers/3.pruebas/output
 Clasificador_De_Violencia/Entrenamiento 2 con transformers/3.pruebas/output
 Clasificador_De_Violencia_Multi_Categoria/exploracion_reddit/modelo_binario
 mi_proyecto/analisis/migrations
-mi_proyecto\mi_proyecto\__pycache__
-mi_proyecto/analisis/__pycache__
-mi_proyecto\analisis\__pycache__\
 mi_proyecto\staticfiles\modelos
 mi_proyecto\analisis\static\modelos\
 *.parquet
 mi_proyecto/static/graficos/analisis/static/graficos/
 mi_proyecto/analisis/static/graficos/
-mi_proyecto/analisis/__pycache__/
-mi_proyecto/mi_proyecto/__pycache__/
-mi_proyecto/analisis/__pycache__/
 mi_proyecto/analisis/static/modelos/clasificador-multi/transformer/model
 Clasificador_De_Violencia/Entrenamiento 6/transformers
+mi_proyecto/venv
+mi_proyecto\venv
+__pycache__/
+**/__pycache__/

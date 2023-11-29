@@ -6,11 +6,11 @@
     <!-- Menu -->
     <div class="col-sm">
         <div class="sidebar">
-            <div class="sidebar-brand"> Menu </div>
+            <div class="sidebar-brand"> Menú </div>
             <a href="{% url 'analisis-principal' %}">Aplicaciones</a>
             <a class="active" href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
-            <a href="{% url 'analisis-resultados' %}">Mis Analisis</a>
-            <a href="{% url 'analisis-config' %}">Configuracion</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Análisis</a>
+            <a href="{% url 'analisis-config' %}">Configuración</a>
         </div>
     </div>
     <div class = "col-md-10">
@@ -48,7 +48,7 @@
                             <div class="card bg-transparent border-0" style="width:10rem;">
 
                                 <div class = "text-end">
-                                    <a href="{% url 'analisis-borrar_archivo' archivo.id %}" onclick="return confirm('Estas seguro de que quieres eliminar este archivo?')">
+                                    <a href="{% url 'analisis-borrar_archivo' archivo.id %}" onclick="return confirm('¿Estás seguro de que quieres eliminar este archivo?')">
                                         <img src="{% static 'images/trash.png'%}" width="20" >
                                     </a>
                                 </div>

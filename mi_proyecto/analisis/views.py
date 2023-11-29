@@ -2,13 +2,17 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime
 from django.shortcuts import render, redirect
-from django.db.models import Count
+from django.core import serializers
 from django.contrib.auth.decorators import login_required
-from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Modelo, Preferencias, Grafico, Grafico_Imagen, Tabla
+from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Preferencias, Grafico, Grafico_Imagen, Tabla
 from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm, AnalisisViewForm, ResultadoClasificadorViewForm
-from .nlp import procesar_analisis
 from xhtml2pdf import pisa
 from django.db.models import Q
+from .tasks import comenzar_celery
+from celery.result import AsyncResult
+import json
+from django.http import JsonResponse
+import zipfile
 
 # Create your views here.
 
@@ -84,37 +88,76 @@ def aplicacion(request, id_app):
     form_analisis = AnalisisForm(request.POST or None, request.FILES or None, instance=analisis, aplicacion = aplicacion)
     
     context = {
+        "analisis" : analisis,
         "aplicacion": aplicacion,
         "form_analisis" : form_analisis,
     }
 
     if form_analisis.is_valid():
         form_analisis.save()
-        
-        try:
-            procesar_analisis(analisis, request.user)
-        except FileNotFoundError: #no deberia entrar casi nunca
-            analisis.delete()
-            message = e.args
-            context = {
-                "aplicacion": aplicacion,
-                "form_analisis" : form_analisis,
-                "error" : message,
-            }
-            return render(request, "analisis/aplicacion.html", context=context)
-        except ValueError as e:
-            analisis.delete()
-            message, error_files = e.args
-            context = {
-                "aplicacion": aplicacion,
-                "form_analisis" : form_analisis,
-                "error" : message,
-            }
-            return render(request, "analisis/aplicacion.html", context=context)
-            
-        response = redirect('/resultado/'+str(analisis.id))
+
+        response = redirect('/procesar/'+str(analisis.id))
         return response
     return render(request, "analisis/aplicacion.html", context=context) 
+
+
+@login_required
+def procesar(request, id_analisis):
+    #Asi ya no puedo detectar el error de tipo de archivo no soportado.
+    #Antes al llamar hacia un try y catch que me daba el error.
+    #Podria al recibir el formulario tomar la lista de nombres de carpetas, chequear ahi, y si hay una erronea mostrar el error ahi y sino redirigir aca directamente.
+    """
+    try:
+            procesar_analisis(request.user, analisis)
+    except FileNotFoundError: #no deberia entrar casi nunca
+        analisis.delete()
+        message = e.args
+        context = {
+            "aplicacion": aplicacion,
+            "form_analisis" : form_analisis,
+            "error" : message,
+        }
+        return render(request, "analisis/aplicacion.html", context=context)
+    except ValueError as e:
+        analisis.delete()
+        message, error_files = e.args
+        context = {
+            "aplicacion": aplicacion,
+            "form_analisis" : form_analisis,
+            "error" : message,
+        }
+        return render(request, "analisis/aplicacion.html", context=context)
+    """
+    analisis = Analisis.objects.get(id = id_analisis)
+    carpeta = analisis.carpeta
+    archivos = Archivo.objects.filter(carpeta = carpeta)
+    for archivo in archivos:
+        nombre, partition, extension = archivo.arch.name.rpartition('.')
+        if extension == 'zip':
+            with zipfile.ZipFile(archivo.arch, 'r') as zip_ref:
+                for file in zip_ref.namelist():
+                    name, partition, extension = file.rpartition('.')
+                    if extension not in ['txt', 'docx', 'pdf', 'doc']:
+                        analisis.delete()
+                        context = {
+                            "error" : "No se soporta el tipo de archivo "+extension+" en la carpeta "+carpeta.nombre+".",
+                            "analisis" : analisis,
+                        }
+                        return render(request, "analisis/procesar.html", context=context)
+        if extension not in ['txt', 'docx', 'pdf', 'doc', 'zip']: #TODO chequear adentro del zip
+            analisis.delete()
+            context = {
+                "error" : "No se soporta el tipo de archivo "+extension+" en la carpeta "+carpeta.nombre+".",
+                "analisis" : analisis,
+            }
+            return render(request, "analisis/procesar.html", context=context)
+    context = {
+        "analisis" : analisis,
+        "id_analisis" : id_analisis,
+    }
+    return render(request, "analisis/procesar.html", context=context)
+
+
 
 @login_required
 def resultados(request):
@@ -369,6 +412,99 @@ def descargar_resultados_entidades(request, id_analisis, id_archivo):
         #agregar pagina al pdf.
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename= "resultados_entidades.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+            return HttpResponse('We had some errors')
+    return response
+
+
+def comenzar_tarea_celery(request, id_analisis):
+    data = serializers.serialize('json', [request.user])
+    download_task = comenzar_celery.delay(id_analisis, data)
+    task_id = download_task.task_id
+    print (f'Creada nueva tarea de celery con task_id={task_id}')
+    return JsonResponse({'task_id':task_id})
+
+
+def get_progress(request, task_id):
+    print(f'Buscando estado actual de la tarea de celery {task_id}')
+    result = AsyncResult(task_id)
+    print("Estado actual:", result.state, ". Informacion actual:", result.info)
+    if result.state == 'RETRY':
+        response_data = {
+        'state': result.state,
+        'details': 'Error',
+        }
+    else:
+        response_data = {
+            'state': result.state,
+            'details': result.info,
+        }
+    return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+
+def descargar_resultados_clasificador(request, id_analisis):
+    analisis = Analisis.objects.get(id = id_analisis)
+    usuario_actual = request.user
+    if analisis.carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para descargar este resultado")
+    resultados = Resultado.objects.filter(analisis = analisis)
+    html = """
+    <table class="table">
+                            <thead>
+                                <tr>
+                                <th scope="col">Num Linea</th>
+                                <th scope="col">Remitente</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Texto</th>
+                                <th scope="col">Detectado</th>
+                                <th scope="col">Archivo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+    """
+    for resultado in resultados:
+        html += "<div class='col'> <div>"+ resultado.html+"</div> </div>"
+        html += """<tr>
+                <th scope="row">"""+str(resultado.numero_linea)+"""</th>"""
+
+        if resultado.remitente:
+            html += """<td>"""+resultado.remitente+"""</td>"""
+        else:
+            html += """<td> Desconocido </td>"""
+        
+        if resultado.fecha_envio:
+            html += """<td>"""+str(resultado.fecha_envio)+"""</td>"""
+        else:
+            html += """<td> - </td>"""
+        html += """<td >"""+resultado.texto+"""</td>"""
+        if resultado.detectado == "No Violento":
+            html += """<td > 
+                        <span class="badge category-3 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        elif resultado.detectado == "Sexual":
+            html += """<td > 
+                        <span class="badge category-2 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        elif resultado.detectado == "Físico":
+            html += """<td > 
+                        <span class="badge category-1 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        elif resultado.detectado == "Psicológica":
+            html += """<td > 
+                        <span class="badge category-4 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        else:
+            html += """<td > 
+                        <span class="badge category-5 "> """+resultado.detectado+""" </span>
+                    </td>"""
+        html += """<td>"""+resultado.archivo_origen.nombre+"""</td>
+            </tr>
+        """
+    html += """</tbody>
+            </table>"""
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename= "resultados_completos_clasificador.pdf"'
     pisa_status = pisa.CreatePDF(html, dest=response)
     if pisa_status.err:
             return HttpResponse('We had some errors')
