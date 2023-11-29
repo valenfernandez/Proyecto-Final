@@ -430,10 +430,16 @@ def get_progress(request, task_id):
     print(f'Buscando estado actual de la tarea de celery {task_id}')
     result = AsyncResult(task_id)
     print("Estado actual:", result.state, ". Informacion actual:", result.info)
-    response_data = {
+    if result.state == 'RETRY':
+        response_data = {
         'state': result.state,
-        'details': result.info,
-    }
+        'details': 'Error',
+        }
+    else:
+        response_data = {
+            'state': result.state,
+            'details': result.info,
+        }
     return HttpResponse(json.dumps(response_data), content_type='application/json')
 
 

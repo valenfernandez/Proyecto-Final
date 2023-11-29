@@ -5,6 +5,7 @@ from celery import shared_task, Celery
 from .nlp import procesar_analisis
 from .models import Analisis
 from django.core import serializers
+from celery.exceptions import Ignore
 celery = Celery('tasks', backend='redis', broker='amqp://guest@localhost//')
 
 import time
@@ -37,5 +38,5 @@ def comenzar_celery(self, id_analisis, data):
             'mensaje': 'No se pudo procesar el análisis.'
         }
     )  
-        raise self.retry(exc=exc)
+        raise Ignore()
     return "Finalizada tarea de celery."
