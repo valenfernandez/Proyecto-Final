@@ -178,26 +178,7 @@ def armar_informe_entidades(analisis, preferencia):
     imagen_wordcloud_total = Grafico_Imagen(nombre = "Wordcloud de entidades", analisis = analisis)
     imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
     imagen_wordcloud_total.save()
-    
-    """
-    # Wordcloud por cada tipo de entidad
-    
-    text_by_label = df.groupby('label')['text'].apply(lambda x: ' '.join(x))
-    for label, text in text_by_label.items():
-        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
 
-        plt.figure(figsize=(8, 4))
-        plt.imshow(wordcloud, interpolation='bilinear')
-        plt.axis('off')
-        plt.title(f'Word Cloud for Entity Label: {label}')
-        
-        wordcloud_path = f'analisis/static/graficos/{analisis.id}/wordcloud_{label}{analisis.id}.png'
-        wordcloud.to_file(wordcloud_path)
-
-        imagen_wordcloud = Grafico_Imagen(nombre = f"Wordcloud de entidades {label}", analisis = analisis)
-        imagen_wordcloud.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
-        imagen_wordcloud.save()
-    """
 
     return 1
 
@@ -283,7 +264,7 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
         if extension == 'docx':
             doc = docx.Document(archivo.arch.path)
             for i in doc.paragraphs:
-                print(i.text)
+                
                 lines.append(i.text)
         elif extension == 'xlsx':
             df = pd.read_excel(archivo.arch.path, usecols="A") #siempre leo la primera columna
@@ -352,6 +333,7 @@ def armar_informe_clasificador(analisis, preferencia):
 
     data_completos = []
     data_violentos = []
+    no_violentos = ["No Violento", "Adjunto"]
     for resultado in resultados:
         data_completos.append({
             'text': resultado.texto,
@@ -359,7 +341,7 @@ def armar_informe_clasificador(analisis, preferencia):
             'archivo_origen': resultado.archivo_origen.nombre,
             'numero_linea': resultado.numero_linea
         })
-        if (str(resultado.detectado) != "No Violento"):
+        if (str(resultado.detectado) not in no_violentos):
                     data_violentos.append({
                         'text': resultado.texto,
                         'clasificacion': str(resultado.detectado),
@@ -559,6 +541,7 @@ def clean_text(text):
     )
     new_text = text.translate(ttable)
     regex_espacios.sub(" ", new_text)
+    new_text = new_text.lower()
 
     return new_text
 
@@ -608,10 +591,7 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
     else:
         raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
 
-    lines = [ clean_text(elemento['texto']) for elemento in datos_lineas] # tengo que sacar la comprobacion de si es o no adjunto porque necesito que los docs_binarios sean paralelos a datos_lineas no me los puedo saltear
-
-
-# TODO: NORMALIZACION DE LOS TEXTOS
+    lines = [ clean_text(elemento['texto']) for elemento in datos_lineas]
 
     docs_binarios = list(nlp.pipe(lines))
     for index, doc in enumerate(docs_binarios):
