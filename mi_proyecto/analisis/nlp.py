@@ -34,9 +34,11 @@ def armar_informe_entidades(analisis, preferencia):
     :return: 1 (int) Si los elementos del informe se crearon correctamente devuelve 1.
 
     """
-
+    print("estoy en armar informe entidades")
+    
     os.makedirs(f'analisis/static/graficos/{analisis.id}', exist_ok=True)
 
+    print("creo la carpeta. voy a buscar los resultados")
     resultados = Resultado.objects.filter(analisis = analisis)
     
     domain =["DINERO", "FECHA", "HORA", "LUGAR", "MEDIDA", "MISC", "ORG", "PERSONA", "TIEMPO"]
@@ -61,6 +63,8 @@ def armar_informe_entidades(analisis, preferencia):
                 'archivo_origen': resultado.archivo_origen.nombre,
                 'numero_linea': resultado.numero_linea
             })
+    print("termine de armar el data con los resultados")
+
     df = pd.DataFrame(data)
 
     total_entidades = df.shape[0]
@@ -69,6 +73,7 @@ def armar_informe_entidades(analisis, preferencia):
     tabla_entidades_count = Tabla(nombre = "Distribucion de entidades", tabla = entidades_counts.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
     tabla_entidades_count.save()
 
+    print("termine de armar la tabla de entidades")
 
 
     ent_text_counts = df['text'].value_counts() #entidades que se repitan: tendrian el count en mas de 1
@@ -80,6 +85,7 @@ def armar_informe_entidades(analisis, preferencia):
         tabla_repeating_ents = Tabla(nombre = "Entidades que se repiten", tabla = tabla_rep_ents.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
         tabla_repeating_ents.save()
 
+    print("termine de armar la tabla de entidades que se repiten")
 
     # Cantidad de cada tipo de entidades
     chart_count_ents = alt.Chart(df, title="Distribucion de entidades").mark_bar().encode(
@@ -92,6 +98,7 @@ def armar_informe_entidades(analisis, preferencia):
     grafico_cout_ents = Grafico(nombre = "Distribucion de entidades", chart = json_count_ents, analisis = analisis)
     grafico_cout_ents.save()
 
+    print("termine de armar el grafico de distribucion de entidades")
 
     chart_torta = alt.Chart(df).mark_arc().encode(
     theta="count():Q",
@@ -101,6 +108,8 @@ def armar_informe_entidades(analisis, preferencia):
     json_torta = chart_torta.to_json()
     grafico_torta = Grafico(nombre = "Torta distribucion de entidades", chart = json_torta, analisis = analisis)
     grafico_torta.save()
+
+    print("termine de armar el grafico de torta de entidades")
 
     #Entidades por cada archivo
     file_entity_counts = df.groupby('archivo_origen')['text'].count().reset_index()
@@ -116,6 +125,8 @@ def armar_informe_entidades(analisis, preferencia):
     json_ents_file = chart_ents_file.to_json()
     grafico_ents_file = Grafico(nombre = "Entidades por archivo", chart = json_ents_file, analisis = analisis)
     grafico_ents_file.save()
+
+    print("termine de armar el grafico de entidades por archivo")
 
 
     #Tipo entidades por cada archivo
@@ -134,6 +145,8 @@ def armar_informe_entidades(analisis, preferencia):
     json_entscomp_file = chart_entscomp_file.to_json()
     grafico_entscomp_file = Grafico(nombre = "Composicion de entidades por archivo", chart = json_entscomp_file, analisis = analisis)
     grafico_entscomp_file.save()
+
+    print("termine de armar el grafico de composicion de entidades por archivo")
 
     num_ticks = 10
     ## Relacion para cada archivo: numero de entidades y linea 
@@ -164,6 +177,7 @@ def armar_informe_entidades(analisis, preferencia):
     grafico_lineas_entidades = Grafico(nombre = "Relacion entre numero de linea y entidades", chart = json_lineas_entidades, analisis = analisis)
     grafico_lineas_entidades.save()
     
+    print("termine de armar el grafico de relacion entre numero de linea y entidades")
 
     #Wordcloud de los textos de las entidades
     text = ' '.join(df['text'])
@@ -179,6 +193,7 @@ def armar_informe_entidades(analisis, preferencia):
     imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
     imagen_wordcloud_total.save()
 
+    print("termine de armar el grafico de wordcloud de entidades")
 
     return 1
 
@@ -204,6 +219,8 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
     # 1: Cargar el modelo de spacy
     model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "entidades" )
     nlp = spacy.load(model_path)
+
+    
 
     colors_azul_amarillo = {"DINERO": "#00065D", 
                             "FECHA":"#2706AD", 
@@ -251,6 +268,7 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
     # 2: Extraer textos de los archivos en la carpeta
     archivos = Archivo.objects.filter(carpeta = carpeta)
     for archivo in archivos:
+       
         tarea_celery.update_state(
         state='PROGRESS',
         meta={
@@ -259,6 +277,7 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
             'mensaje': 'Analizando archivo: ' + archivo.nombre + "..."
             }
         )
+        
         lines = []
         nombre, partition, extension = archivo.arch.name.rpartition('.')
         if extension == 'docx':
@@ -270,11 +289,14 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
             df = pd.read_excel(archivo.arch.path, usecols="A") #siempre leo la primera columna
             lines = df.values.tolist()
         elif extension == 'txt':
+            
             with open(archivo.arch.path, "r", encoding = 'UTF-8') as f:
                 lines = f.read().splitlines()
         else: 
             raise ValueError(f'Se intento procesar un tipo de archivo no soportado: {extension}', archivo)
         docs = list(nlp.pipe(lines))
+
+        
 
         # 3: Armar el objeto resultado de cada uno:
         for index, doc in enumerate(docs):
@@ -292,10 +314,10 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
             archivo_origen = archivo
             numero_linea = index + 1
             Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
-
+    print("termine de procesar los archivos. voy a armar el informe")
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
     armar_informe_entidades(analisis, preferencia)
-
+    print("termine de armar el informe")
     return 1
 
 
