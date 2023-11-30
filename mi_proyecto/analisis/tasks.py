@@ -26,10 +26,11 @@ def comenzar_celery(self, id_analisis, data):
     user = serializers.deserialize("json", data)
     user = (list(user))[0].object
     try:
+        print("esta por entrar al procesar analisis")
         procesar_analisis(self, analisis= analisis, user=user)
     except Exception as exc:
         analisis.delete()
-        print("Tarea de celery falló. Detalle de la excepcion:", exc)
+        print("Tarea de celery falló. Detalle de la excepcion:", type(exc).__name__, " ", exc) 
         self.update_state(
         state='FAILED',
         meta={
