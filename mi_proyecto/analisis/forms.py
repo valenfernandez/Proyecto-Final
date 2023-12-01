@@ -12,13 +12,20 @@ class FileForm(forms.Form):
     file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
                            help_text='</br> <br/> Seleccionar archivos de extension .txt .docx .xlsx o .zip')
     
+    def __init__(self, *args, **kwargs):
+        self.carpeta_id = kwargs.pop('carpeta_id')
+        super(FileForm, self).__init__(*args, **kwargs)
+
     def clean_file(self):
         file = self.cleaned_data['file']
         if file:
-            #if file.name.split('.')[1] not in settings.TASK_UPLOAD_FILE_TYPES:
             nombre, partition, extension = file.name.rpartition('.')
             if extension not in ["txt", "docx" , "xlsx", "zip"]: 
-                raise forms.ValidationError('File type is not supported')
+                raise forms.ValidationError('Tipo de archivo no soportado, solo se aceptan archivos .txt .docx .xlsx o .zip')
+            archivos = Archivo.objects.filter(carpeta = self.carpeta_id)
+            for archivo in archivos:
+                if archivo.nombre == file.name:
+                    raise forms.ValidationError('Error: ya existe un archivo con el nombre '+archivo.nombre)
         return file
 
 

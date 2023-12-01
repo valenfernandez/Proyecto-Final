@@ -65,7 +65,7 @@ def carpeta(request, id_carpeta):
     if carpeta.usuario != usuario_actual:
         return HttpResponse("No tiene permiso para ver esta carpeta")
 
-    form_file = FileForm(request.POST or None, request.FILES or None)
+    form_file = FileForm(request.POST or None, request.FILES or None, carpeta_id =id_carpeta)
     context = {
         "carpeta": carpeta,
         "archivos": Archivo.objects.filter(carpeta = carpeta),
