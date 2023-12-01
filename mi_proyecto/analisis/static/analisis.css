@@ -153,6 +153,10 @@
     appearance: menulist;
   }
 
+  #progress-bar {
+    transition: width 0.5s;
+  }
+
   .category-1 {
     color: white;
     background-color: #00065D; 

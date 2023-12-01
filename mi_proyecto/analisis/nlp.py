@@ -316,6 +316,14 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
             Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
     print("termine de procesar los archivos. voy a armar el informe")
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
+    tarea_celery.update_state(
+        state='PROGRESS',
+        meta={
+            'current': 8,
+            'total': 10,
+            'mensaje': 'Armando informe de entidades'
+        }
+    )
     armar_informe_entidades(analisis, preferencia)
     print("termine de armar el informe")
     return 1

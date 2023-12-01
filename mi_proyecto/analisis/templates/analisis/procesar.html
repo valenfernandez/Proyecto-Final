@@ -43,6 +43,9 @@
                 trigger.addEventListener('click', fetchCeleryData)
 
                 function fetchCeleryData() {
+                    var trigger = document.getElementById('progress-bar-trigger');
+                    trigger.disabled = true;
+
                     fetch(startCeleryUrl)
                     .then(response => response.json())
                     .then(result => {
@@ -59,17 +62,27 @@
                         response.json().then(function(data) {
                             console.log(data)
                             if (data.state === 'SUCCESS') {
-                                console.log("redirigiendo")
-                                window.location.href = '/resultado/'+ "{{ id_analisis }}";
+                                var bar = document.getElementById("progress-bar");
+                                var barMessage = document.getElementById("progress-bar-message");
+                                bar.style.width = "100%";
+                                bar.style.backgroundColor = "green";
+                                barMessage.innerHTML = "Análisis terminado, redirigiendo a resultados...";
+                                setTimeout(function(){
+                                    window.location.href = '/resultado/'+ "{{ id_analisis }}";
+                                }, 1500);
                             } else if (data.state === 'FAILED') {
-                                // update the appropriate UI components
                                 var bar = document.getElementById("progress-bar");
                                 var barMessage = document.getElementById("progress-bar-message");
                                 bar.style.width = "100%";
                                 bar.style.backgroundColor = "red";
                                 barMessage.innerHTML = data.details.mensaje;
+                            } else if (data.state === 'PENDING' && data.details == null) {
+                                var bar = document.getElementById("progress-bar");
+                                var barMessage = document.getElementById("progress-bar-message");
+                                bar.style.width = "100%";
+                                bar.style.backgroundColor = "red";
+                                barMessage.innerHTML = "Hubo un error inesperado. Por favor reinicie el análisis.";
                             } else {
-                                // update the appropriate UI components
                                 var bar = document.getElementById("progress-bar");
                                 var barMessage = document.getElementById("progress-bar-message");
                                 bar.style.width = (data.details.current * 10 / data.details.total) * 10 + "%";
