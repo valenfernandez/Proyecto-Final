@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Preferencias, Grafico, Grafico_Imagen, Tabla
-from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm, AnalisisViewForm, ResultadoClasificadorViewForm
+from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm, AnalisisViewForm, ResultadoClasificadorViewForm, ResultadoEntidadesViewForm
 from xhtml2pdf import pisa
 from django.db.models import Q
 from .tasks import comenzar_celery
@@ -190,21 +190,43 @@ def resultado(request, id_analisis):
         
     if analisis.modelo.nombre == 'entidades':
         if request.method == 'POST':
-            form = ResultadoViewForm(request.POST, analisis_id = analisis.id)
+            form = ResultadoEntidadesViewForm(request.POST, analisis_id = analisis.id)
             if form.is_valid():
                 file_choice = form.cleaned_data['file_choice']
                 if file_choice == 'all':
+                    entidades = form.cleaned_data.get('entidades')
                     resultados_x_archivo = []
                     archivos = Archivo.objects.filter(carpeta = analisis.carpeta)
                     for archivo in archivos:
                         resultados_archivo = Resultado.objects.filter(analisis = analisis, archivo_origen = archivo)
+                        
+                        if entidades and ('TODAS' not in entidades):
+                            resultados_archivo = [
+                                resultado for resultado in resultados_archivo 
+                                if any(
+                                    entidad in (d['label'] for d in json.loads(resultado.detectado)) 
+                                    for entidad in entidades
+                                )
+                            ]
+                        
                         resultados_x_archivo.append(resultados_archivo)
                     resultados = Resultado.objects.filter(analisis = analisis)
                 else:
                     resultados = Resultado.objects.filter(analisis = analisis, archivo_origen = Archivo.objects.get(id = file_choice))
+                    entidades = form.cleaned_data.get('entidades')
+                    if entidades and ('TODAS' not in entidades):
+                        resultados = [
+                            resultado for resultado in resultados 
+                            if any(
+                                entidad in (d['label'] for d in json.loads(resultado.detectado)) 
+                                for entidad in entidades
+                            )
+                        ]
                     #no hay resultados_x_archivo porque solo se selecciono un archivo
+            else:
+                resultados = Resultado.objects.filter(analisis = analisis)
         else:
-            form = ResultadoViewForm(analisis_id = analisis.id)
+            form = ResultadoEntidadesViewForm(analisis_id = analisis.id)
             resultados_x_archivo = []
             archivos = Archivo.objects.filter(carpeta = analisis.carpeta)
             for archivo in archivos:

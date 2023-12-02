@@ -139,3 +139,31 @@ class AnalisisViewForm(forms.Form):
         self.fields['fecha'].label = 'Hasta fecha:'
         self.fields['fecha'].help_text = '<br/> Se mostraran todos los analisis anteriores a la fecha seleccionada.'
 
+
+class ResultadoEntidadesViewForm(forms.Form):
+    OPTIONS = (
+        ("TODAS", "TODAS"),
+        ("DINERO", "DINERO"),
+        ("FECHA", "FECHA"),
+        ("HORA", "HORA"),
+        ("LUGAR", "LUGAR"),
+        ("MEDIDA", "MEDIDA"),
+        ("MISC", "MISC"),
+        ("ORG", "ORG"),
+        ("PERSONA", "PERSONA"),
+        ("TIEMPO", "TIEMPO"),
+    )
+    entidades = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                          choices=OPTIONS, required=False)
+    file_choice = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        analisis_id = kwargs.pop('analisis_id')
+        super(ResultadoEntidadesViewForm, self).__init__(*args, **kwargs)
+        analisis = Analisis.objects.get(id=analisis_id)
+        archivos = Archivo.objects.filter(carpeta=analisis.carpeta)
+        file_choices = [(archivo.id, archivo.nombre) for archivo in archivos]
+        file_choices.insert(0, ('all', 'Todos los archivos'))
+        self.fields['file_choice'].choices = file_choices
+        self.fields['file_choice'].label = 'Mostrar archivo'
+        self.fields['entidades'].label = 'Mostrar entidades:'
