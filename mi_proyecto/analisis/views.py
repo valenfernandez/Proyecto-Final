@@ -354,7 +354,7 @@ def nueva_carpeta(request):
     }
     if form_carpeta.is_valid():
         form_carpeta.save()
-        response = redirect('/carpetas')
+        response = redirect('/carpeta/'+str(carpeta.id))
         return response
     return render(request, "analisis/nueva_carpeta.html", context = context) 
 
