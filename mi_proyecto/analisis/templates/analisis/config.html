@@ -23,6 +23,9 @@
                     <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pref-tab" data-bs-toggle="tab" data-bs-target="#pref" type="button" role="tab" aria-controls="pref" aria-selected="true">Preferencias</button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="cuenta-tab" data-bs-toggle="tab" data-bs-target="#cuenta" type="button" role="tab" aria-controls="cuenta" aria-selected="false">Mi cuenta</button>
+                    </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <!-- Preferencias-->
@@ -77,11 +80,28 @@
                                 </div>
                             </div>
                         </div>
+                        </br>
+                        </br>
+                    </div>
+                    <!-- Mi cuenta-->
+                    <div class="tab-pane fade" id="cuenta" role="tabpanel" aria-labelledby="cuenta">
+                        </br>
+                        <h5>Datos de la cuenta: </h6>
+                        </br>
+                        <div class="container">
+                            <p>Nombre de usuario: {{user.username}}</p>
+                            {% if user.email %}
+                                <p>Correo electrónico: {{user.email}}</p>
+                            {% endif %}
+                            </br>
+                        </div>
+                        <h5>Cambiar la contraseña de su cuenta: </h5>
                         <a href="{% url 'password_change' %}"> 
-                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#exampleModal">  Cambiar contraseña </button>
+                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#exampleModal"> Quiero cambiar mi contraseña </button>
                         </a>
                     </div>
                     
+                </div>
         </main>
     </div>
 </div>
