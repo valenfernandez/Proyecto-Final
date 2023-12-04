@@ -148,14 +148,21 @@ def resultados(request):
         if form.is_valid():
             carpeta = form.cleaned_data['carpeta']
             fecha = form.cleaned_data['fecha']
+            modelo = form.cleaned_data['modelo']
             if carpeta == 'all':
                 carpetas = Carpeta.objects.filter(usuario = request.user)
             else:
                 carpetas = Carpeta.objects.filter(usuario = request.user, id = carpeta)
             if fecha:
-                analisis = Analisis.objects.filter(Q(carpeta__in = carpetas), Q( fecha__lte = fecha)).order_by("-id")
+                if modelo != 'all':
+                    analisis = Analisis.objects.filter(Q(carpeta__in = carpetas), Q( fecha__lte = fecha), Q(modelo = modelo)).order_by("-id")
+                else:
+                    analisis = Analisis.objects.filter(Q(carpeta__in = carpetas), Q( fecha__lte = fecha)).order_by("-id")
             else: 
-                analisis = Analisis.objects.filter(carpeta__in = carpetas).order_by("-id")
+                if modelo != 'all':
+                    analisis = Analisis.objects.filter(Q(carpeta__in = carpetas), Q(modelo = modelo)).order_by("-id")
+                else:
+                    analisis = Analisis.objects.filter(carpeta__in = carpetas).order_by("-id")
     else:
         form = AnalisisViewForm(user_id = request.user.id)
         carpetas = Carpeta.objects.filter(usuario = request.user)

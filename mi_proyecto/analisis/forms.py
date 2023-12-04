@@ -126,6 +126,7 @@ class AnalisisViewForm(forms.Form):
                 'class': 'form-control'
                 }
             ), required=False)
+    modelo = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), required=False)
     def __init__(self, *args, **kwargs):
         user_id = kwargs.pop('user_id')
         super(AnalisisViewForm, self).__init__(*args, **kwargs)
@@ -136,6 +137,13 @@ class AnalisisViewForm(forms.Form):
         carpeta_choices.insert(0, ('all', 'Todas'))
         self.fields['carpeta'].choices = carpeta_choices
         self.fields['carpeta'].label = 'Carpeta'
+
+        modelos = Modelo.objects.all()
+        modelo_choices = [(modelo.id, modelo.nombre) for modelo in modelos]
+        modelo_choices.insert(0, ('all', 'Todos'))
+        self.fields['modelo'].choices = modelo_choices
+        self.fields['modelo'].label = 'Modelo'
+        
         self.fields['fecha'].label = 'Hasta fecha:'
         self.fields['fecha'].help_text = '<br/> Se mostraran todos los analisis anteriores a la fecha seleccionada.'
 
