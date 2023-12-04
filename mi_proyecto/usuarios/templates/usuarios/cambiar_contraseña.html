@@ -1,0 +1,22 @@
+{% extends "analisis/base.html" %}
+
+{% load static %}
+{% block content %}
+<center>
+    </br>
+    </br>
+    <div class="content-section">
+        <h2>Cambio de contraseña</h2><hr>
+        <p>Porfavor ingresa tu nueva contraseña</p>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <br>
+            <button class="btn btn-outline-info" type="submit">Aceptar</button>
+        </form>
+    </div>
+</center>
+{% endblock content %}
+
+
+    
