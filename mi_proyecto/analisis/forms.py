@@ -94,6 +94,7 @@ class ResultadoClasificadorViewForm(forms.Form):
                 'class': 'form-control'
                 }
             ), required=False)
+    score = forms.FloatField(required=False, min_value=0, max_value=1)
     
     def __init__(self, *args, **kwargs):
         analisis_id = kwargs.pop('analisis_id')
@@ -115,7 +116,13 @@ class ResultadoClasificadorViewForm(forms.Form):
         self.fields['remitente'].label = 'Mostrar usuario'
         self.fields['violentos'].label = 'Excluir no violentos'
         self.fields['fecha'].label = 'Hasta fecha:'
-        self.fields['fecha'].help_text = '<br/> Se mostraran todos los mensajes marcados hasta a la fecha seleccionada.'
+        self.fields['score'].label = 'Mostrar mensajes con score de violencia mayor a:'
+        self.fields['score'].help_text = """ 
+        <div class="alert alert-secondary" role="alert"> 
+        El score de violencia es un numero entre 0 y 1 que indica la probabilidad de que el mensaje sea violento. 
+        </div>"""
+    
+    
 
 
 class AnalisisViewForm(forms.Form):

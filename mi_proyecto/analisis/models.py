@@ -72,7 +72,7 @@ class Resultado(models.Model): #esto lo estamos conciderando como una linea del 
     numero_linea = models.IntegerField() 
     analisis = models.ForeignKey(Analisis, on_delete = models.CASCADE)
     html = models.TextField(default=" ") #solo es usado en modelos que generan html con displacy
-    
+    score = models.FloatField(blank=True, null=True, default=1.0)
     remitente = models.CharField(max_length = 5000, blank=True, null=True, default="Desconocido")
     fecha_envio = models.DateTimeField(blank=True, null=True)
 

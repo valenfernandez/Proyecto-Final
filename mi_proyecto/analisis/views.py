@@ -287,6 +287,7 @@ def resultado(request, id_analisis):
                 violentos = form_c.cleaned_data['violentos']
                 remitente = form_c.cleaned_data['remitente']
                 fecha = form_c.cleaned_data['fecha']
+                score = form_c.cleaned_data['score']
 
                 if file_choice == 'all':
                     resultados = Resultado.objects.filter(analisis = analisis).order_by('archivo_origen','numero_linea')
@@ -298,6 +299,8 @@ def resultado(request, id_analisis):
                     resultados = resultados.filter(remitente = remitente)
                 if fecha:
                     resultados = resultados.filter(Q( fecha_envio__lte = fecha))
+                if score:
+                    resultados = resultados.filter(Q( score__gte = score))
         else:
             form_c = ResultadoClasificadorViewForm(analisis_id = id_analisis)
             resultados = Resultado.objects.filter(analisis = analisis).order_by('archivo_origen','numero_linea')

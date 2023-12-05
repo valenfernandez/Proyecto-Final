@@ -546,7 +546,8 @@ def procesar_linea(analisis, archivo, line, index):
                 'remitente': name,
                 'numero_linea': index + 1,
                 'archivo_origen': archivo,
-                'doc' : None
+                'doc' : None,
+                'score': None,
             }
     else:
         elemento = {
@@ -555,14 +556,12 @@ def procesar_linea(analisis, archivo, line, index):
             'remitente': None,
             'numero_linea': index + 1,
             'archivo_origen': archivo,
-            'doc' : None
+            'doc' : None,
+            'score': None,
         }
     return elemento
 
 def clean_text(text):
-    #TODO TRANSLATION TABLE COMPLETAR
-    #ESPACIOS REPETIDOS: 
-
     regex_espacios = re.compile(r"\s+")
 
     ttable = str.maketrans(
@@ -626,6 +625,7 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
     docs_binarios = list(nlp.pipe(lines))
     for index, doc in enumerate(docs_binarios):
         datos_lineas[index]['doc'] = doc
+        datos_lineas[index]['score'] = round(doc.cats['Violento'], 2)
 
     violentos_text = []
     elementos_violentos = []
@@ -633,13 +633,14 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
         doc = elemento['doc']
         if doc.cats['Violento'] < 0.7:
             texto = doc.text
+            score_violento = elemento['score'] 
             detectado = 'No Violento'
             html = ""
             archivo_origen = archivo_db
             numero_linea = elemento['numero_linea']
             fecha = elemento['fecha']
             remitente = elemento['remitente']
-            Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
+            Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente, score = score_violento).save()
         else:
             elementos_violentos.append(elemento)
 
@@ -650,6 +651,7 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
 
     for elemento in elementos_violentos:
         doc = elemento['doc']
+        score_violento = elemento['score'] 
         texto = doc.text
         detectado = max(doc.cats, key=doc.cats.get)
         html = ""
@@ -657,7 +659,8 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
         numero_linea = elemento['numero_linea']
         fecha = elemento['fecha']
         remitente = elemento['remitente']
-        Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente).save()
+        Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen, fecha_envio = fecha, remitente = remitente, score = score_violento).save()
+    
     return 1
 
 def procesar_clasificador(tarea_celery, analisis, carpeta, user):
