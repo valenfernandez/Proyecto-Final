@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'analisis.apps.AnalisisConfig',
     'usuarios.apps.UsuariosConfig',
     'crispy_forms',
+    'crispy_bootstrap5',
     # agregadas por Django:
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,6 +51,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,6 +83,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 WSGI_APPLICATION = 'mi_proyecto.wsgi.application'
 
@@ -141,8 +148,6 @@ STATICFILES_DIRS = ( os.path.join(BASE_DIR, '/static/analisis'), )
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'analisis-principal'
 

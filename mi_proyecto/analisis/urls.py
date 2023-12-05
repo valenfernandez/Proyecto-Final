@@ -17,6 +17,7 @@ urlpatterns = [
     path("descargar_resultados_entidades/<id_analisis>/<id_archivo>", views.descargar_resultados_entidades, name="analisis-descargar_resultados_entidades"),
     path("descargar_resultados_clasificador/<id_analisis>", views.descargar_resultados_clasificador, name="analisis-descargar_resultados_clasificador"),
     path("procesar/<id_analisis>", views.procesar, name = "analisis-procesar"),
+    path("crear_wordcloud/<id_analisis>", views.crear_wordcloud, name = "analisis-crear_wordcloud"),
     path("comenzar_tarea_celery/<id_analisis>", views.comenzar_tarea_celery, name="analisis-comenzar_tarea_celery"),
     path("procesar/obtener_progreso_tarea_celery/<task_id>", views.get_progress, name="analisis-get_progress"),
 ]

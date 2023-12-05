@@ -8,6 +8,11 @@ import magic
 from .models import Analisis, Carpeta, Colores, Preferencias, Modelo, Archivo, Resultado
 from mi_proyecto import settings
 
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div, Field, HTML
+
+
 class FileForm(forms.Form):
     file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
                            help_text='</br> <br/> Seleccionar archivos de extension .txt .docx .xlsx o .zip')
@@ -182,3 +187,18 @@ class ResultadoEntidadesViewForm(forms.Form):
         self.fields['file_choice'].choices = file_choices
         self.fields['file_choice'].label = 'Mostrar archivo'
         self.fields['entidades'].label = 'Mostrar entidades:'
+
+
+
+class WordcloudForm(forms.Form):
+    stopwords = forms.BooleanField(label='Excluir preposiciones', required=False)
+    violentos = forms.BooleanField(label='Solo violentos', required=False)
+    excluidas = forms.CharField(label='Palabras excluidas', 
+                            widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Palabras excluidas'}),required=False)
+    def __init__(self, *args, **kwargs):
+        super(WordcloudForm, self).__init__(*args, **kwargs)
+        self.fields['excluidas'].help_text = """ 
+        <div class="alert alert-secondary" role="alert"> 
+        Ingresar las palabras a excluir separadas por coma. Ejemplo: palabra1, palabra2, palabra3
+        </div>"""
+    

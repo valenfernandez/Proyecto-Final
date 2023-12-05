@@ -19,6 +19,21 @@ import time
 pattern = r"\d{1,2}/\d{1,2}/\d{4}, \d{2}:\d{2} - .+: .+"
 regex_wpp = re.compile(pattern)
 
+
+def nuevo_wordcloud(texto):
+
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(texto)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title("Mi wordcloud")
+    
+    return wordcloud
+    
+
+
+
+
 def armar_informe_entidades(analisis, preferencia): 
     """
     Esta funcion crea los graficos y las tablas que contiene el informe de los resultados de un analisis creado por un modelo de deteccion de entidades.
@@ -34,11 +49,10 @@ def armar_informe_entidades(analisis, preferencia):
     :return: 1 (int) Si los elementos del informe se crearon correctamente devuelve 1.
 
     """
-    print("estoy en armar informe entidades")
-    
+        
     os.makedirs(f'analisis/static/graficos/{analisis.id}', exist_ok=True)
 
-    print("creo la carpeta. voy a buscar los resultados")
+    
     resultados = Resultado.objects.filter(analisis = analisis)
     
     domain =["DINERO", "FECHA", "HORA", "LUGAR", "MEDIDA", "MISC", "ORG", "PERSONA", "TIEMPO"]
@@ -63,8 +77,7 @@ def armar_informe_entidades(analisis, preferencia):
                 'archivo_origen': resultado.archivo_origen.nombre,
                 'numero_linea': resultado.numero_linea
             })
-    print("termine de armar el data con los resultados")
-
+    
     df = pd.DataFrame(data)
 
     total_entidades = df.shape[0]
@@ -73,8 +86,7 @@ def armar_informe_entidades(analisis, preferencia):
     tabla_entidades_count = Tabla(nombre = "Distribucion de entidades", tabla = entidades_counts.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
     tabla_entidades_count.save()
 
-    print("termine de armar la tabla de entidades")
-
+   
 
     ent_text_counts = df['text'].value_counts() #entidades que se repitan: tendrian el count en mas de 1
     repeating_entities = ent_text_counts[ent_text_counts > 1] #entidades que se repiten
@@ -85,8 +97,7 @@ def armar_informe_entidades(analisis, preferencia):
         tabla_repeating_ents = Tabla(nombre = "Entidades que se repiten", tabla = tabla_rep_ents.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
         tabla_repeating_ents.save()
 
-    print("termine de armar la tabla de entidades que se repiten")
-
+    
     # Cantidad de cada tipo de entidades
     chart_count_ents = alt.Chart(df, title="Distribucion de entidades").mark_bar().encode(
         x = alt.X('label:N', title='Entidades'),
@@ -98,8 +109,7 @@ def armar_informe_entidades(analisis, preferencia):
     grafico_cout_ents = Grafico(nombre = "Distribucion de entidades", chart = json_count_ents, analisis = analisis)
     grafico_cout_ents.save()
 
-    print("termine de armar el grafico de distribucion de entidades")
-
+    
     chart_torta = alt.Chart(df).mark_arc().encode(
     theta="count():Q",
     color= alt.Color('label', scale = alt.Scale(domain=domain, range=range_)),
@@ -109,8 +119,7 @@ def armar_informe_entidades(analisis, preferencia):
     grafico_torta = Grafico(nombre = "Torta distribucion de entidades", chart = json_torta, analisis = analisis)
     grafico_torta.save()
 
-    print("termine de armar el grafico de torta de entidades")
-
+    
     #Entidades por cada archivo
     file_entity_counts = df.groupby('archivo_origen')['text'].count().reset_index()
     file_entity_counts.columns = ['archivo_origen', 'entity_count']
@@ -126,8 +135,7 @@ def armar_informe_entidades(analisis, preferencia):
     grafico_ents_file = Grafico(nombre = "Entidades por archivo", chart = json_ents_file, analisis = analisis)
     grafico_ents_file.save()
 
-    print("termine de armar el grafico de entidades por archivo")
-
+    
 
     #Tipo entidades por cada archivo
     # Group and count entity labels by file
@@ -146,8 +154,7 @@ def armar_informe_entidades(analisis, preferencia):
     grafico_entscomp_file = Grafico(nombre = "Composicion de entidades por archivo", chart = json_entscomp_file, analisis = analisis)
     grafico_entscomp_file.save()
 
-    print("termine de armar el grafico de composicion de entidades por archivo")
-
+    
     num_ticks = 10
     ## Relacion para cada archivo: numero de entidades y linea 
     scatterplots = []
@@ -177,8 +184,7 @@ def armar_informe_entidades(analisis, preferencia):
     grafico_lineas_entidades = Grafico(nombre = "Relacion entre numero de linea y entidades", chart = json_lineas_entidades, analisis = analisis)
     grafico_lineas_entidades.save()
     
-    print("termine de armar el grafico de relacion entre numero de linea y entidades")
-
+    
     #Wordcloud de los textos de las entidades
     text = ' '.join(df['text'])
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
@@ -193,8 +199,7 @@ def armar_informe_entidades(analisis, preferencia):
     imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
     imagen_wordcloud_total.save()
 
-    print("termine de armar el grafico de wordcloud de entidades")
-
+    
     return 1
 
 
@@ -389,8 +394,7 @@ def armar_informe_clasificador(analisis, preferencia):
     tabla_categorias_count = Tabla(nombre = "Distribucion de categorias", tabla = counts.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
     tabla_categorias_count.save()
 
-    # -deberia excluir los que tienen valor No violento
-
+    
     # Cantidad de cada tipo de violencia
     chart_count_cats = alt.Chart(df_violentos, title="Distribucion de categorias").mark_bar().encode(
         x = alt.X('clasificacion:N', title='Categoria'),

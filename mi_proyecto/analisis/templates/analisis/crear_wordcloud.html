@@ -1,0 +1,33 @@
+{% extends "analisis/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="row">
+    <!-- Menu -->
+    <div class="col-sm">
+        <div class="sidebar">
+            <div class="sidebar-brand"> Menú </div>
+            <a href="{% url 'analisis-principal' %}">Aplicaciones</a>
+            <a class="active" href="{% url 'analisis-carpetas' %}">Mis Carpetas</a>
+            <a href="{% url 'analisis-resultados' %}">Mis Análisis</a>
+            <a href="{% url 'analisis-config' %}">Configuración</a>
+        </div>
+    </div>
+    <div class = "col-md-10">
+        <main role="main" class="container">
+            </br>
+            </br>
+            <h4> Nuevo Wordcloud: </h4>
+            </br>
+            <form action="" method=POST enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+            <br/> 
+            <input type="submit" value="Aceptar" class="btn btn-primary btn-md">
+            
+        </main>
+    </div>
+</div>
+
+{% endblock content %}

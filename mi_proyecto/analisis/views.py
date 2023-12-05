@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from .models import Carpeta, Archivo, Analisis, Aplicacion, Resultado, Preferencias, Grafico, Grafico_Imagen, Tabla
-from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm, AnalisisViewForm, ResultadoClasificadorViewForm, ResultadoEntidadesViewForm
+from .forms import AnalisisForm, PreferenciasForm, CarpetaForm, FileForm, ResultadoViewForm, AnalisisViewForm, ResultadoClasificadorViewForm, ResultadoEntidadesViewForm, WordcloudForm
 from xhtml2pdf import pisa
 from django.db.models import Q
 from .tasks import comenzar_celery
@@ -13,8 +13,9 @@ from celery.result import AsyncResult
 import json
 from django.http import JsonResponse
 import zipfile
+from .nlp import nuevo_wordcloud
+import io
 
-# Create your views here.
 
 @login_required
 def home(request): 
@@ -453,6 +454,7 @@ def get_progress(request, task_id):
     return HttpResponse(json.dumps(response_data), content_type='application/json')
 
 
+@login_required
 def descargar_resultados_clasificador(request, id_analisis):
     analisis = Analisis.objects.get(id = id_analisis)
     usuario_actual = request.user
@@ -519,3 +521,50 @@ def descargar_resultados_clasificador(request, id_analisis):
     if pisa_status.err:
             return HttpResponse('We had some errors')
     return response
+
+@login_required
+def crear_wordcloud(request, id_analisis):
+    usuario_actual = request.user
+    analisis = Analisis.objects.get(id = id_analisis)
+    preposiciones = [
+        'a', 'ante', 'bajo', 'cabe', 'con', 'contra', 'de', 'desde', 'durante', 'en', 'entre', 'hacia', 'hasta', 'mediante', 'para', 'por', 'según', 'sin', 'so', 'sobre', 'tras', 'versus' , 'via'
+    ]
+    if analisis.carpeta.usuario != usuario_actual:
+        return HttpResponse("No tiene permiso para visualizar este analisis")
+    if request.method == 'POST':
+            form = WordcloudForm(request.POST)
+            if form.is_valid():
+                
+                stopwords = form.cleaned_data['stopwords']
+                violentos = form.cleaned_data['violentos']
+                excluidas = form.cleaned_data['excluidas']
+                excluidas = [word.strip() for word in excluidas.split(',')]
+                resultados = Resultado.objects.filter(analisis = analisis)
+                if violentos:
+                    resultados = resultados.exclude(detectado = 'No Violento')
+                texto = [resultado.texto for resultado in resultados]
+                texto = ' '.join(texto)
+                all_words = texto.split()
+                if stopwords:
+                    excluidas = excluidas + preposiciones
+                if excluidas:
+                    new_text = [word for word in all_words if word not in excluidas]
+                    cleaned_text  = ' '.join(new_text)
+                else: 
+                    cleaned_text = texto
+                wordcloud = nuevo_wordcloud(cleaned_text)
+                
+                # Prepare the image for download
+                img_stream = io.BytesIO()
+                wordcloud.to_image().save(img_stream, format='PNG')
+                img_stream.seek(0)
+
+                # Prepare the response for download
+                response = HttpResponse(content_type='image/png')
+                response['Content-Disposition'] = 'attachment; filename="wordcloud.png"'
+                response.write(img_stream.getvalue())
+            
+                return response
+            
+    return render(request, "analisis/crear_wordcloud.html", context= {'form': WordcloudForm()})
+
