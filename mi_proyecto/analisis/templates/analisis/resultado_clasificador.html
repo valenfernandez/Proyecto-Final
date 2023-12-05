@@ -78,90 +78,126 @@
             </br>
             </br>
             <div class="col-6">
-                <div class="card informe" style="width:75rem;">
-                    <div class="card-body">
-                        <p class="card-text ">
-                            <div class="container">
-                                <div class="row">
-                                    </br>
-                                    <h4> Clasificacion General </h4>
-                                    </br>
-                                    <div class="col"> 
-                                        <div id="gdis"></div>
-                                        <!--SCRIPT PARA CARGAR UN GRAFICO-->
-                                        <script type="text/javascript">
-                                            var spec = {{ grafico_distribucion.chart|safe }};
-                                            vegaEmbed('#gdis', spec).then(function(result) {
-                                            // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-                                            }).catch(console.error);
-                                        </script>
-                                    </div>
-                                    <div class="col"> 
-                                        <div id="gtorta"></div>
-                                        <!--SCRIPT PARA CARGAR UN GRAFICO-->
-                                        <script type="text/javascript">
-                                            var spec = {{ grafico_torta.chart|safe }};
-                                            vegaEmbed('#gtorta', spec).then(function(result) {
-                                            // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-                                            }).catch(console.error);
-                                        </script>
-                                    </div>
-                                    <div class="col"> 
-                                        {{tabla_distribucion.tabla|safe}}
-                                    </div>                                        
-                                </div>  
-                                </br>
-                                </br>
-                                <div class="row">
-                                    </br>
-                                    <h4> Presencia en el documento </h4>
-                                    </br>
-                                    <div class="col"> 
-                                        <div id="glineas"></div>
-                                        <!--SCRIPT PARA CARGAR UN GRAFICO-->
-                                        <script type="text/javascript">
-                                            var spec = {{ grafico_lineas_cats.chart|safe }};
-                                            vegaEmbed('#glineas', spec).then(function(result) {
-                                            // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-                                            }).catch(console.error);
-                                        </script>
-                                    </div>
-                                    <div class="col"> 
-                                        <div id="gcat_arch"></div>
-                                        <!--SCRIPT PARA CARGAR UN GRAFICO-->
-                                        <script type="text/javascript">
-                                            var spec = {{ grafico_categoria_archivo.chart|safe }};
-                                            vegaEmbed('#gcat_arch', spec).then(function(result) {
-                                            // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-                                            }).catch(console.error);
-                                        </script>
-                                    </div>
-                                </div>
-                                </br>
-                                <h4> Wordclouds </h4>
-                                </br>
-                                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="completos-tab" data-bs-toggle="tab" data-bs-target="#completos" type="button" role="tab" aria-controls="completos" aria-selected="true">Wordcloud completo</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="violentos-tab" data-bs-toggle="tab" data-bs-target="#violentos" type="button" role="tab" aria-controls="violentos" aria-selected="true">Wordcloud de frases violentas</button>
-                                    </li>
-                                        
-                                </ul>
-                                <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade show active" id="completos" role="tabpanel" aria-labelledby="completos-tab">
-                                        <img src="{{ word_cats.imagen.url }}" alt="Grafico Imagen">
-                                    </div>
-                                    <div class="tab-pane fade show" id="violentos" role="tabpanel" aria-labelledby="violentos-tab">
-                                        <img src="{{ word_violento.imagen.url }}" alt="Grafico Imagen">
-                                    </div>
-                                </div>    
-                                </br>
-                            </div>
-                        </p>
+                <div class = "container informe" style="width:75rem;">
+                    <div class="alert alert-info" role="alert">
+                        <h5> Glosario </h5>
+                        </br>
+                        <p> <span class="badge category-1 "> Física </span> : Se detectó en el texto amenazas o menciones de violencia fisica </p>
+                        <p> <span class="badge category-2 "> Sexual </span> : Se detectó en el texto amenazas o menciones de violencia sexual </p>
+                        <p> <span class="badge category-4 "> Psicológica </span> :  Se detectó en el texto violencia psicológica </p>
+                        <p> <span class="badge category-5 "> Económica </span> :  Se detectó en el texto menciones de posible violencia  económica </p>
+                        <p> <span class="badge category-3 "> Simbólica </span> :  Se detectó en el texto violencia  simbólica </p>
+
+
                     </div>
-                </div> 
+                    <div class="card" style="width:75rem;">
+                        <div class="card-body">
+                            <p class="card-text ">
+                                <div class="container">
+                                    <div class="row">
+                                        </br>
+                                        <h4> Clasificacion General </h4>
+                                        </br>
+                                        </br>
+                                        <div class="col"> 
+                                            <div id="gdis"></div>
+                                            <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                            <script type="text/javascript">
+                                                var spec = {{ grafico_distribucion.chart|safe }};
+                                                vegaEmbed('#gdis', spec).then(function(result) {
+                                                // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                }).catch(console.error);
+                                            </script>
+                                        </div>
+                                        <div class="col"> 
+                                            <div id="gtorta"></div>
+                                            <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                            <script type="text/javascript">
+                                                var spec = {{ grafico_torta.chart|safe }};
+                                                vegaEmbed('#gtorta', spec).then(function(result) {
+                                                // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                }).catch(console.error);
+                                            </script>
+                                        </div>
+                                        <div class="col"> 
+                                            {{tabla_distribucion.tabla|safe}}
+                                        </div>                                        
+                                    </div>  
+                                    </br>
+                                    </br>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                </br>
+                    <div class="card" style="width:75rem;">
+                        <div class="card-body">
+                            <p class="card-text ">
+                                <div class="container">
+                                    <div class="row">
+                                        </br>
+                                        <h4> Presencia en el documento </h4>
+                                        </br>
+                                    </br>
+                                        <div class="col"> 
+                                            <div id="glineas"></div>
+                                            <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                            <script type="text/javascript">
+                                                var spec = {{ grafico_lineas_cats.chart|safe }};
+                                                vegaEmbed('#glineas', spec).then(function(result) {
+                                                // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                }).catch(console.error);
+                                            </script>
+                                        </div>
+                                        <div class="col"> 
+                                            <div id="gcat_arch"></div>
+                                            <!--SCRIPT PARA CARGAR UN GRAFICO-->
+                                            <script type="text/javascript">
+                                                var spec = {{ grafico_categoria_archivo.chart|safe }};
+                                                vegaEmbed('#gcat_arch', spec).then(function(result) {
+                                                // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+                                                }).catch(console.error);
+                                            </script>
+                                        </div>
+                                    </div>
+                                    </br>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                </br>
+                    <div class="card" style="width:75rem;">
+                        <div class="card-body">
+                            <p class="card-text ">
+                                <div class="container">
+                                </br>
+                                    <h4> Wordclouds </h4>
+                                </br>
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="completos-tab" data-bs-toggle="tab" data-bs-target="#completos" type="button" role="tab" aria-controls="completos" aria-selected="true">Wordcloud completo</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="violentos-tab" data-bs-toggle="tab" data-bs-target="#violentos" type="button" role="tab" aria-controls="violentos" aria-selected="true">Wordcloud de frases violentas</button>
+                                        </li>
+                                            
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="completos" role="tabpanel" aria-labelledby="completos-tab">
+                                            <img src="{{ word_cats.imagen.url }}" alt="Grafico Imagen">
+                                        </div>
+                                        <div class="tab-pane fade show" id="violentos" role="tabpanel" aria-labelledby="violentos-tab">
+                                            <img src="{{ word_violento.imagen.url }}" alt="Grafico Imagen">
+                                        </div>
+                                    </div>    
+                                    </br>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+                 
                 </br>     
             </div>
         </br>
