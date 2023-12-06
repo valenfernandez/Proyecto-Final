@@ -104,6 +104,11 @@
                                         </br>
                                         <h4> Clasificacion General </h4>
                                         </br>
+                                        {% if error %}
+                                        <div class="alert alert-info" role="alert">
+                                            {{error}}
+                                        </div>
+                                        {% endif %}
                                         </br>
                                         <div class="col"> 
                                             <div id="gdis"></div>

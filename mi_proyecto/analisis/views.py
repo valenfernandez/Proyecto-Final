@@ -195,7 +195,7 @@ def resultado(request, id_analisis):
     resultados_x_archivo = None
     form = None
     form_c = None
-        
+    error = None
     if analisis.modelo.nombre == 'entidades':
         if request.method == 'POST':
             form = ResultadoEntidadesViewForm(request.POST, analisis_id = analisis.id)
@@ -257,6 +257,8 @@ def resultado(request, id_analisis):
             grafico_lineas_ents = None
             grafico_torta = None
             tabla_distribucion = None
+            error = "No se detectaron entidades en los archivos."
+
         try: #separado porque este puede fallar por si solo porque no existieron repeticiones.
             tabla_rep= Tabla.objects.get(analisis = analisis, nombre = 'Entidades que se repiten')
         except:
@@ -276,6 +278,7 @@ def resultado(request, id_analisis):
         'grafico_torta':    grafico_torta,
         'resultados_x_archivo': resultados_x_archivo,
         'form': form,
+        'error': error,
         }
         
         return render(request, "analisis/resultado_entidades.html", context= context)
@@ -289,6 +292,7 @@ def resultado(request, id_analisis):
                 remitente = form_c.cleaned_data['remitente']
                 fecha = form_c.cleaned_data['fecha']
                 score = form_c.cleaned_data['score']
+                not_adjuntos = form_c.cleaned_data['adjuntos']
 
                 if file_choice == 'all':
                     resultados = Resultado.objects.filter(analisis = analisis).order_by('archivo_origen','numero_linea')
@@ -296,6 +300,8 @@ def resultado(request, id_analisis):
                     resultados = Resultado.objects.filter(analisis = analisis, archivo_origen = Archivo.objects.get(id = file_choice)).order_by('numero_linea')
                 if violentos: #tengo que sacar del resultado los que no son violentos
                     resultados = resultados.exclude(detectado = 'No Violento')
+                if not_adjuntos:
+                    resultados = resultados.exclude(detectado = 'Adjunto')
                 if remitente!= 'all':
                     resultados = resultados.filter(remitente = remitente)
                 if fecha:
@@ -307,20 +313,24 @@ def resultado(request, id_analisis):
             resultados = Resultado.objects.filter(analisis = analisis).order_by('archivo_origen','numero_linea')
 
         try:
-            tabla_distribucion = Tabla.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
             grafico_distribucion = Grafico.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
             grafico_torta = Grafico.objects.get(analisis = analisis, nombre = 'Torta distribucion de categorias')
             grafico_categoria_archivo = Grafico.objects.get(analisis = analisis, nombre = 'Composicion de categorias por archivo') 
             grafico_lineas_cats = Grafico.objects.get(analisis = analisis, nombre = 'Relacion numero de linea y frases violentas')
-            word_cats = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de clasificacion')
-
         except:
-            tabla_distribucion = None
+            error = "No se logró detectar automaticamente ninguna frase posiblemente violenta en los archivos."
             grafico_distribucion = None
             grafico_torta = None
             grafico_categoria_archivo = None
             grafico_lineas_cats = None
-            word_cats = None    
+        try:
+            tabla_distribucion = Tabla.objects.get(analisis = analisis, nombre = 'Distribucion de categorias')
+        except:
+            tabla_distribucion = None
+        try:
+            word_cats = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de clasificacion')
+        except:
+            word_cats = None
         try: 
             word_violento = Grafico_Imagen.objects.get(analisis = analisis, nombre = 'Wordcloud de violentos')
         except:
@@ -338,6 +348,7 @@ def resultado(request, id_analisis):
         'word_cats' : word_cats,
         'word_violento' : word_violento,
         'form': form_c,
+        'error': error,
         }
         return render(request, "analisis/resultado_clasificador.html", context= context)
     else:

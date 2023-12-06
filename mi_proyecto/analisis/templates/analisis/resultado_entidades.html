@@ -71,6 +71,11 @@
                                             <div class="row">
                                             <h4> Distribución de entidades </h4>
                                             </br>
+                                            {% if error %}
+                                            <div class="alert alert-info" role="alert">
+                                                {{error}}
+                                            </div>
+                                            {% endif %}
                                             </br>
                                               <div class="col">
                                                 <div id="d_ents"></div>

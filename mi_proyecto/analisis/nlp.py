@@ -80,6 +80,9 @@ def armar_informe_entidades(analisis, preferencia):
     
     df = pd.DataFrame(data)
 
+    if (df.empty):
+        return 0
+    
     total_entidades = df.shape[0]
     entidades_counts = df['label'].value_counts().reset_index()#pd indice tipos de entidades y valor num de apariciones
     entidades_counts.columns = ['Etiqueta', 'Apariciones']
@@ -319,7 +322,7 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
             archivo_origen = archivo
             numero_linea = index + 1
             Resultado(texto= texto, detectado = detectado, html = html, numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo_origen).save()
-    print("termine de procesar los archivos. voy a armar el informe")
+    
     # 4: Procesar los resultados y armar el informe segun el modelo que sea
     tarea_celery.update_state(
         state='PROGRESS',
@@ -353,7 +356,7 @@ def armar_informe_clasificador(analisis, preferencia):
     :return: 1 (int) Si los elementos del informe se crearon correctamente devuelve 1.
 
     """
-
+    print('entro a armar el informe')
     os.makedirs(f'analisis/static/graficos/{analisis.id}', exist_ok=True)
 
     resultados = Resultado.objects.filter(analisis = analisis)
@@ -373,9 +376,10 @@ def armar_informe_clasificador(analisis, preferencia):
     data_violentos = []
     no_violentos = ["No Violento", "Adjunto"]
     for resultado in resultados:
+        print(resultado.detectado)
         data_completos.append({
             'text': resultado.texto,
-            'clasificacion': resultado.detectado,
+            'clasificacion': str(resultado.detectado),
             'archivo_origen': resultado.archivo_origen.nombre,
             'numero_linea': resultado.numero_linea
         })
@@ -396,8 +400,24 @@ def armar_informe_clasificador(analisis, preferencia):
     counts.columns = ['Categoria', 'Apariciones']
     tabla_categorias_count = Tabla(nombre = "Distribucion de categorias", tabla = counts.to_html(classes='table table-striped table-hover table-sm', index=False), analisis = analisis)
     tabla_categorias_count.save()
+    print('hizo la tabla')
 
+    #Wordcloud completo
+    text = ' '.join(df_completo['text'])
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title('Palabras detectadas')
+    wordcloud_path = f'analisis/static/graficos/{analisis.id}/wordcloud_cats_{analisis.id}.png'
+    wordcloud.to_file(wordcloud_path)
+    imagen_wordcloud_total = Grafico_Imagen(nombre = "Wordcloud de clasificacion", analisis = analisis)
+    imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
+    imagen_wordcloud_total.save()
     
+    if(df_violentos.empty):
+        return 1
+
     # Cantidad de cada tipo de violencia
     chart_count_cats = alt.Chart(df_violentos, title="Distribucion de categorias").mark_bar().encode(
         x = alt.X('clasificacion:N', title='Categoria'),
@@ -408,6 +428,7 @@ def armar_informe_clasificador(analisis, preferencia):
     json_count_cats = chart_count_cats.to_json()
     grafico_cout_cats = Grafico(nombre = "Distribucion de categorias", chart = json_count_cats, analisis = analisis)
     grafico_cout_cats.save()
+    print('hizo el grafico de distribucion')
 
     chart_torta = alt.Chart(df_violentos).mark_arc().encode(
     theta="count():Q",
@@ -417,6 +438,7 @@ def armar_informe_clasificador(analisis, preferencia):
     json_torta = chart_torta.to_json()
     grafico_torta = Grafico(nombre = "Torta distribucion de categorias", chart = json_torta, analisis = analisis)
     grafico_torta.save()
+    print('hizo el grafico de torta')
 
     #Tipo de violencia por cada archivo
     file_label_counts = df_violentos.groupby(['archivo_origen', 'clasificacion'])['text'].count().reset_index()
@@ -433,7 +455,7 @@ def armar_informe_clasificador(analisis, preferencia):
     json_comp_file = chart_comp_file.to_json()
     grafico_comp_file = Grafico(nombre = "Composicion de categorias por archivo", chart = json_comp_file, analisis = analisis)
     grafico_comp_file.save()
-
+    print('hizo el grafico de tipo de violencia por archivo')
     
     ## Relacion para cada archivo: numero de violentos y linea 
     scatterplots = []
@@ -459,23 +481,13 @@ def armar_informe_clasificador(analisis, preferencia):
         )
         scatterplots.append(scatterplot)
     chart_lineas_cat = alt.vconcat(*scatterplots)
-
     json_lineas_cat = chart_lineas_cat.to_json()
     grafico_lineas_cat = Grafico(nombre = "Relacion numero de linea y frases violentas", chart = json_lineas_cat, analisis = analisis)
     grafico_lineas_cat.save()
 
-    #Wordcloud completo
-    text = ' '.join(df_completo['text'])
-    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
-    plt.figure(figsize=(10, 5))
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis('off')
-    plt.title('Palabras detectadas')
-    wordcloud_path = f'analisis/static/graficos/{analisis.id}/wordcloud_cats_{analisis.id}.png'
-    wordcloud.to_file(wordcloud_path)
-    imagen_wordcloud_total = Grafico_Imagen(nombre = "Wordcloud de clasificacion", analisis = analisis)
-    imagen_wordcloud_total.imagen.save(wordcloud_path, File(open(wordcloud_path, 'rb')))
-    imagen_wordcloud_total.save()
+    print('hizo el num de violentos por linea')
+
+    
 
     #Wordcloud violentos
     df_v = df_violentos.loc[df_violentos['clasificacion'] != 'Adjunto'] 
@@ -528,6 +540,7 @@ def procesar_linea(analisis, archivo, line, index):
     """
     elemento = {}
     if regex_wpp.match(line) is not None: #cumple formato whatsapp
+        print(line)
         date_name_text = line.strip().split(' - ') # [date, name: text]
         name_index = date_name_text[1].find(':') 
         name = date_name_text[1][:name_index] 
@@ -540,12 +553,12 @@ def procesar_linea(analisis, archivo, line, index):
             texto = text.replace('(archivo adjunto)', '') 
             numero_linea = index + 1
             detectado = 'Adjunto'
-            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save() 
+            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name, score = 0).save() 
         elif (text.find('<Multimedia omitido>') != -1):
             texto = "Adjunto Desconocido"
             detectado = 'Adjunto'
-            numero_linea = elemento['numero_linea']
-            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name).save()
+            numero_linea = index + 1
+            Resultado(texto= texto, detectado = detectado, html = "", numero_linea = numero_linea, analisis = analisis, archivo_origen = archivo, fecha_envio = fecha, remitente = name, score = 0).save()
         else:
             elemento = {
                 'texto': text,
@@ -557,6 +570,7 @@ def procesar_linea(analisis, archivo, line, index):
                 'score': None,
             }
     else:
+        print(line)
         elemento = {
             'texto': line,
             'fecha': None,
@@ -721,6 +735,7 @@ def procesar_clasificador(tarea_celery, analisis, carpeta, user):
 
 
     armar_informe_clasificador(analisis,preferencia)
+    
     return 1
     
 
