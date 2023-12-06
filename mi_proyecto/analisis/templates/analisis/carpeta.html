@@ -16,6 +16,12 @@
     <div class = "col-md-10">
         <main role="main" class="container">
             </br>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'analisis-carpetas' %}">Carpetas</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{carpeta.nombre}}</li>
+                </ol>
+            </nav>
             </br>
             <h2>{{carpeta.nombre}}</h2>
             </br>

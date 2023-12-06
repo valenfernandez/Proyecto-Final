@@ -566,5 +566,5 @@ def crear_wordcloud(request, id_analisis):
             
                 return response
             
-    return render(request, "analisis/crear_wordcloud.html", context= {'form': WordcloudForm()})
+    return render(request, "analisis/crear_wordcloud.html", context= {'form': WordcloudForm(), 'id_analisis': id_analisis})
 

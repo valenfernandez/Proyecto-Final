@@ -27,7 +27,7 @@ def nuevo_wordcloud(texto):
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
     plt.title("Mi wordcloud")
-    
+
     return wordcloud
     
 
@@ -329,7 +329,10 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
             'mensaje': 'Armando informe de entidades'
         }
     )
-    armar_informe_entidades(analisis, preferencia)
+    try: 
+        armar_informe_entidades(analisis, preferencia)
+    except:
+        print("error al armar el informe")
     print("termine de armar el informe")
     return 1
 

@@ -17,6 +17,13 @@
     <div class = "col-md-10">
         <main role="main" class="container">
             </br>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'analisis-resultados' %}">Resultados</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'analisis-resultado' id_analisis %}">Analisis</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Crear Wordcloud</li>
+                </ol>
+              </nav>
             </br>
             <h4> Nuevo Wordcloud: </h4>
             </br>
