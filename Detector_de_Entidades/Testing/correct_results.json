@@ -1,0 +1,358 @@
+[
+  {
+    "text": "Juan Martinez nació en Hawaii el 10 de Marzo de 1961. Durante la década del 80, empezó a aparecer en varias películas. En 1981, viajó a Argentina y fundó dos empresas. Un mes después, en diciembre, chocó con su auto en la playa. Llamó a su amigo Luis para decirle que perdió la memoria. Cuando Luis le preguntó cómo recordaba su nombre, Juan se dio cuenta de que estaba bien. Le pagó 2000 pesos por ayudarlo.",
+    "id": 11607,
+    "label": [
+      {
+        "start": 0,
+        "end": 13,
+        "text": "Juan Martinez",
+        "labels": [
+          "PERSONA"
+        ]
+      },
+      {
+        "start": 23,
+        "end": 29,
+        "text": "Hawaii",
+        "labels": [
+          "LUGAR"
+        ]
+      },
+      {
+        "start": 33,
+        "end": 52,
+        "text": "10 de Marzo de 1961",
+        "labels": [
+          "FECHA"
+        ]
+      },
+      {
+        "start": 65,
+        "end": 78,
+        "text": "década del 80",
+        "labels": [
+          "FECHA"
+        ]
+      },
+      {
+        "start": 122,
+        "end": 126,
+        "text": "1981",
+        "labels": [
+          "FECHA"
+        ]
+      },
+      {
+        "start": 136,
+        "end": 145,
+        "text": "Argentina",
+        "labels": [
+          "LUGAR"
+        ]
+      },
+      {
+        "start": 154,
+        "end": 166,
+        "text": "dos empresas",
+        "labels": [
+          "MEDIDA"
+        ]
+      },
+      {
+        "start": 168,
+        "end": 174,
+        "text": "Un mes",
+        "labels": [
+          "TIEMPO"
+        ]
+      },
+      {
+        "start": 187,
+        "end": 196,
+        "text": "diciembre",
+        "labels": [
+          "FECHA"
+        ]
+      },
+      {
+        "start": 222,
+        "end": 227,
+        "text": "playa",
+        "labels": [
+          "LUGAR"
+        ]
+      },
+      {
+        "start": 246,
+        "end": 250,
+        "text": "Luis",
+        "labels": [
+          "PERSONA"
+        ]
+      },
+      {
+        "start": 294,
+        "end": 298,
+        "text": "Luis",
+        "labels": [
+          "PERSONA"
+        ]
+      },
+      {
+        "start": 337,
+        "end": 341,
+        "text": "Juan",
+        "labels": [
+          "PERSONA"
+        ]
+      },
+      {
+        "start": 384,
+        "end": 394,
+        "text": "2000 pesos",
+        "labels": [
+          "DINERO"
+        ]
+      }
+    ],
+    "annotator": 1,
+    "annotation_id": 10425,
+    "created_at": "2023-12-18T18:13:13.385373Z",
+    "updated_at": "2023-12-18T18:13:13.385373Z",
+    "lead_time": 86.859
+  },
+  {
+    "text": "Con javi mañana tenemos que ir al banco a las 2 de la tarde para ver si podemos cobrar lo que nos dejo mario que es un capo, como 2 palos, casi 2 millones de pesos, tardaron como 2 semanas, 14 dias para aprobarlo pero se pudo. El ahora esta trabajando ahi para Dufentmirtz malvados y asociados, y le va re bien. ",
+    "id": 11609,
+    "label": [
+      {
+        "start": 4,
+        "end": 8,
+        "text": "javi",
+        "labels": [
+          "PERSONA"
+        ]
+      },
+      {
+        "start": 9,
+        "end": 15,
+        "text": "mañana",
+        "labels": [
+          "FECHA"
+        ]
+      },
+      {
+        "start": 46,
+        "end": 59,
+        "text": "2 de la tarde",
+        "labels": [
+          "HORA"
+        ]
+      },
+      {
+        "start": 103,
+        "end": 108,
+        "text": "mario",
+        "labels": [
+          "PERSONA"
+        ]
+      },
+      {
+        "start": 130,
+        "end": 137,
+        "text": "2 palos",
+        "labels": [
+          "DINERO"
+        ]
+      },
+      {
+        "start": 144,
+        "end": 163,
+        "text": "2 millones de pesos",
+        "labels": [
+          "DINERO"
+        ]
+      },
+      {
+        "start": 179,
+        "end": 188,
+        "text": "2 semanas",
+        "labels": [
+          "TIEMPO"
+        ]
+      },
+      {
+        "start": 190,
+        "end": 197,
+        "text": "14 dias",
+        "labels": [
+          "TIEMPO"
+        ]
+      },
+      {
+        "start": 261,
+        "end": 293,
+        "text": "Dufentmirtz malvados y asociados",
+        "labels": [
+          "ORG"
+        ]
+      }
+    ],
+    "annotator": 1,
+    "annotation_id": 10427,
+    "created_at": "2023-12-18T18:14:05.457573Z",
+    "updated_at": "2023-12-18T18:14:05.457573Z",
+    "lead_time": 49.175
+  },
+  {
+    "text": "Mañana, Laura y yo iremos a una subasta de arte en Nueva York. Esperamos adquirir una pintura del famoso artista español, Pablo Picasso. Hemos estado ahorrando durante varios años y esperamos poder hacer una oferta de hasta 1 millón de dólares. La subasta será transmitida en vivo por una cadena de televisión local. Después de la subasta, planeamos celebrar con una cena en nuestro restaurante italiano favorito.",
+    "id": 11611,
+    "label": [
+      {
+        "start": 0,
+        "end": 6,
+        "text": "Mañana",
+        "labels": [
+          "FECHA"
+        ]
+      },
+      {
+        "start": 8,
+        "end": 13,
+        "text": "Laura",
+        "labels": [
+          "PERSONA"
+        ]
+      },
+      {
+        "start": 51,
+        "end": 61,
+        "text": "Nueva York",
+        "labels": [
+          "LUGAR"
+        ]
+      },
+      {
+        "start": 122,
+        "end": 135,
+        "text": "Pablo Picasso",
+        "labels": [
+          "PERSONA"
+        ]
+      },
+      {
+        "start": 168,
+        "end": 179,
+        "text": "varios años",
+        "labels": [
+          "TIEMPO"
+        ]
+      },
+      {
+        "start": 224,
+        "end": 243,
+        "text": "1 millón de dólares",
+        "labels": [
+          "DINERO"
+        ]
+      },
+      {
+        "start": 289,
+        "end": 295,
+        "text": "cadena",
+        "labels": [
+          "MISC"
+        ]
+      },
+      {
+        "start": 383,
+        "end": 394,
+        "text": "restaurante",
+        "labels": [
+          "LUGAR"
+        ]
+      }
+    ],
+    "annotator": 1,
+    "annotation_id": 10429,
+    "created_at": "2023-12-18T18:15:09.471363Z",
+    "updated_at": "2023-12-18T18:15:09.471363Z",
+    "lead_time": 61.657
+  },
+  {
+    "text": "roberto silva un famoso chef de brasil decidió abrir un restaurante en tokio en 2005 a pesar de las dificultades iniciales su restaurante ganó tres estrellas michelin en 2010 sin embargo en 2012 sufrió un accidente de bicicleta y tuvo que cerrar el restaurante temporalmente durante su recuperación escribió un libro de cocina que se convirtió en un bestseller finalmente pudo reabrir su restaurante en 2014",
+    "id": 11613,
+    "label": [
+      {
+        "start": 0,
+        "end": 13,
+        "text": "roberto silva",
+        "labels": [
+          "PERSONA"
+        ]
+      },
+      {
+        "start": 32,
+        "end": 38,
+        "text": "brasil",
+        "labels": [
+          "LUGAR"
+        ]
+      },
+      {
+        "start": 71,
+        "end": 76,
+        "text": "tokio",
+        "labels": [
+          "LUGAR"
+        ]
+      },
+      {
+        "start": 80,
+        "end": 84,
+        "text": "2005",
+        "labels": [
+          "FECHA"
+        ]
+      },
+      {
+        "start": 143,
+        "end": 157,
+        "text": "tres estrellas",
+        "labels": [
+          "MEDIDA"
+        ]
+      },
+      {
+        "start": 170,
+        "end": 174,
+        "text": "2010",
+        "labels": [
+          "FECHA"
+        ]
+      },
+      {
+        "start": 190,
+        "end": 194,
+        "text": "2012",
+        "labels": [
+          "FECHA"
+        ]
+      },
+      {
+        "start": 403,
+        "end": 407,
+        "text": "2014",
+        "labels": [
+          "FECHA"
+        ]
+      }
+    ],
+    "annotator": 1,
+    "annotation_id": 10431,
+    "created_at": "2023-12-18T18:16:07.822049Z",
+    "updated_at": "2023-12-18T18:16:07.822049Z",
+    "lead_time": 55.658
+  }
+]
