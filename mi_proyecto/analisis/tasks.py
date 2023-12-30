@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 # Celery
 from celery import shared_task, Celery
-from .nlp import procesar_analisis
+from nlp_component.nlp import procesar_analisis
 from .models import Analisis
 from django.core import serializers
 from celery.exceptions import Ignore

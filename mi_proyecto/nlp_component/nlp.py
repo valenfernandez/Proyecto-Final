@@ -1,4 +1,4 @@
-from .models import Analisis, Aplicacion, Resultado, Modelo, Carpeta, Archivo, Preferencias, Grafico, Grafico_Imagen, Tabla
+from analisis.models import Analisis, Aplicacion, Resultado, Modelo, Carpeta, Archivo, Preferencias, Grafico, Grafico_Imagen, Tabla
 import json
 import spacy
 from spacy import displacy
@@ -29,8 +29,6 @@ def nuevo_wordcloud(texto):
     plt.title("Mi wordcloud")
 
     return wordcloud
-    
-
 
 
 
@@ -225,7 +223,8 @@ def procesar_entidades(tarea_celery, analisis, carpeta, user):
     """
     
     # 1: Cargar el modelo de spacy
-    model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "entidades" )
+    # model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", "entidades")
+    model_path = os.path.join(os.getcwd(),"analisis", "static", "modelos", analisis.modelo.nombre)
     nlp = spacy.load(model_path)
 
     
@@ -687,6 +686,7 @@ def procesar_archivo(archivo_db, archivo, analisis, nlp, nlp_multi):
 def procesar_clasificador(tarea_celery, analisis, carpeta, user):
     """
     Esta función se encarga de procesar los archivos de una carpeta con el modelo de clasificación de violencia. Crea los objetos Resultado en la base de datos para cada linea que se pidió analizar.
+    Si se quiere agregar una nueva aplicacion, se debe agregar una función de procesamiento para esa aplicación y llamarla desde esta función.
 
     Parameters
     ----------
@@ -754,11 +754,12 @@ def procesar_analisis(tarea_celery, analisis, user):
 
     """
     carpeta = analisis.carpeta
-    modelo = analisis.modelo 
+    modelo = analisis.modelo
+    aplicacion = modelo.aplicacion
 
-    if modelo.nombre == 'entidades': #cargo ese solo modelo y lo aplico
+    if aplicacion.nombre == 'Deteccion de Entidades': #cargo ese solo modelo y lo aplico
         procesar_entidades(tarea_celery, analisis, carpeta, user)
-    elif modelo.nombre == 'clasificador': # aplico primero el modelo binario y despues el modelo multicategoria.  
+    elif aplicacion.nombre == 'Clasificador de texto': # aplico primero el modelo binario y despues el modelo multicategoria.  
         procesar_clasificador(tarea_celery, analisis, carpeta, user)
     else:
         raise FileNotFoundError("El modelo no existe") 

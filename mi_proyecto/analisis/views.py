@@ -13,7 +13,7 @@ from celery.result import AsyncResult
 import json
 from django.http import JsonResponse
 import zipfile
-from .nlp import nuevo_wordcloud
+from nlp_component.nlp import nuevo_wordcloud
 import io
 
 
