@@ -2,7 +2,7 @@ import spacy
 import os
 import json
 
-models = ["model-1.1", "model-1.2", "model-2.1", "model-3.1", "model-3.2", "model-4.1", "model-4.2", "model-4.3"]
+models = ["model-1.1", "model-1.2", "model-2.1", "model-2.2", "model-3.1", "model-3.2", "model-4.1", "model-4.2", "model-4.3", "model-4.3t"]
 
 
 with open("correct_results.json", "r") as f:
