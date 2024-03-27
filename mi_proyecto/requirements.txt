@@ -12,3 +12,4 @@ xhtml2pdf
 python-docx 
 openpyxl
 redis
+crispy-bootstrap5
